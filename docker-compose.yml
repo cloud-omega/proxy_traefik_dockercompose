@@ -1,0 +1,40 @@
+version: "3"
+# .env: MAILMANAGER
+# IPv4 only
+# docker network create proxy_network --subnet "192.168.100.0/24"
+# IPv4/IPv6 network
+# docker network create proxy_network --ipv6 --subnet "fd00:0000:0000:0000::/64"
+
+networks:
+  proxy_network:
+    external: true
+
+  traefik:
+    image: traefik:2.8-alpine # latest
+    container_name: proxy
+    restart: unless-stopped
+    command:
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.letsencrypt.acme.email=${MAILMANAGER}
+      - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --api.dashboard=true
+      - --log.level=WARN
+      # - --api.insecure=true
+    ports:
+      - 80:80
+      - 443:443
+      - 8006:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - proxydata:/data
+    networks:
+      - proxy_network
+
+volumes:
+  proxydata:
