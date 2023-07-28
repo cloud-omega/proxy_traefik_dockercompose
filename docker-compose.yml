@@ -6,7 +6,7 @@ version: "3"
 # docker network create proxy_network --ipv6 --subnet "fd00:0000:0000:0000::/64"
 
 networks:
-  proxy_network:
+  proxy_default:
     external: true
 
 services:
