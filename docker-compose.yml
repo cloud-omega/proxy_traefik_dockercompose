@@ -1,9 +1,9 @@
 version: "3"
 # .env: MAILMANAGER
 # IPv4 only
-# docker network create proxy_network --subnet "192.168.100.0/24"
+# docker network create proxy_default --subnet "192.168.100.0/24"
 # IPv4/IPv6 network
-# docker network create proxy_network --ipv6 --subnet "fd00:0000:0000:0000::/64"
+# docker network create proxy_default --ipv6 --subnet "fd00:0000:0000:0000::/64"
 
 networks:
   proxy_default:
@@ -15,6 +15,7 @@ services:
     container_name: proxy
     restart: unless-stopped
     command:
+      - --providers.docker.network=proxy_default
       - --providers.docker.exposedbydefault=false
       - --providers.docker=true
       - --entrypoints.web.address=:80
@@ -35,7 +36,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - proxydata:/data
     networks:
-      - proxy_network
+      - proxy_default
 
 volumes:
   proxydata:
