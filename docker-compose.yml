@@ -9,6 +9,7 @@ networks:
   proxy_network:
     external: true
 
+services:
   traefik:
     image: traefik:2.8-alpine # latest
     container_name: proxy
