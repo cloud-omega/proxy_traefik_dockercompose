@@ -11,7 +11,7 @@ networks:
 
 services:
   traefik:
-    image: traefik:2.6-alpine # latest
+    image: traefik # latest
     container_name: proxy
     restart: unless-stopped
     command:
