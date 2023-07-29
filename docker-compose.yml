@@ -23,6 +23,7 @@ services:
       - --certificatesresolvers.letsencrypt.acme.email=${MAILMANAGER}
       - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
       - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
       - --api.dashboard=true
