@@ -1,0 +1,26 @@
+name: Docker Compose Up for Production
+
+on:
+  push:
+    branches: [ production ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to Docker Hub (optional)
+        if: secrets.DOCKER_HUB_USERNAME
+        run: |
+          echo "$DOCKER_HUB_USERNAME:$DOCKER_HUB_PASSWORD" | docker login --username --password-stdin
+
+      - name: Update Docker Compose (optional)
+        if: always()
+        run: docker compose pull
+      - name: Stop Docker Compose (optional)
+        if: always()
+        run: docker compose down
+      - name: Run Docker Compose Up
+        run: docker compose up -d --wait
+
