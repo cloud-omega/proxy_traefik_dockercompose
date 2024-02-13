@@ -9,6 +9,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
+        env:
+          ORA_VAULT: ${{ secrets.MAILMANAGER }}
 
       - name: Login to Docker Hub (optional)
         if: secrets.DOCKER_HUB_USERNAME
@@ -18,9 +20,11 @@ jobs:
       - name: Update Docker Compose (optional)
         if: always()
         run: docker compose pull
+
       - name: Stop Docker Compose (optional)
         if: always()
         run: docker compose down
+        
       - name: Run Docker Compose Up
         run: docker compose up -d --wait
 
