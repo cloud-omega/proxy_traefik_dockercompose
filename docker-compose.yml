@@ -1,4 +1,5 @@
 version: "3"
+# set .env vars: TZ, DOMAIN_NAME, SITE_PATH
 # .env: MAILMANAGER
 # IPv4 only
 # docker network create proxy_default --subnet "192.168.100.0/24"
@@ -26,18 +27,47 @@ services:
       - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
-      - --api.dashboard=true
+      #- --api.dashboard=true
       - --log.level=WARN
       # - --api.insecure=true
     ports:
-      - 80:80
-      - 443:443
-      - 8006:8080
+      - target: 80
+        published: 80
+        mode: host
+      - target: 443
+        published: 443
+        mode: host
+      - target: 8080
+        published: 8006
+        mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - proxydata:/data
     networks:
       - proxy_default
 
+  portainer:
+    image: portainer/portainer-ee:latest
+    container_name: "portainer"
+    restart: unless-stopped
+    environment:
+      - TZ
+      - DOMAIN_NAME
+      - SITE_PATH
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - 'portainer_data:/data'
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.http.services.ptn_${SITE_PATH}.loadbalancer.server.port=9000
+      - traefik.http.routers.ptn_${SITE_PATH}.tls.certresolver=letsencrypt
+      - traefik.frontend.entryPoints=http,https
+      - traefik.http.routers.ptn_${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
+    networks: 
+      - proxy_default
+
+  
 volumes:
   proxydata:
+  portainer_data:
