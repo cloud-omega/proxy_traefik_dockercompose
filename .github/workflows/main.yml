@@ -5,7 +5,7 @@ on:
     branches: [ production ]
 
 jobs:
-  build:
+  run:
     runs-on: self-hosted
     env:
       MAILMANAGER: ${{ secrets.MAILMANAGER }}
@@ -24,8 +24,7 @@ jobs:
 
       - name: Stop Docker Compose
         if: always()
-        run: docker compose down
+        run: docker compose down --remove-orphans
         
       - name: Run Docker Compose Up
         run: docker compose up -d --wait
-

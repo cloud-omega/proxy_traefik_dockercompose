@@ -12,7 +12,7 @@ networks:
 
 services:
   traefik:
-    image: traefik # latest
+    image: traefik:latest
     container_name: proxy
     restart: unless-stopped
     command:
@@ -66,8 +66,15 @@ services:
       - traefik.http.routers.ptn_${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
     networks: 
       - proxy_default
-
   
 volumes:
   proxydata:
+     driver_opts:
+           type: none
+           device: ${VOL_PROXY}
+           o: bind
   portainer_data:
+     driver_opts:
+           type: none
+           device: ${VOL_PORTAINER}
+           o: bind
