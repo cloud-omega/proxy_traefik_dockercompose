@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ARM-64
     steps:
       - uses: actions/checkout@v3
         env:
