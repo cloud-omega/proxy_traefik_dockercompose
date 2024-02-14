@@ -6,11 +6,11 @@ on:
 
 jobs:
   build:
-    runs-on: ARM-64
+    runs-on: self-hosted
+    env:
+      MAILMANAGER: ${{ secrets.MAILMANAGER }}
     steps:
       - uses: actions/checkout@v3
-        env:
-          MAILMANAGER: ${{ secrets.MAILMANAGER }}
 
       #- name: Login to Docker Hub (optional)
       #  run: |
