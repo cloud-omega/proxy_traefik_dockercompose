@@ -9,6 +9,8 @@ jobs:
     runs-on: self-hosted
     env:
       MAILMANAGER: ${{ secrets.MAILMANAGER }}
+      SITE_PATH: ${{ secrets.PORTAINER_PATH }}
+      DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}
     steps:
       - uses: actions/checkout@v3
 
