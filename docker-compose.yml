@@ -43,7 +43,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - proxydata:/data
-      - ${VOL_PROXY}/traefik.yml:/traefik.yml
+      #- ${VOL_PROXY}/traefik.yml:/traefik.yml
     networks:
       - proxy_default
 
