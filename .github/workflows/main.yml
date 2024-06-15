@@ -12,6 +12,8 @@ jobs:
       MAILMANAGER: ${{ secrets.MAILMANAGER }}
       SITE_PATH: ${{ secrets.PORTAINER_PATH }}
       DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}
+      VOL_PROXY: ${{ secrets.VOL_PROXY }}
+      VOL_PORTAINER: ${{ secrets.VOL_PORTAINER }}
     steps:
       - uses: actions/checkout@v3
 
