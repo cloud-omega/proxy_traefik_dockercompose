@@ -8,6 +8,7 @@ jobs:
   run:
     runs-on: self-hosted
     env:
+      TZ: "America/Sao_paulo"
       MAILMANAGER: ${{ secrets.MAILMANAGER }}
       SITE_PATH: ${{ secrets.PORTAINER_PATH }}
       DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}

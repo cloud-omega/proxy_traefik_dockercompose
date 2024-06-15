@@ -15,6 +15,8 @@ services:
     image: traefik:latest
     container_name: proxy
     restart: unless-stopped
+    environment:
+      - TZ
     command:
       - --providers.docker.network=proxy_default
       - --providers.docker.exposedbydefault=false
@@ -30,15 +32,6 @@ services:
       - --log.level=WARN
       #- --api.dashboard=true
       # - --api.insecure=true
-      - "--entrypoints.websecure.http.middlewares.secure.headers.customresponseheaders.X-Robots-Tag=noindex, nofollow"
-      - --entrypoints.websecure.http.middlewares.secure.headers.stsincludesubdomains=false
-      - --entrypoints.websecure.http.middlewares.secure.headers.stspreload=true
-      - --entrypoints.websecure.http.middlewares.secure.headers.stsseconds=31536000
-      - --entrypoints.websecure.http.middlewares.secure.headers.isdevelopment=false
-      - --entrypoints.websecure.http.middlewares.secure.headers.customresponseheaders.X-Content-Type-Options=nosniff
-      - --entrypoints.websecure.http.middlewares.secure.headers.customresponseheaders.X-Frame-Options=SAMEORIGIN
-      - "--entrypoints.websecure.http.middlewares.secure.headers.customresponseheaders.X-XSS-Protection=1; mode=block"
-      - "--entrypoints.websecure.http.middlewares.secure.headers.customresponseheaders.Strict-Transport-Security=max-age=31536000; includeSubDomains; preload"
     ports:
       - target: 80
         published: 80
@@ -71,9 +64,9 @@ services:
       - traefik.docker.network=proxy_default
       - traefik.frontend.entryPoints=web,websecure
       - traefik.http.services.${SITE_PATH}.loadbalancer.server.port=9000
+      - traefik.http.routers.${SITE_PATH}.tls=true
       - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
       - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
-      - "traefik.http.routers.ptn_${SITE_PATH}.middlewares=secure"
     networks: 
       - proxy_default
   
