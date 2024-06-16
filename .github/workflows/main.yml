@@ -21,6 +21,10 @@ jobs:
       #  run: |
       #    echo "$DOCKER_HUB_USERNAME:$DOCKER_HUB_PASSWORD" | docker login --username --password-stdin
 
+      - name: Prepare volume
+        if: always()
+        run: mkdir -p $VOL_PROXY $VOL_PORTAINER
+
       - name: Update Docker Compose
         if: always()
         run: docker compose pull

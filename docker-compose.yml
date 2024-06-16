@@ -27,6 +27,9 @@ services:
       - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.tls.options.default.sniStrict=true
+      - --entrypoints.tls.options.default.minVersion=VersionTLS12
+      - --entrypoints.tls.options.mintls13.minVersion=VersionTLS13
       - --log.level=WARN
       #- --api.dashboard=true
       # - --api.insecure=true
