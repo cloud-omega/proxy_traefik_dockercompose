@@ -21,18 +21,27 @@ services:
       - --providers.docker.exposedbydefault=false
       - --providers.docker=true
       - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
+      - --entrypoints.webheaders-all.address=:443
       - --certificatesresolvers.letsencrypt.acme.email=${MAILMANAGER}
       - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
       - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
-      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.to=webheaders-all
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
-      - --entrypoints.tls.options.default.sniStrict=true
-      - --entrypoints.tls.options.default.minVersion=VersionTLS12
-      - --entrypoints.tls.options.mintls13.minVersion=VersionTLS13
+      - --tls.options.default.minVersion=VersionTLS12
+      - --tls.options.default.sniStrict=true
+      - --tls.options.mintls13.minVersion=VersionTLS13
+      - --http.middlewares.headers-all.headers.customResponseHeaders.X-Robots-Tag=noindex,nofollow
+      - --http.middlewares.headers-all.headers.stsIncludeSubdomains=false
+      - --http.middlewares.headers-all.headers.stsPreload=true
+      - --http.middlewares.headers-all.headers.stsSeconds=31536000
+      - --http.middlewares.headers-all.headers.isDevelopment=false
+      - --http.middlewares.headers-all.headers.customResponseHeaders.X-Content-Type-Options=nosniff
+      - --http.middlewares.headers-all.headers.customResponseHeaders.X-Frame-Options=SAMEORIGIN
+      - --http.middlewares.headers-all.headers.customResponseHeaders.X-XSS-Protection=1;mode=block
+      - --http.middlewares.headers-all.headers.customResponseHeaders.Strict-Transport-Security=max-age=31536000;includeSubDomains;preload
       - --log.level=WARN
       #- --api.dashboard=true
-      # - --api.insecure=true
+      # - --api.inheaders-all=true
     ports:
       - target: 80
         published: 80
@@ -64,11 +73,12 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
-      - traefik.frontend.entryPoints=web,websecure
+      - traefik.frontend.entryPoints=web,webheaders-all
       - traefik.http.services.${SITE_PATH}.loadbalancer.server.port=9000
       - traefik.http.routers.${SITE_PATH}.tls=true
       - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
       - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
+      - traefik.http.routers.${SITE_PATH}.middlewares=headers-all@file
     networks: 
       - proxy_default
   
