@@ -30,16 +30,8 @@ services:
       - --tls.options.default.minVersion=VersionTLS12
       - --tls.options.default.sniStrict=true
       - --tls.options.mintls13.minVersion=VersionTLS13
-      - --http.middlewares.headers-all.headers.customResponseHeaders.X-Robots-Tag=noindex,nofollow
-      - --http.middlewares.headers-all.headers.stsIncludeSubdomains=false
-      - --http.middlewares.headers-all.headers.stsPreload=true
-      - --http.middlewares.headers-all.headers.stsSeconds=31536000
-      - --http.middlewares.headers-all.headers.isDevelopment=false
-      - --http.middlewares.headers-all.headers.customResponseHeaders.X-Content-Type-Options=nosniff
-      - --http.middlewares.headers-all.headers.customResponseHeaders.X-Frame-Options=SAMEORIGIN
-      - --http.middlewares.headers-all.headers.customResponseHeaders.X-XSS-Protection=1;mode=block
-      - --http.middlewares.headers-all.headers.customResponseHeaders.Strict-Transport-Security=max-age=31536000;includeSubDomains;preload
       - --log.level=WARN
+      - --configFile=/data/traefik.yml
       #- --api.dashboard=true
       # - --api.inheaders-all=true
     ports:
