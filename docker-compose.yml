@@ -21,11 +21,11 @@ services:
       - --providers.docker.exposedbydefault=false
       - --providers.docker=true
       - --entrypoints.web.address=:80
-      - --entrypoints.webheaders-all.address=:443
+      - --entrypoints.websecure.address=:443
       - --certificatesresolvers.letsencrypt.acme.email=${MAILMANAGER}
       - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
       - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
-      - --entrypoints.web.http.redirections.entrypoint.to=webheaders-all
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
       - --tls.options.default.minVersion=VersionTLS12
       - --tls.options.default.sniStrict=true
@@ -33,7 +33,7 @@ services:
       - --log.level=WARN
       - --configFile=/data/traefik.yml
       #- --api.dashboard=true
-      # - --api.inheaders-all=true
+      # - --api.insecure=true
     ports:
       - target: 80
         published: 80
@@ -65,12 +65,12 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
-      - traefik.frontend.entryPoints=web,webheaders-all
+      - traefik.frontend.entryPoints=web,websecure
       - traefik.http.services.${SITE_PATH}.loadbalancer.server.port=9000
       - traefik.http.routers.${SITE_PATH}.tls=true
       - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
       - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
-      - traefik.http.routers.${SITE_PATH}.middlewares=headers-all@file
+      #- traefik.http.routers.${SITE_PATH}.middlewares=headers-all@file
     networks: 
       - proxy_default
   
