@@ -14,8 +14,8 @@ jobs:
       DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}
       VOL_PROXY: ${{ secrets.VOL_PROXY }}
       VOL_PORTAINER: ${{ secrets.VOL_PORTAINER }}
-      VOL_CROWDSECDB: ${VOL_PROXY}/crowdsec_data
-      VOL_CROWDSECETC: ${VOL_PROXY}/crowdsec_etc
+      VOL_CROWDSECDB: "${VOL_PROXY}/crowdsec_data"
+      VOL_CROWDSECETC: "${VOL_PROXY}/crowdsec_etc"
     steps:
       - uses: actions/checkout@v3
 
