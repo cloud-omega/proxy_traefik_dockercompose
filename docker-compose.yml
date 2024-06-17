@@ -54,7 +54,8 @@ services:
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
       - --entrypoints.websecure.http3
-      - --entrypoints.websecure.http.middlewares=compress,security-headers${TRAEFIK_PLUGINS:-}
+      #- --entrypoints.websecure.http.middlewares=compress,security-headers${TRAEFIK_PLUGINS:-}
+      - --entrypoints.websecure.http.middlewares=compress${TRAEFIK_PLUGINS:-}
       - --global.checknewversion=${TRAEFIK_CHECK_NEW_VERSION:-false}
       - --global.sendanonymoususage=${TRAEFIK_SEND_ANONYMOUS_USAGE:-false}
       - --ping
