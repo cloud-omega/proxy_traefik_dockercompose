@@ -14,9 +14,9 @@ http:
         forceSTSHeader: true
         customResponseHeaders:
           X-Content-Type-Options: "nosniff"
-          X-Frame-Options: "DENY"
+          X-Frame-Options: "SAMEORIGIN" #"DENY"
           X-XSS-Protection: "1; mode=block"
-          Referrer-Policy: "no-referrer-when-downgrade"
+          Referrer-Policy: "strict-origin"
           Content-Security-Policy: "default-src 'self'; script-src 'self'; object-src 'self'; frame-ancestors 'none';"
 
     crowdsec:
