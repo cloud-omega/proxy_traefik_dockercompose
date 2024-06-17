@@ -29,7 +29,7 @@ services:
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
       - --tls.options.default.minVersion=VersionTLS12
       - --tls.options.default.sniStrict=true
-      - --tls.options.mintls13.minVersion=VersionTLS13
+      #- --tls.options.mintls13.minVersion=VersionTLS13
       - --log.level=WARN
       - --configFile=/data/traefik.yml
       #- --api.dashboard=true
