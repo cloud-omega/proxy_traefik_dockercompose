@@ -8,10 +8,36 @@
 networks:
   proxy_default:
     external: true
+  backend:
+    driver: bridge
 
 services:
+  crowdsec:
+    image: crowdsecurity/crowdsec
+    container_name: crowdsec
+    environment:
+      PGID: "1000"
+      COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve"
+    volumes:
+      - crowdsec_db:/var/lib/crowdsec/data
+      - crowdsec_etc:/etc/crowdsec
+      #- /var/log/auth.log:/var/log/auth.log:ro
+      #- /var/log/crowdsec:/var/log/crowdsec:ro
+    restart: unless-stopped
+    networks:
+      - proxy_default
+      - backend
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.services.${SITE_PATH}.loadbalancer.server.port=9000
+      - traefik.http.routers.${SITE_PATH}.tls=true
+      - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
+      - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
+
   traefik:
-    image: traefik:latest
+    image: 'traefik:${TRAEFIK_IMAGE_VERSION:-latest}'
     container_name: proxy
     restart: unless-stopped
     environment:
@@ -27,23 +53,38 @@ services:
       - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
-      - --log.level=WARN
+      - --entrypoints.websecure.http3
+      - --entrypoints.websecure.http.middlewares=compress,security-headers${TRAEFIK_PLUGINS:-}
+      - --global.checknewversion=${TRAEFIK_CHECK_NEW_VERSION:-false}
+      - --global.sendanonymoususage=${TRAEFIK_SEND_ANONYMOUS_USAGE:-false}
+      - --ping
+      - --log.level=INFO
+      - --accesslog
+      - --accesslog.filepath=/var/log/traefik/access.log
       - --configFile=/data/traefik.yml
       #- --api.dashboard=true
       # - --api.insecure=true
+      ## plugins
+      - --experimental.plugins.crowdsec-bouncer-traefik-plugin.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+      - --experimental.plugins.crowdsec-bouncer-traefik-plugin.version=v1.3.2
+    depends_on:
+      - crowdsec
     labels:
-      - "traefik.http.middlewares.security-headers.headers.frameDeny=true"
-      - "traefik.http.middlewares.security-headers.headers.contentTypeNosniff=true"
-      - "traefik.http.middlewares.security-headers.headers.browserXssFilter=true"
-      - "traefik.http.middlewares.security-headers.headers.stsSeconds=31536000"
-      - "traefik.http.middlewares.security-headers.headers.stsIncludeSubdomains=true"
-      - "traefik.http.middlewares.security-headers.headers.stsPreload=true"
-      - "traefik.http.middlewares.security-headers.headers.forceSTSHeader=true"
-      - "traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-Content-Type-Options=nosniff"
-      - "traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-Frame-Options=DENY"
-      - "traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-XSS-Protection=1; mode=block"
-      - "traefik.http.middlewares.security-headers.headers.customResponseHeaders.Referrer-Policy=no-referrer-when-downgrade"
-      - "traefik.http.middlewares.security-headers.headers.customResponseHeaders.Content-Security-Policy=default-src 'self'; script-src 'self'; object-src 'none';"
+      traefik.http.middlewares.compress.compress=true
+      traefik.http.middlewares.security-headers.headers.frameDeny=true"
+      traefik.http.middlewares.security-headers.headers.contentTypeNosniff=true"
+      traefik.http.middlewares.security-headers.headers.browserXssFilter=true"
+      traefik.http.middlewares.security-headers.headers.stsSeconds=31536000"
+      traefik.http.middlewares.security-headers.headers.stsIncludeSubdomains=true"
+      traefik.http.middlewares.security-headers.headers.stsPreload=true"
+      traefik.http.middlewares.security-headers.headers.forceSTSHeader=true"
+      traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-Content-Type-Options=nosniff"
+      traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-Frame-Options=DENY"
+      traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-XSS-Protection=1; mode=block"
+      traefik.http.middlewares.security-headers.headers.customResponseHeaders.Referrer-Policy=no-referrer-when-downgrade"
+      traefik.http.middlewares.security-headers.headers.customResponseHeaders.Content-Security-Policy=default-src 'self'; script-src 'self'; object-src 'none';"
+      traefik.http.middlewares.crowdsec.plugin.crowdsec-bouncer-traefik-plugin.CrowdsecLapiKey=40796d93c2958f9e58345514e67740e5
+      traefik.http.middlewares.crowdsec.plugin.crowdsec-bouncer-traefik-plugin.Enabled="false"
     ports:
       - target: 80
         published: 80
@@ -54,11 +95,15 @@ services:
       - target: 8080
         published: 8006
         mode: host
+    healthcheck:
+      test: ['CMD', 'traefik', 'healthcheck', '--ping']
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - proxydata:/data
+      - accesslog:/var/log/traefik
     networks:
       - proxy_default
+      - backend
 
   portainer:
     image: portainer/portainer-ee:latest
@@ -71,19 +116,21 @@ services:
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
       - 'portainer_data:/data'
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=proxy_default
-      - traefik.frontend.entryPoints=web,websecure
-      - traefik.http.services.${SITE_PATH}.loadbalancer.server.port=9000
-      - traefik.http.routers.${SITE_PATH}.tls=true
-      - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
-      - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
-      - traefik.http.routers.${SITE_PATH}.middlewares=security-headers
-    networks: 
-      - proxy_default
-  
+    networks:
+      - backend
+
 volumes:
+  accesslog:
+  crowdsec_db:
+     driver_opts:
+           type: none
+           device: ${VOL_CROWDSECDB}
+           o: bind
+  crowdsec_etc:
+     driver_opts:
+           type: none
+           device: ${VOL_CROWDSECETC}
+           o: bind
   proxydata:
      driver_opts:
            type: none
