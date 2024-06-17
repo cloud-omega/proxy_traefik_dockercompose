@@ -14,8 +14,8 @@ jobs:
       DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}
       VOL_PROXY: ${{ secrets.VOL_PROXY }}
       VOL_PORTAINER: ${{ secrets.VOL_PORTAINER }}
-      VOL_CROWDSECDB: "${VOL_PROXY}/crowdsec_data"
-      VOL_CROWDSECETC: "${VOL_PROXY}/crowdsec_etc"
+      VOL_CROWDSECDB: ${{ secrets.VOL_PROXY }}/crowdsec_data
+      VOL_CROWDSECETC: ${{ secrets.VOL_PROXY }}/crowdsec_etc
     steps:
       - uses: actions/checkout@v3
 
@@ -25,7 +25,7 @@ jobs:
 
       - name: Prepare volume
         if: always()
-        run: mkdir -p $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC
+        run: mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC
 
       - name: Update Docker Compose
         if: always()
