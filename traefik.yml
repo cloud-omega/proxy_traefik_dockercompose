@@ -17,7 +17,7 @@ http:
           X-Frame-Options: "SAMEORIGIN" #"DENY"
           X-XSS-Protection: "1; mode=block"
           Referrer-Policy: "strict-origin"
-          #Content-Security-Policy: "default-src 'self' 'REPLACE_DOMAIN'; script-src 'self' 'REPLACE_DOMAIN' 'google.com'; frame-ancestors 'none';"
+          Content-Security-Policy: "default-src 'self' 'https:' 'REPLACE_DOMAIN'; script-src 'self' 'https:' 'REPLACE_DOMAIN' 'google.com'; frame-ancestors 'none';"
           
     crowdsec:
       plugin:
