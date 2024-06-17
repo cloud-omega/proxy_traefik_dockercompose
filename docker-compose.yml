@@ -78,9 +78,6 @@ services:
       - traefik.http.services.${SITE_PATH}.loadbalancer.server.port=9000
       - traefik.http.routers.${SITE_PATH}.tls=true
       - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
-      - traefik.http.routers.${SITE_PATH}.tls.options.default.sniStrict=true
-      - traefik.http.routers.${SITE_PATH}.tls.options.default.minVersion=VersionTLS12
-      - traefik.http.routers.${SITE_PATH}.tls.options.mintls13.minVersion=VersionTLS13
       - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
       - traefik.http.routers.${SITE_PATH}.middlewares=security-headers
     networks: 
