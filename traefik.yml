@@ -21,9 +21,13 @@ http:
 
     crowdsec:
       plugin:
-        crowdsec-bouncer-traefik-plugin:
+        bouncer:
           CrowdsecLapiKey: "replace-me"
-          Enabled: "false"
+          Enabled: "true"
+          loglevel: "DEBUG"
+          crowdsecappsecenabled: "true"
+          crowdsecappsechost: "crowdsec:7422"
+          crowdsecmode: "stream"
 
 tls:
   options:

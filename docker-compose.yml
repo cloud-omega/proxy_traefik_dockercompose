@@ -16,11 +16,15 @@ services:
     image: crowdsecurity/crowdsec
     container_name: crowdsec
     environment:
-      PGID: "1000"
-      COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve"
+      COLLECTIONS: crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
+      CUSTOM_HOSTNAME: crowdsec
+      # We need to register one api key per service we will use
+      BOUNCER_KEY_TRAEFIK: ${CROWDSEC_TRAEFIK}
     volumes:
       - crowdsec_db:/var/lib/crowdsec/data
       - crowdsec_etc:/etc/crowdsec
+      - accesslog:/var/log/traefik:ro
+      #- ./acquis.yaml:/etc/crowdsec/acquis.yaml:ro #CICD
       #- /var/log/auth.log:/var/log/auth.log:ro
       #- /var/log/crowdsec:/var/log/crowdsec:ro
     restart: unless-stopped
