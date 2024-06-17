@@ -25,7 +25,9 @@ jobs:
 
       - name: Prepare volume
         if: always()
-        run: mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC
+        run: |
+         mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC
+         cp -fv traefik.yml $VOL_PROXY
 
       - name: Update Docker Compose
         if: always()
