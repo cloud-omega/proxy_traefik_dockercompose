@@ -34,6 +34,19 @@ services:
       - --configFile=/data/traefik.yml
       #- --api.dashboard=true
       # - --api.insecure=true
+    labels:
+      - "traefik.http.middlewares.security-headers.headers.frameDeny=true"
+      - "traefik.http.middlewares.security-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.security-headers.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.security-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.security-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.security-headers.headers.stsPreload=true"
+      - "traefik.http.middlewares.security-headers.headers.forceSTSHeader=true"
+      - "traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-Content-Type-Options=nosniff"
+      - "traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-Frame-Options=DENY"
+      - "traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-XSS-Protection=1; mode=block"
+      - "traefik.http.middlewares.security-headers.headers.customResponseHeaders.Referrer-Policy=no-referrer-when-downgrade"
+      - "traefik.http.middlewares.security-headers.headers.customResponseHeaders.Content-Security-Policy=default-src 'self'; script-src 'self'; object-src 'none';"
     ports:
       - target: 80
         published: 80
@@ -47,7 +60,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - proxydata:/data
-      #- ${VOL_PROXY}/traefik.yml:/traefik.yml
     networks:
       - proxy_default
 
@@ -70,7 +82,7 @@ services:
       - traefik.http.routers.${SITE_PATH}.tls=true
       - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
       - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
-      #- traefik.http.routers.${SITE_PATH}.middlewares=headers-all@file
+      - traefik.http.routers.${SITE_PATH}.middlewares=security-headers
     networks: 
       - proxy_default
   
