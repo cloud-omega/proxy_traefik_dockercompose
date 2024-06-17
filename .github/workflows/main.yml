@@ -16,6 +16,7 @@ jobs:
       VOL_PORTAINER: ${{ secrets.VOL_PORTAINER }}
       VOL_CROWDSECDB: ${{ secrets.VOL_PROXY }}/crowdsec_data
       VOL_CROWDSECETC: ${{ secrets.VOL_PROXY }}/crowdsec_etc
+      CROWDSEC_TRAEFIK: ${{ secrets.CROWDSEC_TRAEFIK }}
     steps:
       - uses: actions/checkout@v3
 
@@ -27,6 +28,7 @@ jobs:
         if: always()
         run: |
          mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC
+         sed -i "s,replace-me,$CROWDSEC_TRAEFIK,g" traefik.yml
          cp -fv traefik.yml $VOL_PROXY
 
       - name: Update Docker Compose
