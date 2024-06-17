@@ -62,7 +62,7 @@ services:
       - --log.level=INFO
       - --accesslog
       - --accesslog.filepath=/var/log/traefik/access.log
-      - --configFile=/data/traefik.yml
+      - --providers.file.filename=/data/traefik.yml
       #- --api.dashboard=true
       # - --api.insecure=true
       ## plugins
