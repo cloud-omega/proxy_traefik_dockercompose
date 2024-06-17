@@ -1,15 +1,12 @@
 # set .env vars: TZ, DOMAIN_NAME, SITE_PATH
 # .env: MAILMANAGER
-# IPv4 only
+# net:
 # docker network create proxy_default --subnet "192.168.100.0/24"
-# IPv4/IPv6 network
 # docker network create proxy_default --ipv6 --subnet "fd00:0000:0000:0000::/64"
 
 networks:
   proxy_default:
     external: true
-  backend:
-    driver: bridge
 
 services:
   crowdsec:
@@ -18,7 +15,6 @@ services:
     environment:
       COLLECTIONS: crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
       CUSTOM_HOSTNAME: crowdsec
-      # We need to register one api key per service we will use
       BOUNCER_KEY_TRAEFIK: ${CROWDSEC_TRAEFIK}
     volumes:
       - crowdsec_db:/var/lib/crowdsec/data
@@ -30,14 +26,6 @@ services:
     restart: unless-stopped
     networks:
       - proxy_default
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=proxy_default
-      - traefik.frontend.entryPoints=web,websecure
-      - traefik.http.services.${SITE_PATH}.loadbalancer.server.port=8080
-      - traefik.http.routers.${SITE_PATH}.tls=true
-      - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
-      - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
 
   traefik:
     image: 'traefik:${TRAEFIK_IMAGE_VERSION:-latest}'
@@ -93,15 +81,23 @@ services:
 
   portainer:
     image: portainer/portainer-ee:latest
-    container_name: "portainer"
+    container_name: portainer
     restart: unless-stopped
     environment:
       - TZ
       - DOMAIN_NAME
       - SITE_PATH
     volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock'
-      - 'portainer_data:/data'
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.services.${SITE_PATH}.loadbalancer.server.port=8080
+      - traefik.http.routers.${SITE_PATH}.tls=true
+      - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
+      - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
     networks:
       - proxy_default
 
