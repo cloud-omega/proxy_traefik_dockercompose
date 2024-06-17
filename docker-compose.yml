@@ -56,8 +56,8 @@ services:
       #- --api.dashboard=true
       # - --api.insecure=true
       ## plugins
-      - --experimental.plugins.crowdsec-bouncer-traefik-plugin.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
-      - --experimental.plugins.crowdsec-bouncer-traefik-plugin.version=v1.3.2
+      - --experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+      - --experimental.plugins.bouncer.version=v1.3.2
     depends_on:
       - crowdsec
     ports:
