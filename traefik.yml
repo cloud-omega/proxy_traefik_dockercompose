@@ -17,7 +17,7 @@ http:
           X-Frame-Options: "DENY"
           X-XSS-Protection: "1; mode=block"
           Referrer-Policy: "no-referrer-when-downgrade"
-          Content-Security-Policy: "default-src 'self'; script-src 'self'; object-src 'none';"
+          Content-Security-Policy: "default-src 'self'; script-src 'self'; object-src 'self'; frame-ancestors 'none';"
 
     crowdsec:
       plugin:
