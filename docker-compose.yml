@@ -70,21 +70,21 @@ services:
     depends_on:
       - crowdsec
     labels:
-      traefik.http.middlewares.compress.compress=true
-      traefik.http.middlewares.security-headers.headers.frameDeny=true
-      traefik.http.middlewares.security-headers.headers.contentTypeNosniff=true
-      traefik.http.middlewares.security-headers.headers.browserXssFilter=true
-      traefik.http.middlewares.security-headers.headers.stsSeconds=31536000
-      traefik.http.middlewares.security-headers.headers.stsIncludeSubdomains=true
-      traefik.http.middlewares.security-headers.headers.stsPreload=true
-      traefik.http.middlewares.security-headers.headers.forceSTSHeader=true
-      traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-Content-Type-Options=nosniff
-      traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-Frame-Options=DENY
-      traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-XSS-Protection=1; mode=block
-      traefik.http.middlewares.security-headers.headers.customResponseHeaders.Referrer-Policy=no-referrer-when-downgrade
-      traefik.http.middlewares.security-headers.headers.customResponseHeaders.Content-Security-Policy=default-src 'self'; script-src 'self'; object-src 'none';
-      traefik.http.middlewares.crowdsec.plugin.crowdsec-bouncer-traefik-plugin.CrowdsecLapiKey=40796d93c2958f9e58345514e67740e5
-      traefik.http.middlewares.crowdsec.plugin.crowdsec-bouncer-traefik-plugin.Enabled="false"
+      - traefik.http.middlewares.compress.compress=true
+      - traefik.http.middlewares.security-headers.headers.frameDeny=true
+      - traefik.http.middlewares.security-headers.headers.contentTypeNosniff=true
+      - traefik.http.middlewares.security-headers.headers.browserXssFilter=true
+      - traefik.http.middlewares.security-headers.headers.stsSeconds=31536000
+      - traefik.http.middlewares.security-headers.headers.stsIncludeSubdomains=true
+      - traefik.http.middlewares.security-headers.headers.stsPreload=true
+      - traefik.http.middlewares.security-headers.headers.forceSTSHeader=true
+      - traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-Content-Type-Options=nosniff
+      - traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-Frame-Options=DENY
+      - traefik.http.middlewares.security-headers.headers.customResponseHeaders.X-XSS-Protection=1; mode=block
+      - traefik.http.middlewares.security-headers.headers.customResponseHeaders.Referrer-Policy=no-referrer-when-downgrade
+      - traefik.http.middlewares.security-headers.headers.customResponseHeaders.Content-Security-Policy=default-src 'self'; script-src 'self'; object-src 'none';
+      - traefik.http.middlewares.crowdsec.plugin.crowdsec-bouncer-traefik-plugin.CrowdsecLapiKey=40796d93c2958f9e58345514e67740e5
+      - traefik.http.middlewares.crowdsec.plugin.crowdsec-bouncer-traefik-plugin.Enabled="false"
     ports:
       - target: 80
         published: 80
