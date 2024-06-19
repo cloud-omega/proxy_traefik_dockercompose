@@ -13,21 +13,6 @@ http:
           crowdsecappsechost: "crowdsec:7422"
           crowdsecmode: "stream"
 
-    security-headers:
-      headers:
-        accessControlAllowMethods: "GET, OPTIONS, PUT, POST, PATCH"
-        accessControlMaxAge: 100
-        addVaryHeader: true
-        hostsProxyHeaders: "X-Forwarded-Host"
-        customResponseHeaders:
-          X-Content-Type-Options: "nosniff"
-          X-Frame-Options: "SAMEORIGIN"
-          X-XSS-Protection: "1; mode=block"
-          Referrer-Policy: "same-origin"
-          #Content-Security-Policy: "default-src 'unsafe-inline' https://*; frame-ancestors 'none';"
-          X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex"
-          X-Forwarded-Proto: "https"
-
 tls:
   options:
     default:

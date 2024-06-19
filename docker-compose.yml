@@ -67,6 +67,17 @@ services:
       - "traefik.frontend.headers.STSIncludeSubdomains=true"
       - "traefik.frontend.headers.STSPreload=true"
       - "traefik.frontend.headers.frameDeny=true"
+      - "traefik.frontend.headers.accessControlAllowMethods: "GET, OPTIONS, PUT, POST, PATCH"
+      - "traefik.frontend.headers.accessControlMaxAge: 100
+      - "traefik.frontend.headers.addVaryHeader: true
+      - "traefik.frontend.headers.hostsProxyHeaders: "X-Forwarded-Host"
+      - "traefik.frontend.headers.customResponseHeaders.X-Content-Type-Options: "nosniff"
+      - "traefik.frontend.headers.customResponseHeaders.X-Frame-Options: "SAMEORIGIN"
+      - "traefik.frontend.headers.customResponseHeaders.X-XSS-Protection: "1; mode=block"
+      - "traefik.frontend.headers.customResponseHeaders.Referrer-Policy: "same-origin"
+      - "traefik.frontend.headers.customResponseHeaders.X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex"
+      - "traefik.frontend.headers.customResponseHeaders.X-Forwarded-Proto: "https"
+      #- "traefik.frontend.headers.customResponseHeaders.Content-Security-Policy: "default-src 'none'; script-src 'unsafe-inline' https:; frame-ancestors 'none';"                                                                         
     depends_on:
       - crowdsec
     ports:
