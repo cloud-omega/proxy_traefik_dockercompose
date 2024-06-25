@@ -67,10 +67,10 @@ jobs:
 
       - name: Update Docker Compose
         if: always()
-        run: docker compose pull -f ${DC_FILE}
+        run: docker compose -f ${DC_FILE} pull
         
       - name: Run Docker Compose Up
-        run: docker compose up -d --wait -f ${DC_FILE}
+        run: docker compose -f ${DC_FILE} up -d --wait 
 
       - name: Views logs
-        run: docker compose logs --tail 30 -f ${DC_FILE}
+        run: docker compose -f ${DC_FILE} logs --tail 30 
