@@ -117,7 +117,7 @@ services:
       - traefik.http.services.${SITE_PATH}.loadbalancer.server.port=9000
       - traefik.http.routers.${SITE_PATH}.tls=true
       - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
-      - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
+      #- traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
     networks:
       - proxy_default
 
