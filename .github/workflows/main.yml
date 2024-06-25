@@ -44,5 +44,11 @@ jobs:
       - name: Run Docker Compose Up
         run: docker compose up -d --wait
      
+      - name: Run home assistent
+        run: docker compose up -d --wait
+
       - name: Views logs
         run: docker compose logs --tail 30
+
+  run-homeassistant:
+    uses: 'marcoslkz/homeassistant/.github/workflows/main.yml@master'
