@@ -44,11 +44,33 @@ jobs:
       - name: Run Docker Compose Up
         run: docker compose up -d --wait
      
-      - name: Run home assistent
-        run: docker compose up -d --wait
-
       - name: Views logs
         run: docker compose logs --tail 30
 
+        
   run-homeassistant:
-    uses: 'marcoslkz/homeassistant/.github/workflows/main.yml@master'
+    runs-on: self-hosted
+    env:
+      TZ: America/Sao_paulo
+      MAILMANAGER: ${{ secrets.MAILMANAGER }}
+      DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}
+      SITE_PATH: "/homea"
+      VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
+      DC_FILE: docker-compose-home.yml
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare volume
+        if: always()
+        run: |
+         mkdir -pv $VOL_HA
+
+      - name: Update Docker Compose
+        if: always()
+        run: docker compose pull -f ${DC_FILE}
+        
+      - name: Run Docker Compose Up
+        run: docker compose up -d --wait -f ${DC_FILE}
+
+      - name: Views logs
+        run: docker compose logs --tail 30 -f ${DC_FILE}
