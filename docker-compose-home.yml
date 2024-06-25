@@ -13,7 +13,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
       - traefik.frontend.entryPoints=web,websecure
-      - traefik.http.services.${SITE_PATH}.loadbalancer.server.url=http://homeassistant:8123/
+      - traefik.http.services.${SITE_PATH}.loadbalancer.server.port=8123
       - traefik.http.routers.${SITE_PATH}.tls=true
       - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
       - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`) # && PathPrefix(`${SITE_PATH}`)
