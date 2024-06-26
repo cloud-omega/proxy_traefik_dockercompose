@@ -54,7 +54,7 @@ jobs:
       TZ: America/Sao_paulo
       MAILMANAGER: ${{ secrets.MAILMANAGER }}
       DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}
-      SITE_PATH: "/homea"
+      SITE_PATH: "homea"
       VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
       DC_FILE: docker-compose-home.yml
     steps:

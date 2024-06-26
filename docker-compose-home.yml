@@ -16,7 +16,7 @@ services:
       - traefik.http.services.${SITE_PATH}.loadbalancer.server.port=8123
       - traefik.http.routers.${SITE_PATH}.tls=true
       - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
-      - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`) # && PathPrefix(`${SITE_PATH}`)
+      - traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`) # && PathPrefix(`/${SITE_PATH}`)
     networks:
       - proxy_default
     # privileged: true
