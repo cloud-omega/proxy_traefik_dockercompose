@@ -6,7 +6,7 @@ on:
 
 jobs:
   run:
-    runs-on: self-hosted
+    runs-on: self-hosted    
     env:
       TZ: America/Sao_paulo
       MAILMANAGER: ${{ secrets.MAILMANAGER }}
@@ -54,6 +54,10 @@ jobs:
       TZ: America/Sao_paulo
       MAILMANAGER: ${{ secrets.MAILMANAGER }}
       DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}
+      NOIP_URL1: ${NOIP_URL1}
+      NOIP_URL2: ${NOIP_URL2}
+      NOIP_USER: ${NOIP_USER}
+      NOIP_PASS: ${NOIP_PASS}
       SITE_PATH: "homea"
       VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
       DC_FILE: docker-compose-home.yml
@@ -70,8 +74,10 @@ jobs:
         if: always()
         run: docker compose -f ${DC_FILE} pull
         
-      - name: Run Docker Compose Up
-        run: docker compose -f ${DC_FILE} up -d --wait 
+      - name: Run Docker Compose Up 
+        run: |
+         docker compose -f ${DC_FILE} down
+         docker compose -f ${DC_FILE} up -d --wait 
 
       - name: Views logs
         run: docker compose -f ${DC_FILE} logs --tail 30 
