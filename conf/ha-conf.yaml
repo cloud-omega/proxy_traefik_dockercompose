@@ -1,0 +1,24 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 127.0.0.0/24
+    - 10.0.0.0/24
+    - 192.168.0.0/16
+    - 172.18.0.0/16
+
+no_ip:
+  domain: !env_var NOIP_URL1 localhost
+  username: !env_var NOIP_USER default_user
+  password: !env_var NOIP_PASS default_password
+  domain: !env_var NOIP_URL2 localhost
+  domain: !env_var NOIP_URL3 localhost
