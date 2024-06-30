@@ -64,6 +64,7 @@ jobs:
         if: always()
         run: |
          mkdir -pv $VOL_HA
+         cat conf/ha-noip.yaml > $VOL_HA/add.yaml
 
       - name: Update Docker Compose
         if: always()

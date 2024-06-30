@@ -1,0 +1,6 @@
+no_ip:
+  domain: !env_var NOIP_URL1 localhost
+  username: !env_var NOIP_USER default_user
+  password: !env_var NOIP_PASS default_password
+  domain: !env_var NOIP_URL2 localhost
+  domain: !env_var NOIP_URL3 localhost

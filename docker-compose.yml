@@ -77,7 +77,7 @@ services:
       - traefik.frontend.headers.customResponseHeaders.Referrer-Policy="same-origin"
       - traefik.frontend.headers.customResponseHeaders.X-Robots-Tag="none,noarchive,nosnippet,notranslate,noimageindex"
       - traefik.frontend.headers.customResponseHeaders.X-Forwarded-Proto="https"
-      #- traefik.frontend.headers.customResponseHeaders.Content-Security-Policy="default-src 'none'; script-src 'unsafe-inline' https:; frame-ancestors 'none';"                                                                         
+      #- traefik.frontend.headers.customResponseHeaders.Content-Security-Policy="default-src 'none'; script-src 'unsafe-inline' https:; frame-ancestors 'none';"
     depends_on:
       - crowdsec
     ports:
