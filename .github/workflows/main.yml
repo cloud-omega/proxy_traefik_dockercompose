@@ -54,10 +54,10 @@ jobs:
       TZ: America/Sao_paulo
       MAILMANAGER: ${{ secrets.MAILMANAGER }}
       DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}
-      NOIP_URL1: ${NOIP_URL1}
-      NOIP_URL2: ${NOIP_URL2}
-      NOIP_USER: ${NOIP_USER}
-      NOIP_PASS: ${NOIP_PASS}
+      NOIP_USER: ${{secrets.NOIP_USER}}
+      NOIP_PASS: ${{secrets.NOIP_PASS}}
+      NOIP_URL1: ${{secrets.NOIP_URL1}}
+      NOIP_URL2: ${{secrets.NOIP_URL2}}
       SITE_PATH: "homea"
       VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
       DC_FILE: docker-compose-home.yml
