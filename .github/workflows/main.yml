@@ -73,14 +73,10 @@ jobs:
       - name: Update Docker Compose
         if: always()
         run: docker compose -f ${DC_FILE} pull
-        
-      - name: Stop Docker Compose
-        if: always()
-        run: docker compose down --remove-orphans -v
-        
+       
       - name: Run Docker Compose Up 
         run: |
-         docker compose -f ${DC_FILE} down
+         docker compose -f ${DC_FILE} down --remove-orphans -v
          docker compose -f ${DC_FILE} up -d --wait 
 
       - name: Views logs
