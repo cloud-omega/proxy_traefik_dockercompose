@@ -1,0 +1,29 @@
+services:
+  portainer:
+    image: portainer/portainer-ee:latest
+    container_name: portainer
+    restart: unless-stopped
+    environment:
+      - TZ
+      - DOMAIN_NAME
+      - SITE_PATH
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.services.portainer.loadbalancer.server.port=9000
+      - traefik.http.routers.portainer.tls=true
+      - traefik.http.routers.portainer.tls.certresolver=letsencrypt
+      - traefik.http.routers.portainer.rule=Host(`${DOMAIN_NAME}`)
+    networks:
+      - proxy_default
+      
+volumes:
+  portainer_data:
+     driver_opts:
+           type: none
+           device: ${VOL_PORTAINER}
+           o: bind

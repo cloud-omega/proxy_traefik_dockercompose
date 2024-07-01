@@ -6,13 +6,11 @@ services:
       - proxy_default
     labels:
       - traefik.enable=true
-      - traefik.http.routers.n8n.rule=Host(`${DOMAIN_NAME}`)
+      - traefik.http.routers.n8n.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`/n8n{regex:$$|/.*}`)
       - traefik.http.routers.n8n.tls=true
       - traefik.http.routers.n8n.entrypoints=websecure
-      - 'traefik.http.routers.n8n.rule=PathPrefix(`/n8n{regex:$$|/.*}`)'
-      - 'traefik.http.middlewares.n8n-stripprefix.stripprefix.prefixes=/n8n'
-      - 'traefik.http.routers.n8n.middlewares=n8n-stripprefix'
-      - traefik.http.routers.n8n.tls.certresolver=mytlschallenge
+      - traefik.http.middlewares.n8n-stripprefix.stripprefix.prefixes=/n8n
+      - traefik.http.routers.n8n.middlewares=n8n-stripprefix
       - traefik.http.middlewares.n8n.headers.SSLRedirect=true
       - traefik.http.middlewares.n8n.headers.STSSeconds=315360000
       - traefik.http.middlewares.n8n.headers.browserXSSFilter=true

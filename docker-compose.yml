@@ -9,8 +9,9 @@ networks:
     external: true
 
 include:
-  - compose-n8n.yml
-  - compose-home.yml
+  - compose/n8n.yml
+  - compose/homeassistant.yml
+  #- compose/portainer.yml
 
 services:
   crowdsec:
@@ -103,28 +104,6 @@ services:
     networks:
       - proxy_default
 
-  portainer:
-    image: portainer/portainer-ee:latest
-    container_name: portainer
-    restart: unless-stopped
-    environment:
-      - TZ
-      - DOMAIN_NAME
-      - SITE_PATH
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=proxy_default
-      - traefik.frontend.entryPoints=web,websecure
-      - traefik.http.services.${SITE_PATH}.loadbalancer.server.port=9000
-      - traefik.http.routers.${SITE_PATH}.tls=true
-      - traefik.http.routers.${SITE_PATH}.tls.certresolver=letsencrypt
-      #- traefik.http.routers.${SITE_PATH}.rule=Host(`${DOMAIN_NAME}`)
-    networks:
-      - proxy_default
-
 volumes:
   accesslog:
   crowdsec_db:
@@ -141,9 +120,4 @@ volumes:
      driver_opts:
            type: none
            device: ${VOL_PROXY}
-           o: bind
-  portainer_data:
-     driver_opts:
-           type: none
-           device: ${VOL_PORTAINER}
            o: bind
