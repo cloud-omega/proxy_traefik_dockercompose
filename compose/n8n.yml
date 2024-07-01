@@ -6,9 +6,12 @@ services:
       - proxy_default
     labels:
       - traefik.enable=true
-      - traefik.http.routers.n8n.rule=Host(`${DYNV6_SITE1}`)
+      - traefik.docker.network=proxy_default
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.services.n8n.loadbalancer.server.port=5678
       - traefik.http.routers.n8n.tls=true
-      - traefik.http.routers.n8n.entrypoints=websecure
+      - traefik.http.routers.n8n.tls.certresolver=letsencrypt
+      - traefik.http.routers.n8n.rule=Host(`${DOMAIN_NAME}`) # && PathPrefix(`/n8n`)
     environment:
       - N8N_HOST=${DYNV6_SITE1}
       - N8N_PORT=5678
