@@ -6,9 +6,7 @@ services:
       - proxy_default
     labels:
       - traefik.enable=true
-      - traefik.http.routers.n8n.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`/n8n{regex:$$|/.*}`)
-      - traefik.http.middlewares.n8n-stripprefix.stripprefix.prefixes=/n8n
-      - traefik.http.routers.n8n.middlewares=n8n-stripprefix
+      - traefik.http.routers.n8n.rule=Host(`${DYNV6_SITE1}`)
       - traefik.http.routers.n8n.tls=true
       - traefik.http.routers.n8n.entrypoints=websecure
       - traefik.http.middlewares.n8n.headers.SSLRedirect=true
@@ -16,16 +14,14 @@ services:
       - traefik.http.middlewares.n8n.headers.browserXSSFilter=true
       - traefik.http.middlewares.n8n.headers.contentTypeNosniff=true
       - traefik.http.middlewares.n8n.headers.forceSTSHeader=true
-      - traefik.http.middlewares.n8n.headers.SSLHost=${DOMAIN_NAME}
+      - traefik.http.middlewares.n8n.headers.SSLHost=${DYNV6_SITE1}
       - traefik.http.middlewares.n8n.headers.STSIncludeSubdomains=true
       - traefik.http.middlewares.n8n.headers.STSPreload=true
     environment:
-      - N8N_HOST=${DOMAIN_NAME}
+      - N8N_HOST=${DYNV6_SITE1}
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
       - NODE_ENV=production
-      - N8N_PATH=/n8n
-      - WEBHOOK_URL=https://${DOMAIN_NAME}/n8n
       - GENERIC_TIMEZONE=${TZ}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
