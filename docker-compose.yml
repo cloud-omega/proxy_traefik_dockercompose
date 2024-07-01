@@ -55,11 +55,11 @@ services:
       - --entrypoints.websecure.http3
       - --entrypoints.websecure.http.middlewares=compress@file,crowdsec@file${TRAEFIK_PLUGINS:-}
       - --log.level=INFO
-      - --accesslog
+      - --accesslog=true
       - --accesslog.filepath=/var/log/traefik/access.log
       - --providers.file.filename=/data/traefik.yml
-      #- --api.dashboard=true
-      # - --api.insecure=true
+      - --api.dashboard=true
+      - --api.insecure=true
       ## plugins
       - --experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
       - --experimental.plugins.bouncer.version=v1.3.2
