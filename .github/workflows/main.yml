@@ -37,9 +37,9 @@ jobs:
         if: always()
         run: docker compose pull
 
-      #- name: Stop Docker Compose
-      #  if: always()
-      #  run: docker compose down --remove-orphans
+      - name: Stop Docker Compose
+        if: always()
+        run: docker compose down --remove-orphans
         
       - name: Run Docker Compose Up
         run: docker compose up -d --wait

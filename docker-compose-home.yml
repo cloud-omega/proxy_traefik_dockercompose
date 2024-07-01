@@ -1,3 +1,5 @@
+include:
+  - compose-n8n.yml
 services:
   homeassistant:
     image: 'ghcr.io/home-assistant/home-assistant:${HOME_ASSISTANT_IMAGE_VERSION:-stable}'
