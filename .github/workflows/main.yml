@@ -17,6 +17,12 @@ jobs:
       VOL_CROWDSECDB: ${{ secrets.VOL_PROXY }}/crowdsec_data
       VOL_CROWDSECETC: ${{ secrets.VOL_PROXY }}/crowdsec_etc
       CROWDSEC_TRAEFIK: ${{ secrets.CROWDSEC_TRAEFIK }}
+      NOIP_USER: ${{secrets.NOIP_USER}}
+      NOIP_PASS: ${{secrets.NOIP_PASS}}
+      NOIP_URL1: ${{secrets.NOIP_URL1}}
+      NOIP_URL2: ${{secrets.NOIP_URL2}}
+      VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
+      VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
     steps:
       - uses: actions/checkout@v3
 
@@ -27,7 +33,8 @@ jobs:
       - name: Prepare volume
         if: always()
         run: |
-         mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_PROXY/n8n
+         mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_N8N $VOL_HA
+         cat conf/ha-conf.yaml > $VOL_HA/configuration.yaml
          sed -i "s,replace-me,${CROWDSEC_TRAEFIK},g" traefik.yml
          sed -i "s,REPLACE_DOMAIN,${DOMAIN_NAME},g" traefik.yml         
          cp -fv traefik.yml $VOL_PROXY
@@ -46,38 +53,3 @@ jobs:
      
       - name: Views logs
         run: docker compose logs --tail 30
-
-        
-  run-homeassistant:
-    runs-on: self-hosted
-    env:
-      TZ: America/Sao_paulo
-      MAILMANAGER: ${{ secrets.MAILMANAGER }}
-      DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}
-      NOIP_USER: ${{secrets.NOIP_USER}}
-      NOIP_PASS: ${{secrets.NOIP_PASS}}
-      NOIP_URL1: ${{secrets.NOIP_URL1}}
-      NOIP_URL2: ${{secrets.NOIP_URL2}}
-      SITE_PATH: "homea"
-      VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
-      DC_FILE: docker-compose-home.yml
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Prepare volume
-        if: always()
-        run: |
-         mkdir -pv $VOL_HA
-         cat conf/ha-conf.yaml > $VOL_HA/configuration.yaml
-
-      - name: Update Docker Compose
-        if: always()
-        run: docker compose -f ${DC_FILE} pull
-       
-      - name: Run Docker Compose Up 
-        run: |
-         docker compose -f ${DC_FILE} down --remove-orphans -v
-         docker compose -f ${DC_FILE} up -d --wait 
-
-      - name: Views logs
-        run: docker compose -f ${DC_FILE} logs --tail 30 

@@ -10,6 +10,7 @@ networks:
 
 include:
   - compose-n8n.yml
+  - compose-home.yml
 
 services:
   crowdsec:

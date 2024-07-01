@@ -2,6 +2,8 @@ services:
   n8n:
     image: docker.n8n.io/n8nio/n8n
     #ports:      - '127.0.0.1:5678:5678'
+    networks:
+      - proxy_default
     labels:
       - traefik.enable=true
       - traefik.http.routers.n8n.rule=Host(`${DOMAIN_NAME}`)
@@ -35,5 +37,9 @@ volumes:
   n8nconf:
     driver_opts:
       type: none
-      device: ${VOL_PROXY}/n8n
+      device: ${VOL_N8N}
       o: bind
+
+networks:
+  proxy_default:
+    external: true
