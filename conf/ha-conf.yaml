@@ -14,11 +14,9 @@ http:
     - 127.0.0.0/24
     - 10.0.0.0/24
     - 192.168.0.0/16
-    - 172.18.0.0/16
 
 no_ip:
-  domain: !env_var NOIP_URL1 localhost
-  username: !env_var NOIP_USER default_user
-  password: !env_var NOIP_PASS default_password
-  domain: !env_var NOIP_URL2 localhost
-  domain: !env_var NOIP_URL3 localhost
+  domain: !env_var NOIP_URL1
+  username: !env_var NOIP_USER
+  password: !env_var NOIP_PASS
+#  domain: !env_var NOIP_URL2
