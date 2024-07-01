@@ -6,7 +6,7 @@ services:
       - proxy_default
     labels:
       - traefik.enable=true
-      - traefik.http.routers.n8n.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`/n8n{regex:$$|/.*}`)
+      - traefik.http.routers.n8n.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`/n8n/{regex:$$|/.*}`)
       - traefik.http.routers.n8n.tls=true
       - traefik.http.routers.n8n.entrypoints=websecure
       - traefik.http.middlewares.n8n.headers.SSLRedirect=true
