@@ -27,7 +27,7 @@ jobs:
       - name: Prepare volume
         if: always()
         run: |
-         mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC
+         mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_PROXY/n8n
          sed -i "s,replace-me,${CROWDSEC_TRAEFIK},g" traefik.yml
          sed -i "s,REPLACE_DOMAIN,${DOMAIN_NAME},g" traefik.yml         
          cp -fv traefik.yml $VOL_PROXY
