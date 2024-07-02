@@ -20,7 +20,7 @@ services:
       - traefik.http.services.homeass.loadbalancer.server.port=8123
       - traefik.http.routers.homeass.tls=true
       - traefik.http.routers.homeass.tls.certresolver=letsencrypt
-      - traefik.http.routers.homeass.rule=Host(`${DOMAIN_NAME}`) # && PathPrefix(`/homeass`)
+      - traefik.http.routers.homeass.rule=Host(`${NOIP_URL2}`) # && PathPrefix(`/homeass`)
     networks:
       - proxy_default
     # privileged: true
