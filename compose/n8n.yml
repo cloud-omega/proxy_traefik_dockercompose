@@ -4,6 +4,7 @@ services:
     #ports:      - '127.0.0.1:5678:5678'
     networks:
       - proxy_default
+    container_name: n8n
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy_default

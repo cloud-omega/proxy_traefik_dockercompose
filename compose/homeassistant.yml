@@ -11,6 +11,7 @@ services:
       NOIP_URL2: ${NOIP_URL2}
       NOIP_USER: ${NOIP_USER}
       NOIP_PASS: ${NOIP_PASS}
+    container_name: homeassistant
     healthcheck:
       test: "curl --fail http://localhost:8123/ || exit 1"
     labels:
