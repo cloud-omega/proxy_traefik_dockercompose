@@ -21,6 +21,8 @@ jobs:
       NOIP_PASS: ${{secrets.NOIP_PASS}}
       NOIP_URL1: ${{secrets.NOIP_URL1}}
       NOIP_URL2: ${{secrets.NOIP_URL2}}
+      DYNU_SITE1: ${{secrets.DYNU_SITE1}}
+      DYNU_SITE2: ${{secrets.DYNU_SITE2}}
       DYNV6_SITE1: ${{secrets.DYNV6_SITE1}}
       DYNV6_SITE2: ${{secrets.DYNV6_SITE2}}
       VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
