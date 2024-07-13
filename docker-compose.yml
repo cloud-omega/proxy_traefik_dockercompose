@@ -55,6 +55,7 @@ services:
       - --entrypoints.websecure.http3
       - --entrypoints.websecure.http.middlewares=compress@file,crowdsec@file${TRAEFIK_PLUGINS:-}
       - --log.level=INFO
+      - --log.filePath=/var/log/traefik/traefik.log
       - --accesslog=true
       - --accesslog.filepath=/var/log/traefik/access.log
       - --providers.file.filename=/data/traefik.yml
