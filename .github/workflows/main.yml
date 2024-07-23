@@ -17,6 +17,8 @@ jobs:
       VOL_CROWDSECDB: ${{ secrets.VOL_PROXY }}/crowdsec_data
       VOL_CROWDSECETC: ${{ secrets.VOL_PROXY }}/crowdsec_etc
       CROWDSEC_TRAEFIK: ${{ secrets.CROWDSEC_TRAEFIK }}
+      FILE_PPTP: ${{ secrets.VOL_PROXY }}/pptp_user
+
       NOIP_USER: ${{secrets.NOIP_USER}}
       NOIP_PASS: ${{secrets.NOIP_PASS}}
       NOIP_URL1: ${{secrets.NOIP_URL1}}
@@ -34,7 +36,7 @@ jobs:
       #  run: |
       #    echo "$DOCKER_HUB_USERNAME:$DOCKER_HUB_PASSWORD" | docker login --username --password-stdin
 
-      - name: Prepare volume
+      - name: Prepare volumes
         if: always()
         run: |
          mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_N8N $VOL_HA
@@ -43,6 +45,7 @@ jobs:
          sed -i "s,REPLACE_DOMAIN,${DOMAIN_NAME},g" conf/traefik.yml         
          cp -fv conf/traefik.yml $VOL_PROXY
          cp -fv conf/acquis.yaml $VOL_CROWDSECETC
+         echo "${NOIP_USER} * ${NOIP_PASS} *" > /root/chap-secrets
 
       - name: Update Docker Compose
         if: always()
@@ -54,6 +57,8 @@ jobs:
         
       - name: Run Docker Compose Up
         run: docker compose up -d --wait
-     
+        
       - name: Views logs
         run: docker compose logs --tail 30
+        
+        
