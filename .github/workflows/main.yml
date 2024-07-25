@@ -30,7 +30,12 @@ jobs:
       VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
       VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            docker-compose.yml
+            compose
+            conf
 
       #- name: Login to Docker Hub (optional)
       #  run: |
