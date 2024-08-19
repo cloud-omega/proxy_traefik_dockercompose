@@ -30,6 +30,18 @@ jobs:
       VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
       VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
     steps:
+      - name: action-docs
+        uses: Dirrk/action-docs@v1.0.1
+        with:
+          # Directory that contains the action.yml and README.md
+          action_docs_working_dir: .github/workflows/ # optional, default is .
+          # Template file to use for rendering the markdown docs
+          #action_docs_template_file: # optional, default is /src/default_template.tpl
+          # If true it will commit and push the changes
+          #action_docs_git_push: # optional, default is true
+          # Commit message
+          #action_docs_git_commit_message: # optional, default is action-docs: automated action
+          
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
