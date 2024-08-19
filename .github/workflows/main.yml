@@ -8,8 +8,21 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v3
-
+      - name: action-docs
+        # You may pin to the exact commit or the version.
+        # uses: Dirrk/action-docs@906c7f75086b9f59db950c7e964c97d1b92acbc3
+        uses: Dirrk/action-docs@v1.0.1
+        #with:
+          # Directory that contains the action.yml and README.md
+          #action_docs_working_dir: # optional, default is .
+          # Template file to use for rendering the markdown docs
+          #action_docs_template_file: # optional, default is /src/default_template.tpl
+          # If true it will commit and push the changes
+          #action_docs_git_push: # optional, default is true
+          # Commit message
+          #action_docs_git_commit_message: # optional, default is action-docs: automated action
+          
+      - uses: actions/checkout@v4
       - name: Login to Docker Hub (optional)
         if: secrets.DOCKER_HUB_USERNAME
         run: |
