@@ -75,8 +75,12 @@ jobs:
       #  if: always()
       #  run: docker compose down --remove-orphans -v
         
+      - name: Env file
+        run: printenv > $VOL_PROXY/.env
+
+
       - name: Run Docker Compose Up
-        run: docker compose up -d --wait
+        run: docker compose up -d --wait --recreate
         
       - name: Views logs
         run: docker compose logs --tail 30
