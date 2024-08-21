@@ -21,7 +21,7 @@ services:
       - WEBHOOK_URL=https://${DYNU_SITE1}/
       - GENERIC_TIMEZONE=${TZ}
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - n8nconf:/home/node/.n8n
 
 volumes:

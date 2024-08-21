@@ -5,14 +5,14 @@ on:
     branches: [ production ]
 
 jobs:
-  readme:
-    runs-on: self-hosted
-    steps:
-        - name: action-docs
-          uses: Dirrk/action-docs@v1.0.1
-          with:
+  #readme:
+    #runs-on: self-hosted
+    #steps:
+        #- name: action-docs
+          #uses: Dirrk/action-docs@v1.0.1
+          #with:
             # Directory that contains the action.yml and README.md
-            action_docs_working_dir: .github/workflows # optional, default is .
+            #action_docs_working_dir: .github/workflows # optional, default is .
             # Template file to use for rendering the markdown docs
             #action_docs_template_file: # optional, default is /src/default_template.tpl
             # If true it will commit and push the changes
@@ -71,9 +71,9 @@ jobs:
         if: always()
         run: docker compose pull
 
-      - name: Stop Docker Compose
-        if: always()
-        run: docker compose down --remove-orphans -v
+      #- name: Stop Docker Compose
+      #  if: always()
+      #  run: docker compose down --remove-orphans -v
         
       - name: Run Docker Compose Up
         run: docker compose up -d --wait
