@@ -18,9 +18,15 @@ services:
     image: crowdsecurity/crowdsec
     container_name: crowdsec
     environment:
-      COLLECTIONS: crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
-      CUSTOM_HOSTNAME: crowdsec
+      TZ: ${TZ}
       BOUNCER_KEY_TRAEFIK: ${CROWDSEC_TRAEFIK}
+      COLLECTIONS: crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
+      #DISABLE_COLLECTIONS: crowdsecurity/http-probing crowdsecurity/http-crawl-non_statics
+      POSTOVERFLOWS: crowdsecurity/seo-bots-whitelist
+      PARSERS: crowdsecurity/whitelists
+      ENROLL_KEY: clz0k6fyn0007lg089m9g8g17
+      #ENROLL_INSTANCE_NAME:	${RUNNER_NAME}
+      ENROLL_TAGS: docker
     volumes:
       - crowdsec_db:/var/lib/crowdsec/data
       - crowdsec_etc:/etc/crowdsec
@@ -122,3 +128,6 @@ volumes:
            type: none
            device: ${VOL_PROXY}
            o: bind
+           
+           
+ 
