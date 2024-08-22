@@ -83,5 +83,11 @@ jobs:
         
       - name: Views logs
         run: docker compose logs --tail 30
+      - name: crowdsec update
+        run: |
+          docker compose exec crowdsec cscli hub update
+          docker compose exec crowdsec cscli hub upgrade
+          docker compose up -d
+
         
         
