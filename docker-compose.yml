@@ -27,8 +27,8 @@ services:
       ENROLL_KEY: clz0k6fyn0007lg089m9g8g17
       #ENROLL_INSTANCE_NAME:	${RUNNER_NAME}
       ENROLL_TAGS: docker
-      healthcheck:  
-        test: ["CMD", "cscli", "capi", "status"]
+    healthcheck:
+      test: ["CMD", "cscli", "capi", "status"]
     volumes:
       - crowdsec_db:/var/lib/crowdsec/data
       - crowdsec_etc:/etc/crowdsec
