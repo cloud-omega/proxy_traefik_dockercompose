@@ -78,9 +78,8 @@ jobs:
       - name: Env file
         run: printenv > $VOL_PROXY/.env
 
-
       - name: Run Docker Compose Up
-        run: docker compose up -d --wait --recreate
+        run: docker compose up -d --wait --force-recreate
         
       - name: Views logs
         run: docker compose logs --tail 30
