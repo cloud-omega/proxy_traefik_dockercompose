@@ -130,6 +130,3 @@ volumes:
            type: none
            device: ${VOL_PROXY}
            o: bind
-           
-           
- 
