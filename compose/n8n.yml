@@ -12,13 +12,13 @@ services:
       - traefik.http.services.n8n.loadbalancer.server.port=5678
       - traefik.http.routers.n8n.tls=true
       - traefik.http.routers.n8n.tls.certresolver=letsencrypt
-      - traefik.http.routers.n8n.rule=Host(`${DYNU_SITE1}`) # && PathPrefix(`/n8n`)
+      - traefik.http.routers.n8n.rule=Host(`${NOIP_URL3}`) # && PathPrefix(`/n8n`)
     environment:
-      - N8N_HOST=${DYNU_SITE1}
+      - N8N_HOST=${NOIP_URL3}
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
       - NODE_ENV=production
-      - WEBHOOK_URL=https://${DYNU_SITE1}/
+      - WEBHOOK_URL=https://${NOIP_URL3}/
       - GENERIC_TIMEZONE=${TZ}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
