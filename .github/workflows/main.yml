@@ -87,7 +87,5 @@ jobs:
         run: |
           docker compose exec crowdsec cscli hub update
           docker compose exec crowdsec cscli hub upgrade
-          docker compose up -d
-
-        
+          docker compose up -d     
         
