@@ -19,7 +19,7 @@ services:
       - N8N_PROTOCOL=https
       - NODE_ENV=production
       - WEBHOOK_URL=https://psy.serveblog.net/
-      - GENERIC_TIMEZONE=${TZ}
+      - GENERIC_TIMEZONE="${TZ}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - n8nconf:/home/node/.n8n
