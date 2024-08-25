@@ -44,6 +44,9 @@ jobs:
       DYNV6_SITE2: ${{secrets.DYNV6_SITE2}}
       VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
       VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
+      UID: 1001
+      GID: 1001
+
     steps:
       - uses: actions/checkout@v4
         with:
