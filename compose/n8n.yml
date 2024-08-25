@@ -25,6 +25,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - n8nconf:/home/node/.n8n
 
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    user: "${UID}:${GID}"
+
 volumes:
   n8nconf:
     driver_opts:
