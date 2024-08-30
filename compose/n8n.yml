@@ -96,11 +96,9 @@ services:
 
   ollama-cpu:
     <<: *service-ollama
-
-  ollama-pull-llama-cpu:
-    <<: *init-ollama
-    depends_on:
-      - ollama-cpu
+    healthcheck:
+        #test: ["CMD-SHELL", "ollama pull ${OLLAMA_MODEL} || exit 1"]
+        test: ["CMD-SHELL", "ollama list || exit 1"]
       
   gotenberg:
     image: gotenberg/gotenberg:8
