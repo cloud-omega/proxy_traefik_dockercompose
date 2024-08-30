@@ -1,6 +1,3 @@
-include:
-  - https://raw.githubusercontent.com/n8n-io/self-hosted-ai-starter-kit/main/docker-compose.yml
-
 networks:
   demo:
 
@@ -45,25 +42,6 @@ x-n8n: &service-n8n
     - traefik.http.routers.n8n.tls.certresolver=letsencrypt
     - traefik.http.routers.n8n.rule=Host(`psy.serveblog.net`) # && PathPrefix(`/n8n`)
 
-x-ollama: &service-ollama
-  image: ollama/ollama:latest
-  container_name: ollama
-  networks: ['demo']
-  restart: unless-stopped
-  volumes:
-    - ollama_storage:/root/.ollama
-
-x-init-ollama: &init-ollama
-  image: ollama/ollama:latest
-  networks: ['demo']
-  container_name: ollama-pull-llama
-  volumes:
-    - ollama_storage:/root/.ollama
-  entrypoint: /bin/sh
-  command:
-    - "-c"
-    - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull llama3.1"
-
 services:
   n8n-import:
     <<: *service-n8n
@@ -98,16 +76,26 @@ services:
       - qdrant_storage:/qdrant/storage
 
   ollama-cpu:
-    <<: *service-ollama
-
-  ollama-pull-llama-cpu:
-    <<: *init-ollama
-    depends_on:
-      - ollama-cpu
-      
+    image: ollama/ollama:latest
+    environment:
+      - OLLAMA_MAX_LOADED=1
+      - OLLAMA_NUM_THREADS=2
+      - OLLAMA_CUDA=0
+      - OLLAMA_MODELS=llama3.1
+    container_name: ollama
+    networks: ['demo']
+    restart: unless-stopped
+    volumes:
+      - ollama_storage:/root/.ollama
+    healthcheck:
+        #test: ["CMD-SHELL", "ollama pull ${OLLAMA_MODEL} || exit 1"]
+        test: ["CMD-SHELL", "ollama list || exit 1"]
+    #entrypoint: /bin/sh
+    #command:      - "-c"      - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull llama3.1; "
+    
   gotenberg:
     image: gotenberg/gotenberg:8
     environment:
-      UID=1001
-      GID=1001
+      - UID=${UID}
+      - GID=${GID}
     #ports:      - "3000:3000"

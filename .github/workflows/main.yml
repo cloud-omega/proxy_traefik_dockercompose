@@ -1,7 +1,9 @@
 name: Docker Compose Up for Production
 
-
-on: push
+on:
+  push:
+    branches:
+      - main
 permissions:
   contents: write
 
@@ -24,7 +26,7 @@ jobs:
   run:
     runs-on: self-hosted    
     env:
-      TZ: America/Sao_paulo
+      TZ: ${{ secrets.TZ }}
       MAILMANAGER: ${{ secrets.MAILMANAGER }}
       SITE_PATH: ${{ secrets.PORTAINER_PATH }}
       DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}
@@ -32,9 +34,9 @@ jobs:
       VOL_PORTAINER: ${{ secrets.VOL_PORTAINER }}
       VOL_CROWDSECDB: ${{ secrets.VOL_PROXY }}/crowdsec_data
       VOL_CROWDSECETC: ${{ secrets.VOL_PROXY }}/crowdsec_etc
+      VOL_OLLAMA: ${{ secrets.VOL_OLLAMA }}
       CROWDSEC_TRAEFIK: ${{ secrets.CROWDSEC_TRAEFIK }}
       FILE_PPTP: ${{ secrets.VOL_PROXY }}/pptp_user
-
       NOIP_USER: ${{secrets.NOIP_USER}}
       NOIP_PASS: ${{secrets.NOIP_PASS}}
       NOIP_URL1: ${{secrets.NOIP_URL1}}
