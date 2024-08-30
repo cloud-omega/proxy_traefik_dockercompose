@@ -42,24 +42,7 @@ x-n8n: &service-n8n
     - traefik.http.routers.n8n.tls.certresolver=letsencrypt
     - traefik.http.routers.n8n.rule=Host(`psy.serveblog.net`) # && PathPrefix(`/n8n`)
 
-x-ollama: &service-ollama
-  image: ollama/ollama:latest
-  container_name: ollama
-  networks: ['demo']
-  restart: unless-stopped
-  volumes:
-    - ollama_storage:/root/.ollama
 
-x-init-ollama: &init-ollama
-  image: ollama/ollama:latest
-  networks: ['demo']
-  container_name: ollama-pull-llama
-  volumes:
-    - ollama_storage:/root/.ollama
-  entrypoint: /bin/sh
-  command:
-    - "-c"
-    - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull llama3.1"
 
 services:
   n8n-import:
@@ -95,11 +78,20 @@ services:
       - qdrant_storage:/qdrant/storage
 
   ollama-cpu:
-    <<: *service-ollama
+    image: ollama/ollama:latest
+    environment:
+      - OLLAMA_MAX_LOADED=1
+    container_name: ollama
+    networks: ['demo']
+    restart: unless-stopped
+    volumes:
+      - ollama_storage:/root/.ollama
     healthcheck:
         #test: ["CMD-SHELL", "ollama pull ${OLLAMA_MODEL} || exit 1"]
         test: ["CMD-SHELL", "ollama list || exit 1"]
-      
+    #entrypoint: /bin/sh
+    #command:      - "-c"      - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull llama3.1; "
+    
   gotenberg:
     image: gotenberg/gotenberg:8
     environment:
