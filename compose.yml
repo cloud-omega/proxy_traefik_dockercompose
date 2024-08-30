@@ -9,6 +9,7 @@ networks:
     external: true
 
 include:
+  - compose/watchtower.yml
   - compose/n8n.yml
   - compose/homeassistant.yml
   #- compose/portainer.yml
