@@ -81,6 +81,7 @@ services:
       - OLLAMA_MAX_LOADED=1
       - OLLAMA_NUM_THREADS=2
       - OLLAMA_CUDA=0
+      - OLLAMA_MODELS=llama3.1
     container_name: ollama
     networks: ['demo']
     restart: unless-stopped
