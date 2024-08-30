@@ -1,6 +1,3 @@
-include:
-  - https://raw.githubusercontent.com/n8n-io/self-hosted-ai-starter-kit/main/docker-compose.yml
-
 networks:
   demo:
 
