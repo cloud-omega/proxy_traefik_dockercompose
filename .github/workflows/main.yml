@@ -1,8 +1,9 @@
 name: Docker Compose Up for Production
 
-on:
-  push:
-    branches: [ production ]
+
+on: push
+permissions:
+  contents: write
 
 jobs:
   #readme:
