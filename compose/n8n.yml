@@ -105,6 +105,6 @@ services:
   gotenberg:
     image: gotenberg/gotenberg:8
     environment:
-      UID=1001
-      GID=1001
+      - UID=${UID}
+      - GID=${GID}
     #ports:      - "3000:3000"
