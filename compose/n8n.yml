@@ -14,9 +14,8 @@ volumes:
   ollama_storage:
     driver_opts:
       type: none
-      device: ${VOL_N8N}
+      device: ${VOL_OLLAMA}
       o: bind  
-  /opt/files/ollama/
   qdrant_storage:
       
 x-n8n: &service-n8n
