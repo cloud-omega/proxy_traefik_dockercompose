@@ -9,8 +9,7 @@ volumes:
     driver_opts:
       type: none
       device: ${VOL_N8N}
-      o: bind      
-  n8n_storage:
+      o: bind    
   ollama_storage:
     driver_opts:
       type: none
@@ -21,15 +20,6 @@ volumes:
 x-n8n: &service-n8n
   image: n8nio/n8n:latest
   environment:
-    - DB_TYPE=postgresdb
-    - DB_POSTGRESDB_HOST=postgres
-    - DB_POSTGRESDB_USER=${POSTGRES_USER}
-    - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
-    - N8N_DIAGNOSTICS_ENABLED=false
-    - N8N_PERSONALIZATION_ENABLED=false
-    - N8N_ENCRYPTION_KEY
-    - N8N_USER_MANAGEMENT_JWT_SECRET
-  environment:
     - TZ
     - N8N_HOST=psy.serveblog.net
     - N8N_PORT=5678
@@ -39,8 +29,6 @@ x-n8n: &service-n8n
     - GENERIC_TIMEZONE="${TZ}"
     - N8N_DIAGNOSTICS_ENABLED=false
     - N8N_PERSONALIZATION_ENABLED=false
-    - N8N_ENCRYPTION_KEY
-    - N8N_USER_MANAGEMENT_JWT_SECRET
   networks:
     - proxy_default
     - demo
@@ -116,3 +104,10 @@ services:
     <<: *init-ollama
     depends_on:
       - ollama-cpu
+      
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    environment:
+      UID=1001
+      GID=1001
+    #ports:      - "3000:3000"
