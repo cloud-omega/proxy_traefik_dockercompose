@@ -42,8 +42,6 @@ x-n8n: &service-n8n
     - traefik.http.routers.n8n.tls.certresolver=letsencrypt
     - traefik.http.routers.n8n.rule=Host(`psy.serveblog.net`) # && PathPrefix(`/n8n`)
 
-
-
 services:
   n8n-import:
     <<: *service-n8n
@@ -81,6 +79,8 @@ services:
     image: ollama/ollama:latest
     environment:
       - OLLAMA_MAX_LOADED=1
+      - OLLAMA_NUM_THREADS=2
+      - OLLAMA_CUDA=0
     container_name: ollama
     networks: ['demo']
     restart: unless-stopped
