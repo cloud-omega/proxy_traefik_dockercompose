@@ -1,0 +1,38 @@
+services:
+  n8n:
+    image: n8nio/n8n
+    #ports:      - '127.0.0.1:5678:5678'
+    networks:
+      - proxy_default
+    container_name: n8n
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.services.n8n.loadbalancer.server.port=5678
+      - traefik.http.routers.n8n.tls=true
+      - traefik.http.routers.n8n.tls.certresolver=letsencrypt
+      - traefik.http.routers.n8n.rule=Host(`psy.serveblog.net`) # && PathPrefix(`/n8n`)
+    environment:
+      - TZ
+      - N8N_HOST=psy.serveblog.net
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://psy.serveblog.net/
+      - GENERIC_TIMEZONE="${TZ}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - n8nconf:/home/node/.n8n
+
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    user: "${UID}:${GID}"
+
+volumes:
+  n8nconf:
+    driver_opts:
+      type: none
+      device: ${VOL_N8N}
+      o: bind
+      

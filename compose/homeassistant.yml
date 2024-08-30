@@ -1,0 +1,35 @@
+services:
+  homeassistant:
+    image: 'ghcr.io/home-assistant/home-assistant:${HOME_ASSISTANT_IMAGE_VERSION:-stable}'
+    # devices: # For passing through USB, serial or gpio devices.
+    # - '/dev/ttyUSB0:/dev/ttyUSB0'
+    environment:
+      TZ: ${TZ}
+      GUID: 1000
+      PUID: 1000
+      NOIP_URL1: ${NOIP_URL1}
+      NOIP_URL2: ${NOIP_URL2}
+      NOIP_USER: ${NOIP_USER}
+      NOIP_PASS: ${NOIP_PASS}
+    container_name: homeassistant
+    healthcheck:
+      test: "curl --fail http://localhost:8123/ || exit 1"
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.services.homeass.loadbalancer.server.port=8123
+      - traefik.http.routers.homeass.tls=true
+      - traefik.http.routers.homeass.tls.certresolver=letsencrypt
+      - traefik.http.routers.homeass.rule=Host(`${NOIP_URL2}`) # && PathPrefix(`/homeass`)
+    networks:
+      - proxy_default
+    # privileged: true
+    restart: 'always'
+    volumes:
+      - '${VOL_HA}:/config'
+      - '/etc/localtime:/etc/localtime:ro'
+
+networks:
+  proxy_default:
+    external: true

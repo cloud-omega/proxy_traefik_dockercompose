@@ -5,35 +5,90 @@ on:
     branches: [ production ]
 
 jobs:
-  build:
-    runs-on: self-hosted
-    steps:
-      - name: action-docs
-        # You may pin to the exact commit or the version.
-        # uses: Dirrk/action-docs@906c7f75086b9f59db950c7e964c97d1b92acbc3
-        uses: Dirrk/action-docs@v1.0.1
-        #with:
-          # Directory that contains the action.yml and README.md
-          #action_docs_working_dir: # optional, default is .
-          # Template file to use for rendering the markdown docs
-          #action_docs_template_file: # optional, default is /src/default_template.tpl
-          # If true it will commit and push the changes
-          #action_docs_git_push: # optional, default is true
-          # Commit message
-          #action_docs_git_commit_message: # optional, default is action-docs: automated action
+  #readme:
+    #runs-on: self-hosted
+    #steps:
+        #- name: action-docs
+          #uses: Dirrk/action-docs@v1.0.1
+          #with:
+            # Directory that contains the action.yml and README.md
+            #action_docs_working_dir: .github/workflows # optional, default is .
+            # Template file to use for rendering the markdown docs
+            #action_docs_template_file: # optional, default is /src/default_template.tpl
+            # If true it will commit and push the changes
+            #action_docs_git_push: # optional, default is true
+            # Commit message
+            #action_docs_git_commit_message: # optional, default is action-docs: automated action
           
-      - uses: actions/checkout@v4
-      - name: Login to Docker Hub (optional)
-        if: secrets.DOCKER_HUB_USERNAME
-        run: |
-          echo "$DOCKER_HUB_USERNAME:$DOCKER_HUB_PASSWORD" | docker login --username --password-stdin
+  run:
+    runs-on: self-hosted    
+    env:
+      TZ: America/Sao_paulo
+      MAILMANAGER: ${{ secrets.MAILMANAGER }}
+      SITE_PATH: ${{ secrets.PORTAINER_PATH }}
+      DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}
+      VOL_PROXY: ${{ secrets.VOL_PROXY }}
+      VOL_PORTAINER: ${{ secrets.VOL_PORTAINER }}
+      VOL_CROWDSECDB: ${{ secrets.VOL_PROXY }}/crowdsec_data
+      VOL_CROWDSECETC: ${{ secrets.VOL_PROXY }}/crowdsec_etc
+      CROWDSEC_TRAEFIK: ${{ secrets.CROWDSEC_TRAEFIK }}
+      FILE_PPTP: ${{ secrets.VOL_PROXY }}/pptp_user
 
-      - name: Update Docker Compose (optional)
+      NOIP_USER: ${{secrets.NOIP_USER}}
+      NOIP_PASS: ${{secrets.NOIP_PASS}}
+      NOIP_URL1: ${{secrets.NOIP_URL1}}
+      NOIP_URL2: ${{secrets.NOIP_URL2}}
+      DYNU_SITE1: ${{secrets.DYNU_SITE1}}
+      DYNU_SITE2: ${{secrets.DYNU_SITE2}}
+      DYNV6_SITE1: ${{secrets.DYNV6_SITE1}}
+      DYNV6_SITE2: ${{secrets.DYNV6_SITE2}}
+      VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
+      VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
+      UID: 1001
+      GID: 1001
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .
+            compose
+            conf
+
+      #- name: Login to Docker Hub (optional)
+      #  run: |
+      #    echo "$DOCKER_HUB_USERNAME:$DOCKER_HUB_PASSWORD" | docker login --username --password-stdin
+
+      - name: Prepare volumes
+        if: always()
+        run: |
+         mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_N8N $VOL_HA
+         cat conf/ha-conf.yaml > $VOL_HA/configuration.yaml
+         sed -i "s,replace-me,${CROWDSEC_TRAEFIK},g" conf/traefik.yml
+         sed -i "s,REPLACE_DOMAIN,${DOMAIN_NAME},g" conf/traefik.yml         
+         cp -fv conf/traefik.yml $VOL_PROXY
+         cp -fv conf/acquis.yaml $VOL_CROWDSECETC
+         echo "${NOIP_USER} * ${NOIP_PASS} *" > /root/chap-secrets
+
+      - name: Update Docker Compose
         if: always()
         run: docker compose pull
-      - name: Stop Docker Compose (optional)
-        if: always()
-        run: docker compose down
-      - name: Run Docker Compose Up
-        run: docker compose up -d --wait
 
+      #- name: Stop Docker Compose
+      #  if: always()
+      #  run: docker compose down --remove-orphans -v
+        
+      - name: Env file
+        run: printenv > $VOL_PROXY/.env
+
+      - name: Run Docker Compose Up
+        run: docker compose up -d --wait --force-recreate
+        
+      - name: Views logs
+        run: docker compose logs --tail 30
+      - name: crowdsec update
+        run: |
+          docker compose exec crowdsec cscli hub update
+          docker compose exec crowdsec cscli hub upgrade
+          docker compose up -d     
+        

@@ -1,0 +1,22 @@
+http:
+  middlewares:
+    compress:
+      compress: {}
+
+    crowdsec:
+      plugin:
+        bouncer:
+          CrowdsecLapiKey: "replace-me"
+          Enabled: "true"
+          loglevel: "INFO" #"DEBUG"
+          crowdsecappsecenabled: "true"
+          crowdsecappsechost: "crowdsec:7422"
+          crowdsecmode: "stream"
+
+tls:
+  options:
+    default:
+      sniStrict: true
+      minVersion: VersionTLS12
+    mintls13:
+      minVersion: VersionTLS13

@@ -1,0 +1,8 @@
+services:
+  pptp:
+    image: rattydave/alpine-vpn-pptp
+    restart: unless-stopped
+    privileged: true
+    network_mode: "host"
+    volumes:
+      - ${FILE_PPTP}:/etc/ppp/chap-secrets
