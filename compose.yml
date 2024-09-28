@@ -7,6 +7,8 @@
 networks:
   proxy_default:
     external: true
+  db:
+    external: true
 
 include:
   - compose/watchtower.yml

@@ -17,7 +17,7 @@ services:
       test: ['CMD-SHELL', 'pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
 
 volumes:
-  n8n_storage:
+  postgres_storage:
     driver_opts:
       type: none
       device: ${VOL_POSTGRES}

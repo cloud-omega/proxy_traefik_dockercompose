@@ -1,5 +1,3 @@
-networks:
-  demo:
 
 volumes:
   n8n_storage:
@@ -28,21 +26,11 @@ x-n8n: &service-n8n
     - N8N_PERSONALIZATION_ENABLED=false
   networks:
     - proxy_default
-    - demo
+    - db
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
     - n8n_storage:/home/node/.n8n
     - ${VOL_N8N}/backup:/backup
-  container_name: n8n
-  labels:
-    - traefik.enable=true
-    - traefik.docker.network=proxy_default
-    - traefik.frontend.entryPoints=web,websecure
-    - traefik.http.services.n8n.loadbalancer.server.port=5678
-    - traefik.http.routers.n8n.tls=true
-    - traefik.http.routers.n8n.tls.certresolver=letsencrypt
-    - traefik.http.routers.n8n.rule=Host(`psy.serveblog.net`) # && PathPrefix(`/n8n`)
-
 services:
   n8n-import:
     <<: *service-n8n
@@ -59,6 +47,15 @@ services:
     depends_on:
       n8n-import:
         condition: service_completed_successfully
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.services.n8n.loadbalancer.server.port=5678
+      - traefik.http.routers.n8n.tls=true
+      - traefik.http.routers.n8n.tls.certresolver=letsencrypt
+      - traefik.http.routers.n8n.rule=Host(`psy.serveblog.net`) # && PathPrefix(`/n8n`)
+
 
   qdrant:
     image: qdrant/qdrant

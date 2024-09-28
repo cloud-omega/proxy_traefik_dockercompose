@@ -65,7 +65,7 @@ jobs:
       #  run: |
       #    echo "$DOCKER_HUB_USERNAME:$DOCKER_HUB_PASSWORD" | docker login --username --password-stdin
 
-      - name: Prepare volumes
+      - name: Prepare env
         if: always()
         run: |
          mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_N8N $VOL_HA
@@ -75,6 +75,7 @@ jobs:
          cp -fv conf/traefik.yml $VOL_PROXY
          cp -fv conf/acquis.yaml $VOL_CROWDSECETC
          echo "${NOIP_USER} * ${NOIP_PASS} *" > /root/chap-secrets
+         docker create network db --subnet "192.168.177.0/24 || true
 
       - name: Update Docker Compose
         if: always()
