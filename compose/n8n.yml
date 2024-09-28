@@ -32,6 +32,7 @@ x-n8n: &service-n8n
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
     - n8n_storage:/home/node/.n8n
+    - ${VOL_N8N}/backup:/backup
   container_name: n8n
   labels:
     - traefik.enable=true
@@ -50,17 +51,11 @@ services:
     command:
       - "-c"
       - "n8n import:credentials --separate --input=/backup/credentials && n8n import:workflow --separate --input=/backup/workflows"
-    volumes:
-      - ./n8n/backup:/backup
 
   n8n:
     <<: *service-n8n
     container_name: n8n
     restart: unless-stopped
-    volumes:
-      - n8n_storage:/home/node/.n8n
-      - ${VOL_N8N}/backup:/backup
-      - ${VOL_N8N}/shared:/data/shared
     depends_on:
       n8n-import:
         condition: service_completed_successfully
