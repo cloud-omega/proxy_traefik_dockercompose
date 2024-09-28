@@ -67,7 +67,7 @@ jobs:
       - name: Prepare env
         if: always()
         run: |
-          mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_N8N $VOL_HA
+          mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_N8N $VOL_HA $VOL_POSTGRES
           cat conf/ha-conf.yaml > $VOL_HA/configuration.yaml
           sed -i "s,replace-me,${CROWDSEC_TRAEFIK},g" conf/traefik.yml
           sed -i "s,REPLACE_DOMAIN,${DOMAIN_NAME},g" conf/traefik.yml         
