@@ -10,11 +10,37 @@ networks:
 
 include:
   - compose/watchtower.yml
+  - compose/postgres.yml
   - compose/n8n.yml
   - compose/homeassistant.yml
   #- compose/portainer.yml
 
 services:
+  dockerproxy:
+    image: wollomatic/socket-proxy:1 # see https://github.com/wollomatic/socket-proxy for reference
+    # this image replaced https://github.com/Tecnativa/docker-socket-proxy as the socket proxy
+    # for an example with the tecnativa proxy refer tags before 2.10
+    command:
+      # with this configuration socket-proxy acts similar to the tecnativa proxy. For additional hardening
+      # please refer to the documentation of the wollomatic/socket-proxy image
+      - '-loglevel=info' # set to debug for far more logging
+      - '-allowfrom=proxy' # traefik name
+      - '-listenip=0.0.0.0'
+      - '-allowGET=/v1\..{1,2}/(version|containers/.*|events.*)' # this regexp allows readonly access only for requests that traefik needs
+      - '-shutdowngracetime=5'
+      - '-watchdoginterval=600'
+      - '-stoponwatchdog'
+    restart: unless-stopped
+    read_only: true
+    mem_limit: 64M
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges
+    user: 65534:983 # replace <<docker-gid>> with the docker gid on your host system
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      
   crowdsec:
     image: crowdsecurity/crowdsec
     container_name: crowdsec
@@ -38,17 +64,16 @@ services:
       #- /var/log/auth.log:/var/log/auth.log:ro
       #- /var/log/crowdsec:/var/log/crowdsec:ro
     restart: unless-stopped
-    networks:
-      - proxy_default
 
   traefik:
-    image: 'traefik:${TRAEFIK_IMAGE_VERSION:-latest}'
+    image: 'traefik:v3'
     container_name: proxy
     restart: unless-stopped
     environment:
       - TZ
     command:
       - --providers.docker.network=proxy_default
+      - --providers.docker.endpoint='tcp://dockerproxy:2375'
       - --providers.docker.exposedbydefault=false
       - --providers.docker=true
       - --entrypoints.web.address=:80
@@ -63,13 +88,13 @@ services:
       - --ping
       - --entrypoints.websecure.http3
       - --entrypoints.websecure.http.middlewares=compress@file,crowdsec@file${TRAEFIK_PLUGINS:-}
-      - --log.level=INFO
+      - --log.level=warn
       - --log.filePath=/var/log/traefik/traefik.log
       - --accesslog=true
       - --accesslog.filepath=/var/log/traefik/access.log
       - --providers.file.filename=/data/traefik.yml
-      - --api.dashboard=true
-      - --api.insecure=true
+      - --api.dashboard=false
+      - --api.insecure=false
       ## plugins
       - --experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
       - --experimental.plugins.bouncer.version=v1.3.2
@@ -95,6 +120,9 @@ services:
       #- traefik.frontend.headers.customResponseHeaders.Content-Security-Policy="default-src 'none'; script-src 'unsafe-inline' https:; frame-ancestors 'none';"
     depends_on:
       - crowdsec
+      - dockerproxy
+    security_opt:
+      - no-new-privileges:true
     ports:
       - target: 80
         published: 80
@@ -108,7 +136,6 @@ services:
     healthcheck:
       test: ['CMD', 'traefik', 'healthcheck', '--ping']
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
       - proxydata:/data
       - accesslog:/var/log/traefik
     networks:
