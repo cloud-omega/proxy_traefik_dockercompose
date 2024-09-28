@@ -47,6 +47,9 @@ jobs:
       DYNV6_SITE2: ${{secrets.DYNV6_SITE2}}
       VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
       VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
+      VOL_POSTGRES: ${{ secrets.VOL_POSTGRES }}
+      POSTGRES_USER: global
+      POSTGRES_DB: global
       UID: 1001
       GID: 1001
 
