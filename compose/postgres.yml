@@ -2,6 +2,7 @@
 services:
   postgres:
     image: postgres:16-alpine
+    container_name: postgres
     networks:
       - db
     restart: unless-stopped

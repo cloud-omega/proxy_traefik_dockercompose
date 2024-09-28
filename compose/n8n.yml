@@ -93,6 +93,7 @@ services:
     
   gotenberg:
     image: gotenberg/gotenberg:8
+    container_name: gotenberg
     environment:
       - UID=${UID}
       - GID=${GID}

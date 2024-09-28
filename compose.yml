@@ -19,6 +19,7 @@ include:
 
 services:
   dockerproxy:
+    container_name: dockerproxy
     image: wollomatic/socket-proxy:1 # see https://github.com/wollomatic/socket-proxy for reference
     # this image replaced https://github.com/Tecnativa/docker-socket-proxy as the socket proxy
     # for an example with the tecnativa proxy refer tags before 2.10
