@@ -74,7 +74,7 @@ jobs:
           cp -fv conf/traefik.yml $VOL_PROXY
           cp -fv conf/acquis.yaml $VOL_CROWDSECETC
           #echo "${NOIP_USER} * ${NOIP_PASS} *" > /root/chap-secrets
-          docker create network db --subnet "192.168.177.0/24" || true
+          docker network create db --subnet "192.168.177.0/24" || true
 
       - name: Update Docker Compose
         if: always()
