@@ -1,0 +1,58 @@
+
+
+services:
+  anything-llm:
+    container_name: anything-llm
+    image: mintplexlabs/anythingllm:master
+    restart: unless-stopped
+    user: "${UID:-1000}:${GID:-1000}"
+    cap_add:
+      - SYS_ADMIN
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      #- traefik.http.services.${APP}.loadbalancer.server.port=3001
+      - traefik.http.routers.${APP}.tls.certresolver=letsencrypt
+      - traefik.frontend.entryPoints=http,https
+      - traefik.http.routers.${APP}.rule=Host(`${NOIP_URL2}`)
+    networks: 
+      - proxy_default
+    depends_on:
+      llm:
+        condition: service_healthy
+    environment:
+      - STORAGE_DIR=/app/server/storage
+      - SERVER_PORT=3001
+      - LLM_PROVIDER=ollama
+      - OLLAMA_BASE_PATH=${OLLAMA_BASE_URL}
+      - OLLAMA_MODEL_PREF=${OLLAMA_MODEL}
+      - OLLAMA_MODEL_TOKEN_LIMIT=4096
+      - EMBEDDING_ENGINE=native
+      #- EMBEDDING_ENGINE=ollama
+      #- EMBEDDING_BASE_PATH=${OLLAMA_BASE_URL}
+      #- EMBEDDING_MODEL_PREF=${EMBEDDING_MODEL}
+      - EMBEDDING_MODEL_MAX_CHUNK_LENGTH=8192
+      - DISABLE_TELEMETRY="true"
+      - JWT_SECRET
+      - AUTH_TOKEN
+    volumes:
+      - anything_storage:/app/server/storage
+      - collector_hotdir:/app/collector/hotdir
+      - collector_outputs:/app/collector/outputs
+
+volumes:
+  anything_storage:
+    driver_opts:
+      type: none
+      device: "${VOL_ANYLLM}/storage"
+      o: bind
+  collector_hotdir:
+    driver_opts:
+      type: none
+      device: "${VOL_ANYLLM}/colhotd"
+      o: bind
+  collector_outputs:
+    driver_opts:
+      type: none
+      device: "${VOL_ANYLLM}/colout"
+      o: bind

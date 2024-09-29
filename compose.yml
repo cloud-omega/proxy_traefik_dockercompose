@@ -15,6 +15,7 @@ include:
   - compose/postgres.yml
   - compose/n8n.yml
   - compose/homeassistant.yml
+  - compose/anythingllm.yml
   #- compose/portainer.yml
 
 services:

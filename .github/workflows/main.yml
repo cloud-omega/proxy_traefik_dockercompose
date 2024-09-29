@@ -41,6 +41,7 @@ jobs:
       NOIP_PASS: ${{secrets.NOIP_PASS}}
       NOIP_URL1: ${{secrets.NOIP_URL1}}
       NOIP_URL2: ${{secrets.NOIP_URL2}}
+      NOIP_URL3: ${{secrets.NOIP_URL3}}
       DYNU_SITE1: ${{secrets.DYNU_SITE1}}
       DYNV6_SITE1: ${{secrets.DYNV6_SITE1}}
       DYNV6_SITE2: ${{secrets.DYNV6_SITE2}}
@@ -50,6 +51,8 @@ jobs:
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_DB: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+
       UID: 1001
       GID: 1001
 

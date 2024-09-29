@@ -9,6 +9,7 @@ services:
     ports:
       - 5432:5432
     environment:
+      - TZ
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
