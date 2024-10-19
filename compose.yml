@@ -10,11 +10,11 @@ networks:
   db:
     external: true
 
-include:
+#include:
   #- compose/watchtower.yml
-  - compose/postgres.yml
-  - compose/n8n.yml
-  - compose/homeassistant.yml
+  #- compose/postgres.yml
+  #- compose/n8n.yml
+  #- compose/homeassistant.yml
   #- compose/anythingllm.yml
   #- compose/portainer.yml
 
