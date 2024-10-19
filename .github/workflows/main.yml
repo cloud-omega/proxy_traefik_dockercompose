@@ -89,7 +89,10 @@ jobs:
         run: docker compose down --remove-orphans -v
         
       - name: Env file
-        run: printenv > $VOL_PROXY/.env
+        run: |
+          printenv > /opt/git/proxy_traefik_dockercompose
+          cat compose.yml > /opt/git/proxy_traefik_dockercompose
+          # printenv > $VOL_PROXY/.env
 
       - name: Run Docker Compose Up
         run: docker compose up -d --wait --force-recreate
