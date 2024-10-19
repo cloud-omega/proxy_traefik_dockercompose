@@ -11,7 +11,7 @@ networks:
     external: true
 
 include:
-  - compose/watchtower.yml
+  #- compose/watchtower.yml
   - compose/postgres.yml
   - compose/n8n.yml
   - compose/homeassistant.yml
