@@ -69,7 +69,7 @@ services:
       #- /var/log/crowdsec:/var/log/crowdsec:ro
     restart: unless-stopped
 
-  traefik:
+  proxy:
     image: 'traefik:v3'
     container_name: proxy
     restart: unless-stopped
