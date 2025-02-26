@@ -94,9 +94,8 @@ jobs:
         
       - name: Env file
         run: |
-          printenv | grep -i proxy
           # cat compose.yml 
-          # printenv > $VOL_PROXY/.env
+          printenv > $VOL_PROXY/.env
 
       - name: Run Docker Compose Up
         run: docker compose up -d --wait #--force-recreate
