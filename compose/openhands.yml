@@ -33,6 +33,7 @@ services:
       - traefik.http.routers.openhands.tls=true
       - traefik.http.routers.openhands.tls.certresolver=letsencrypt
       - traefik.http.routers.openhands.rule=Host(`${NOIP_URL3}`)  && PathPrefix(`/maoaberta`)
+      - traefik.http.middlewares.test-stripprefix.stripprefix.prefixes=/maoaberta
     networks:
       - proxy_default
       - llm
