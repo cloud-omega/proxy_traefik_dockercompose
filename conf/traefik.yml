@@ -13,6 +13,21 @@ http:
           crowdsecappsechost: "crowdsec:7422"
           crowdsecmode: "stream"
 
+        authapikey:
+            plugin:
+                traefik-api-key-auth:
+                    authenticationHeader: "true"
+                    authenticationheaderName: X-API-KEY
+                    bearerHeader: "true"
+                    bearerHeaderName: Authorization
+                    keys:
+                        - 83AB7503-50AA-4B57-9386-B9F0BADF2019
+                    pathSegment: "true"
+                    queryParam: "true"
+                    queryParamName: token
+                    removeHeadersOnSuccess: "true"
+
+
 tls:
   options:
     default:

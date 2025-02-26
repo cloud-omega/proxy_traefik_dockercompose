@@ -37,4 +37,6 @@ services:
       - traefik.http.routers.llm.tls=true
       - traefik.http.routers.llm.tls.certresolver=letsencrypt
       - traefik.http.routers.llm.rule=Host(`${NOIP_URL1}`) && PathPrefix(`/api`)
+      - traefik.http.routers.llm.middlewares=authapikey
+
     

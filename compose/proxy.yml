@@ -7,11 +7,11 @@ services:
       TZ: ${TZ}
       BOUNCER_KEY_TRAEFIK: ${CROWDSEC_TRAEFIK}
       COLLECTIONS: crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules  crowdsecurity/http-cve  crowdsecurity/appsec-crs crowdsecurity/whitelist-good-actors 
-      #DISABLE_COLLECTIONS: crowdsecurity/http-probing crowdsecurity/http-crawl-non_statics
+      #DISABLE_COLLECTIONS: crowdsecurity/http-probing crowdsecurity/http-crawl-non_statics 
+      #ENROLL_INSTANCE_NAME:	${RUNNER_NAME}
       POSTOVERFLOWS: crowdsecurity/seo-bots-whitelist
       PARSERS: crowdsecurity/whitelists
       ENROLL_KEY: clz0k6fyn0007lg089m9g8g17
-      #ENROLL_INSTANCE_NAME:	${RUNNER_NAME}
       ENROLL_TAGS: docker
     healthcheck:
       test: ["CMD", "cscli", "capi", "status"]
@@ -60,6 +60,8 @@ services:
       ## plugins
       - --experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
       - --experimental.plugins.bouncer.version=v1.3.4
+      - --experimental.plugins.traefik-api-key-auth.modulename=github.com/Septima/traefik-api-key-auth
+      - --experimental.plugins.traefik-api-key-auth.version=v0.3.0
     labels:
       #- traefik.frontend.headers.SSLRedirect=true
       #- traefik.frontend.headers.STSSeconds=315360000
