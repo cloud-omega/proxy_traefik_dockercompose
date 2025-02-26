@@ -52,6 +52,7 @@ jobs:
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_DB: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      OLLAMA_APIKEY: ${{ secrets.OLLAMA_APIKEY }}
       OLLAMA_BASE_URL: "http://ollama:11434"
       OLLAMA_MODEL: "qwen2.5-coder:7b"
 
@@ -76,6 +77,7 @@ jobs:
         run: |
           mkdir -pv $VOL_OHANDS $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_N8N $VOL_HA $VOL_POSTGRES
           cat conf/ha-conf.yaml > $VOL_HA/configuration.yaml
+          sed -i "s,XXXXXXX,${OLLAMA_APIKEY},g" conf/traefik.yml
           sed -i "s,replace-me,${CROWDSEC_TRAEFIK},g" conf/traefik.yml
           sed -i "s,REPLACE_DOMAIN,${DOMAIN_NAME},g" conf/traefik.yml         
           cp -fv conf/traefik.yml $VOL_PROXY
