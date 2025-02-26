@@ -22,8 +22,6 @@ services:
       #- LLM_DISABLE_VISION=${LLM_DISABLE_VISION:-true}
       - LLM_CACHING_PROMPT=${LLM_CACHING_PROMPT:-true}
     #ports:      - "3000:3000"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - openhands-state:/.openhands-state
@@ -34,7 +32,7 @@ services:
       - traefik.http.services.openhands.loadbalancer.server.port=3000
       - traefik.http.routers.openhands.tls=true
       - traefik.http.routers.openhands.tls.certresolver=letsencrypt
-      - traefik.http.routers.openhands.rule=Host(`${NOIP_URL3}`) # && PathPrefix(`/api`)
+      - traefik.http.routers.openhands.rule=Host(`${NOIP_URL3}`)  && PathPrefix(`/maoaberta`)
     networks:
       - proxy_default
       - llm

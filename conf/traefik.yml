@@ -14,18 +14,18 @@ http:
           crowdsecmode: "stream"
 
     authapikey:
-        plugin:
-            traefik-api-key-auth:
-                authenticationHeader: "true"
-                authenticationheaderName: X-API-KEY
-                bearerHeader: "true"
-                bearerHeaderName: Authorization
-                keys:
-                    - XXXXXXX
-                pathSegment: "true"
-                queryParam: "true"
-                queryParamName: token
-                removeHeadersOnSuccess: "true"
+      plugin:
+        traefik-api-key-auth:
+          authenticationHeader: "true"
+          authenticationheaderName: X-API-KEY
+          bearerHeader: "true"
+          bearerHeaderName: Authorization
+          keys:
+              - XXXXXXX
+          pathSegment: "true"
+          queryParam: "true"
+          queryParamName: token
+          removeHeadersOnSuccess: "true"
 
 
 tls:
