@@ -1,6 +1,7 @@
 services:
   bolt:
-    image: ghcr.io/stackblitz-labs/bolt.diy:latest
+    #image: ghcr.io/stackblitz-labs/bolt.diy:latest
+    image: tribehealth/bolt-diy-arm
     container_name: bolt
     #ports:      - '5173:5173'
     environment:
