@@ -15,7 +15,8 @@ include:
   - compose/proxy.yml
   - compose/watchtower.yml
   - compose/ollama.yml
-  - compose/openhands.yml
+  - compose/boltdiy.yml
+  # - compose/openhands.yml
   #- compose/ojs.yml
   #- compose/postgres.yml
   #- compose/n8n.yml
