@@ -93,8 +93,8 @@ jobs:
         
       - name: Env file
         run: |
-          printenv > /opt/git/proxy_traefik_dockercompose
-          cat compose.yml > /opt/git/proxy_traefik_dockercompose
+          printenv | grep -i proxy
+          # cat compose.yml 
           # printenv > $VOL_PROXY/.env
 
       - name: Run Docker Compose Up
