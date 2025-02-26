@@ -10,17 +10,19 @@ services:
   openhands:
     image: docker.all-hands.dev/all-hands-ai/openhands:0.26
     container_name: openhands
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - SANDBOX_RUNTIME_CONTAINER_IMAGE=docker.all-hands.dev/all-hands-ai/runtime:0.26-nikolaik
       - LOG_ALL_EVENTS=true
-      - LLM_API_VERSION=${LLM_API_VERSION:-ollama}
-      - LLM_BASE_URL=${OLLAMA_BASE_URL}
-      - LLM_OLLAMA_BASE_URL=${OLLAMA_BASE_URL} 
+      #- LLM_API_VERSION=${LLM_API_VERSION:-ollama}
+      #- LLM_BASE_URL=${OLLAMA_BASE_URL}
+      #- LLM_OLLAMA_BASE_URL=${OLLAMA_BASE_URL} 
       #- LLM_EMBEDDING_MODEL=${LLM_EMBEDDING_MODEL:-llama3}
       #- LLM_EMBEDDING_DEPLOYMENT_NAME=${LLM_EMBEDDING_DEPLOYMENT_NAME:-local-ollama}
-      - LLM_DROP_PARAMS=${LLM_DROP_PARAMS:-false}
+      #- LLM_DROP_PARAMS=${LLM_DROP_PARAMS:-false}
       #- LLM_DISABLE_VISION=${LLM_DISABLE_VISION:-true}
-      - LLM_CACHING_PROMPT=${LLM_CACHING_PROMPT:-true}
+      #- LLM_CACHING_PROMPT=${LLM_CACHING_PROMPT:-true}
     #ports:      - "3000:3000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
