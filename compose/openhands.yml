@@ -1,0 +1,28 @@
+volumes:
+  openhands-state:
+    driver_opts:
+      type: none
+      device: ${VOL_OLLAMA}/
+      o: bind  
+      
+
+services:
+  openhands:
+    image: docker.all-hands.dev/all-hands-ai/openhands:0.26
+    container_name: openhands
+    environment:
+      - SANDBOX_RUNTIME_CONTAINER_IMAGE=docker.all-hands.dev/all-hands-ai/runtime:0.26-nikolaik
+      - LOG_ALL_EVENTS=true
+    #ports:      - "3000:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - openhands-state:/.openhands-state
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.openhands.rule=Host(`example.com`)"  # Substitua 'example.com' pelo seu domínio desejado
+      - "traefik.http.routers.openhands.entrypoints=web"          # ou 'websecure' se usar TLS
+      - "traefik.http.services.openhands.loadbalancer.server.port=3000"
+    networks:
+      - proxy_default

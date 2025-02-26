@@ -1,0 +1,38 @@
+volumes:
+  ollama_storage:
+    driver_opts:
+      type: none
+      device: ${VOL_OLLAMA}
+      o: bind  
+      
+services:
+  ollama-cpu:
+    image: ollama/ollama:latest
+    container_name: ollama
+    environment:
+      - TZ
+      - OLLAMA_MAX_LOADED=3
+      - OLLAMA_NUM_THREADS=2
+      - OLLAMA_CUDA=0
+      - OLLAMA_MODELS=${OLLAMA_MODEL}
+    networks:
+      - llm
+    restart: unless-stopped
+    ports:
+      - 11434:11434
+    volumes:
+      - ollama_storage:/root/.ollama
+    healthcheck:
+      test: ["CMD-SHELL", "ollama pull ${OLLAMA_MODEL} || exit 1"]
+      #test: ["CMD-SHELL", "ollama list || exit 1"]
+    #entrypoint: /bin/sh
+    #command:      - "-c"      - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull llama3.1; "
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.services.n8n.loadbalancer.server.port=5678
+      - traefik.http.routers.n8n.tls=true
+      - traefik.http.routers.n8n.tls.certresolver=letsencrypt
+      - traefik.http.routers.n8n.rule=Host(`${NOIP_URL3}`) # && PathPrefix(`/n8n`)
+    

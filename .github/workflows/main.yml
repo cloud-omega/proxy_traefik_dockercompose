@@ -68,6 +68,7 @@ jobs:
       #  run: |
       #    echo "$DOCKER_HUB_USERNAME:$DOCKER_HUB_PASSWORD" | docker login --username --password-stdin
 
+
       - name: Prepare env
         if: always()
         run: |
@@ -78,7 +79,9 @@ jobs:
           cp -fv conf/traefik.yml $VOL_PROXY
           cp -fv conf/acquis.yaml $VOL_CROWDSECETC
           #echo "${NOIP_USER} * ${NOIP_PASS} *" > /root/chap-secrets
-          docker network create db --subnet "192.168.177.0/24" || true
+          docker network create proxy_network --subnet "192.168.177.0/24" || true
+          docker network create db --subnet "192.168.179.0/24" || true
+          docker network create llm --subnet "192.168.178.0/24" || true
 
       - name: Update Docker Compose
         if: always()
@@ -95,7 +98,7 @@ jobs:
           # printenv > $VOL_PROXY/.env
 
       - name: Run Docker Compose Up
-        run: docker compose up -d --wait --force-recreate
+        run: docker compose up -d --wait #--force-recreate
         
       - name: Views logs
         run: docker compose logs --tail 30

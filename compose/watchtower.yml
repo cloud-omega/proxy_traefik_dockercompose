@@ -1,17 +1,12 @@
-networks:
-  proxy_default:
-    external: true
 
 services:
   watchtower:
     image: containrrr/watchtower
     container_name: watchtower
-    networks:
-      - proxy_default
     environment:
       - TZ
-      - DOCKER_HOST=tcp://dockerproxy:2375
       - WATCHTOWER_LOG_LEVEL=warn
+      #- DOCKER_HOST=tcp://dockerproxy:2375
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 3000

@@ -1,0 +1,127 @@
+
+services:
+  crowdsec:
+    image: crowdsecurity/crowdsec
+    container_name: crowdsec
+    environment:
+      TZ: ${TZ}
+      BOUNCER_KEY_TRAEFIK: ${CROWDSEC_TRAEFIK}
+      COLLECTIONS: crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules  crowdsecurity/http-cve  crowdsecurity/appsec-crs crowdsecurity/whitelist-good-actors 
+      #DISABLE_COLLECTIONS: crowdsecurity/http-probing crowdsecurity/http-crawl-non_statics
+      POSTOVERFLOWS: crowdsecurity/seo-bots-whitelist
+      PARSERS: crowdsecurity/whitelists
+      ENROLL_KEY: clz0k6fyn0007lg089m9g8g17
+      #ENROLL_INSTANCE_NAME:	${RUNNER_NAME}
+      ENROLL_TAGS: docker
+    healthcheck:
+      test: ["CMD", "cscli", "capi", "status"]
+    networks:
+      - sec 
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - crowdsec_db:/var/lib/crowdsec/data
+      - crowdsec_etc:/etc/crowdsec
+      - accesslog:/var/log/traefik:ro
+      #- ./acquis.yaml:/etc/crowdsec/acquis.yaml:ro #CICD
+      #- /var/log/auth.log:/var/log/auth.log:ro
+      #- /var/log/crowdsec:/var/log/crowdsec:ro
+    restart: unless-stopped
+
+  proxy:
+    image: 'traefik:v3'
+    container_name: proxy
+    restart: unless-stopped
+    environment:
+      - TZ
+    command:
+      - --providers.docker.network=proxy_default
+      #- --providers.docker.endpoint='tcp://dockerproxy:2375'
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.letsencrypt.acme.email=${MAILMANAGER}
+      - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
+      - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --global.checknewversion=${TRAEFIK_CHECK_NEW_VERSION:-false}
+      - --global.sendanonymoususage=${TRAEFIK_SEND_ANONYMOUS_USAGE:-false}
+      - --ping
+      - --entrypoints.websecure.http3
+      - --entrypoints.websecure.http.middlewares=compress@file,crowdsec@file${TRAEFIK_PLUGINS:-}
+      - --log.level=err
+      - --log.filePath=/var/log/traefik/traefik.log
+      - --accesslog=true
+      #- --accesslog.filepath=/var/log/traefik/access.log
+      - --providers.file.filename=/data/traefik.yml
+      - --api.dashboard=false
+      - --api.insecure=false
+      ## plugins
+      - --experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+      - --experimental.plugins.bouncer.version=v1.3.4
+    labels:
+      - traefik.frontend.headers.SSLRedirect=true
+      - traefik.frontend.headers.STSSeconds=315360000
+      - traefik.frontend.headers.browserXSSFilter=true
+      - traefik.frontend.headers.contentTypeNosniff=true
+      - traefik.frontend.headers.forceSTSHeader=true
+      - traefik.frontend.headers.STSIncludeSubdomains=true
+      - traefik.frontend.headers.STSPreload=true
+      - traefik.frontend.headers.frameDeny=true
+      - traefik.frontend.headers.accessControlAllowMethods="GET, OPTIONS, PUT, POST, PATCH"
+      - traefik.frontend.headers.accessControlMaxAge=100
+      - traefik.frontend.headers.addVaryHeader=true
+      - traefik.frontend.headers.hostsProxyHeaders="X-Forwarded-Host"
+      - traefik.frontend.headers.customResponseHeaders.X-Content-Type-Options="nosniff"
+      - traefik.frontend.headers.customResponseHeaders.X-Frame-Options="SAMEORIGIN"
+      - traefik.frontend.headers.customResponseHeaders.X-XSS-Protection="1; mode=block"
+      - traefik.frontend.headers.customResponseHeaders.Referrer-Policy="same-origin"
+      - traefik.frontend.headers.customResponseHeaders.X-Robots-Tag="none,noarchive,nosnippet,notranslate,noimageindex"
+      - traefik.frontend.headers.customResponseHeaders.X-Forwarded-Proto="https"
+      #- traefik.frontend.headers.customResponseHeaders.Content-Security-Policy="default-src 'none'; script-src 'unsafe-inline' https:; frame-ancestors 'none';"
+    links:
+      - crowdsec
+    depends_on:
+      - crowdsec
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - target: 80
+        published: 80
+        mode: host
+      - target: 443
+        published: 443
+        mode: host
+      - target: 8080
+        published: 8006
+        mode: host
+    healthcheck:
+      test: ['CMD', 'traefik', 'healthcheck', '--ping']
+    volumes:
+      - proxydata:/data
+      - accesslog:/var/log/traefik
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - proxy_default
+      - sec 
+networks:
+  sec:
+
+volumes:
+  accesslog:
+  crowdsec_db:
+     driver_opts:
+           type: none
+           device: ${VOL_CROWDSECDB}
+           o: bind
+  crowdsec_etc:
+     driver_opts:
+           type: none
+           device: ${VOL_CROWDSECETC}
+           o: bind
+  proxydata:
+     driver_opts:
+           type: none
+           device: ${VOL_PROXY}
+           o: bind
