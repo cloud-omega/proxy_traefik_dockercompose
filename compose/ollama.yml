@@ -15,6 +15,7 @@ services:
       - OLLAMA_NUM_THREADS=2
       - OLLAMA_CUDA=0
       - OLLAMA_MODELS=${OLLAMA_MODEL}
+      - OLLAMA_MODEL
     networks:
       - llm
     restart: unless-stopped
