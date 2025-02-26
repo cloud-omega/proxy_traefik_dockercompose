@@ -17,7 +17,9 @@ services:
       - traefik.http.services.portainer.loadbalancer.server.port=9000
       - traefik.http.routers.portainer.tls=true
       - traefik.http.routers.portainer.tls.certresolver=letsencrypt
-      - traefik.http.routers.portainer.rule=Host(`${DOMAIN_NAME}`)
+      - traefik.http.routers.portainer.rule=Host(`${NOIP_URL1}`) && PathPrefix(`/portainer/`)"
+      - "traefik.http.middlewares.portainerpathstrip.stripprefix.prefixes=/portainer"
+      - "traefik.http.routers.portainer.middlewares=portainerpathstrip@docker"
     networks:
       - proxy_default
       
