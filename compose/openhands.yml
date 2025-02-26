@@ -15,9 +15,9 @@ services:
     environment:
       - SANDBOX_RUNTIME_CONTAINER_IMAGE=docker.all-hands.dev/all-hands-ai/runtime:0.26-nikolaik
       - LOG_ALL_EVENTS=true
-      #- LLM_API_VERSION=${LLM_API_VERSION:-ollama}
-      #- LLM_BASE_URL=${OLLAMA_BASE_URL}
-      #- LLM_OLLAMA_BASE_URL=${OLLAMA_BASE_URL} 
+      - LLM_API_VERSION=${LLM_API_VERSION:-ollama}
+      - LLM_BASE_URL=${OLLAMA_BASE_URL}
+      - LLM_OLLAMA_BASE_URL=${OLLAMA_BASE_URL} 
       #- LLM_EMBEDDING_MODEL=${LLM_EMBEDDING_MODEL:-llama3}
       #- LLM_EMBEDDING_DEPLOYMENT_NAME=${LLM_EMBEDDING_DEPLOYMENT_NAME:-local-ollama}
       #- LLM_DROP_PARAMS=${LLM_DROP_PARAMS:-false}
