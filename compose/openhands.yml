@@ -2,7 +2,7 @@ volumes:
   openhands-state:
     driver_opts:
       type: none
-      device: ${VOL_OLLAMA}/
+      device: ${VOL_OHANDS}
       o: bind  
       
 
@@ -13,6 +13,14 @@ services:
     environment:
       - SANDBOX_RUNTIME_CONTAINER_IMAGE=docker.all-hands.dev/all-hands-ai/runtime:0.26-nikolaik
       - LOG_ALL_EVENTS=true
+      - LLM_API_VERSION=${LLM_API_VERSION:-ollama}
+      - LLM_BASE_URL=${OLLAMA_BASE_URL}
+      - LLM_OLLAMA_BASE_URL=${OLLAMA_BASE_URL} 
+      #- LLM_EMBEDDING_MODEL=${LLM_EMBEDDING_MODEL:-llama3}
+      #- LLM_EMBEDDING_DEPLOYMENT_NAME=${LLM_EMBEDDING_DEPLOYMENT_NAME:-local-ollama}
+      - LLM_DROP_PARAMS=${LLM_DROP_PARAMS:-false}
+      #- LLM_DISABLE_VISION=${LLM_DISABLE_VISION:-true}
+      - LLM_CACHING_PROMPT=${LLM_CACHING_PROMPT:-true}
     #ports:      - "3000:3000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -21,8 +29,12 @@ services:
       - openhands-state:/.openhands-state
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.openhands.rule=Host(`example.com`)"  # Substitua 'example.com' pelo seu domínio desejado
-      - "traefik.http.routers.openhands.entrypoints=web"          # ou 'websecure' se usar TLS
-      - "traefik.http.services.openhands.loadbalancer.server.port=3000"
+      - traefik.docker.network=proxy_default
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.services.openhands.loadbalancer.server.port=3000
+      - traefik.http.routers.openhands.tls=true
+      - traefik.http.routers.openhands.tls.certresolver=letsencrypt
+      - traefik.http.routers.openhands.rule=Host(`${NOIP_URL3}`) # && PathPrefix(`/api`)
     networks:
       - proxy_default
+      - llm

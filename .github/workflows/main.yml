@@ -47,6 +47,7 @@ jobs:
       DYNV6_SITE2: ${{secrets.DYNV6_SITE2}}
       VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
       VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
+      VOL_OHANDS: ${{ secrets.VOL_PROXY }}/openhands
       VOL_POSTGRES: ${{ secrets.VOL_POSTGRES }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_DB: ${{ secrets.POSTGRES_USER }}
@@ -73,7 +74,7 @@ jobs:
       - name: Prepare env
         if: always()
         run: |
-          mkdir -pv $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_N8N $VOL_HA $VOL_POSTGRES
+          mkdir -pv $VOL_OHANDS $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_N8N $VOL_HA $VOL_POSTGRES
           cat conf/ha-conf.yaml > $VOL_HA/configuration.yaml
           sed -i "s,replace-me,${CROWDSEC_TRAEFIK},g" conf/traefik.yml
           sed -i "s,REPLACE_DOMAIN,${DOMAIN_NAME},g" conf/traefik.yml         

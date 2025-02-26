@@ -18,6 +18,7 @@ services:
       - OLLAMA_MODEL
     networks:
       - llm
+      - proxy_default
     restart: unless-stopped
     ports:
       - 11434:11434
@@ -32,8 +33,8 @@ services:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
       - traefik.frontend.entryPoints=web,websecure
-      - traefik.http.services.n8n.loadbalancer.server.port=5678
-      - traefik.http.routers.n8n.tls=true
-      - traefik.http.routers.n8n.tls.certresolver=letsencrypt
-      - traefik.http.routers.n8n.rule=Host(`${NOIP_URL3}`) # && PathPrefix(`/n8n`)
+      - traefik.http.services.llm.loadbalancer.server.port=11434
+      - traefik.http.routers.llm.tls=true
+      - traefik.http.routers.llm.tls.certresolver=letsencrypt
+      - traefik.http.routers.llm.rule=Host(`${NOIP_URL1}`) && PathPrefix(`/api`)
     
