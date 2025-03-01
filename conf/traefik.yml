@@ -17,7 +17,7 @@ http:
     mytransport:
       insecureSkipVerify: true
 
-  authapikey:
+  my-traefik-api-key-auth:
     plugin:
       traefik-api-key-auth:
         authenticationHeader: "true"

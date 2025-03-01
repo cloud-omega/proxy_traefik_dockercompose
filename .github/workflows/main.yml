@@ -80,8 +80,8 @@ jobs:
           sed -i "s,XXXXXXX,${OLLAMA_APIKEY},g" conf/traefik.yml
           sed -i "s,replace-me,${CROWDSEC_TRAEFIK},g" conf/traefik.yml
           sed -i "s,REPLACE_DOMAIN,${DOMAIN_NAME},g" conf/traefik.yml         
-          cp -fv conf/traefik.yml $VOL_PROXY
-          cp -fv conf/acquis.yaml $VOL_CROWDSECETC
+          cat conf/traefik.yml > $VOL_PROXY/traefik.yml
+          cat conf/acquis.yaml > $VOL_CROWDSECETC/acquis.yaml
           #echo "${NOIP_USER} * ${NOIP_PASS} *" > /root/chap-secrets
           docker network create proxy_network --subnet "192.168.177.0/24" || true
           docker network create db --subnet "192.168.179.0/24" || true
