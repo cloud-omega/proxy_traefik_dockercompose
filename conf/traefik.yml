@@ -3,33 +3,33 @@ http:
     compress:
       compress: {}
 
-  crowdsec:
-    plugin:
-      bouncer:
-        CrowdsecLapiKey: "replace-me"
-        Enabled: "true"
-        loglevel: "INFO" #"DEBUG"
-        crowdsecappsecenabled: "true"
-        crowdsecappsechost: "crowdsec:7422"
-        crowdsecmode: "stream"
+    crowdsec:
+      plugin:
+        bouncer:
+          CrowdsecLapiKey: "replace-me"
+          Enabled: "true"
+          loglevel: "INFO" #"DEBUG"
+          crowdsecappsecenabled: "true"
+          crowdsecappsechost: "crowdsec:7422"
+          crowdsecmode: "stream"
 
-  serversTransports:
-    mytransport:
-      insecureSkipVerify: true
+    serversTransports:
+      mytransport:
+        insecureSkipVerify: true
 
-  my-traefik-api-key-auth:
-    plugin:
-      traefik-api-key-auth:
-        authenticationHeader: "true"
-        authenticationheaderName: X-API-KEY
-        bearerHeader: "true"
-        bearerHeaderName: Authorization
-        keys:
-          - XXXXXXX
-        pathSegment: "true"
-        queryParam: "true"
-        queryParamName: token
-        removeHeadersOnSuccess: "true"
+    my-traefik-api-key-auth:
+      plugin:
+        traefik-api-key-auth:
+          authenticationHeader: "true"
+          authenticationheaderName: X-API-KEY
+          bearerHeader: "true"
+          bearerHeaderName: Authorization
+          keys:
+            - XXXXXXX
+          pathSegment: "true"
+          queryParam: "true"
+          queryParamName: token
+          removeHeadersOnSuccess: "true"
 
 tls:
   options:
