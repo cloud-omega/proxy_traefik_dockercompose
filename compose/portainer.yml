@@ -17,15 +17,15 @@ services:
       - traefik.http.services.portainer.loadbalancer.server.port=9000
       - traefik.http.routers.portainer.tls=true
       - traefik.http.routers.portainer.tls.certresolver=letsencrypt
-      - traefik.http.routers.portainer.rule=Host(`${NOIP_URL1}`) && PathPrefix(`/portainer/`)"
-      - "traefik.http.middlewares.portainerpathstrip.stripprefix.prefixes=/portainer"
+      - traefik.http.routers.portainer.rule=Host(`${NOIP_URL1}`) && PathPrefix(`/gerencia`)
+      - "traefik.http.middlewares.portainerpathstrip.stripprefix.prefixes=/gerencia"
       - "traefik.http.routers.portainer.middlewares=portainerpathstrip@docker"
     networks:
       - proxy_default
       
 volumes:
   portainer_data:
-     driver_opts:
-           type: none
-           device: ${VOL_PORTAINER}
-           o: bind
+    driver_opts:
+      type: none
+      device: ${VOL_PORTAINER}
+      o: bind

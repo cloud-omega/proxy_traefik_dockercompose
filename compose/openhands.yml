@@ -8,7 +8,8 @@ volumes:
 
 services:
   openhands:
-    image: docker.all-hands.dev/all-hands-ai/openhands:0.26
+    #image: docker.all-hands.dev/all-hands-ai/runtime:0.26-nikolaik
+    image: marcoslkz/openhands
     container_name: openhands
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -37,4 +38,3 @@ services:
       - traefik.http.routers.openhands.rule=Host(`${NOIP_URL3}`)  #&& PathPrefix(`/ohands`)
     networks:
       - proxy_default
-      - llm

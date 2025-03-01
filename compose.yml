@@ -15,12 +15,12 @@ networks:
 include:
   - compose/proxy.yml
   - compose/watchtower.yml
-  - compose/ollama.yml
+  #- compose/ollama.yml
   - compose/boltdiy.yml
-  # - compose/openhands.yml
+  #- compose/openhands.yml
   #- compose/ojs.yml
   #- compose/postgres.yml
   #- compose/n8n.yml
   #- compose/homeassistant.yml
   #- compose/anythingllm.yml
-  #- compose/portainer.yml
+  - compose/portainer.yml

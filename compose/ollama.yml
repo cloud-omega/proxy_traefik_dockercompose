@@ -17,7 +17,6 @@ services:
       - OLLAMA_MODELS=${OLLAMA_MODEL}
       - OLLAMA_MODEL
     networks:
-      - llm
       - proxy_default
     restart: unless-stopped
     ports:

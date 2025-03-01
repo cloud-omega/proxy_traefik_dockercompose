@@ -85,7 +85,6 @@ jobs:
           #echo "${NOIP_USER} * ${NOIP_PASS} *" > /root/chap-secrets
           docker network create proxy_network --subnet "192.168.177.0/24" || true
           docker network create db --subnet "192.168.179.0/24" || true
-          docker network create llm --subnet "192.168.178.0/24" || true
 
       - name: Update Docker Compose
         if: always()

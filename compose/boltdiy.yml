@@ -1,30 +1,33 @@
 services:
   bolt:
     #image: ghcr.io/stackblitz-labs/bolt.diy:latest
-    image: tribehealth/bolt-diy-arm
+    image: marcoslkz/bolt-ai-prod
     container_name: bolt
     #ports:      - '5173:5173'
+    #env_file: ".env.local"
     environment:
       - NODE_ENV=production
       - COMPOSE_PROFILES=production
       # No strictly needed but serving as hints for Coolify
       - PORT=5173
-      - OLLAMA_API_BASE_URL=${OLLAMA_BASE_URL}
+      - OLLAMA_API_BASE_URL=https://cloudomega.sytes.net
       - DEFAULT_NUM_CTX=${DEFAULT_NUM_CTX:-32768}
       - RUNNING_IN_DOCKER=true
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     labels:
-      - "traefik.enable=true"
+      - traefik.enable=true
       - traefik.docker.network=proxy_default
       - traefik.frontend.entryPoints=web,websecure
       - traefik.http.services.bolt.loadbalancer.server.port=5173
       - traefik.http.routers.bolt.tls=true
       - traefik.http.routers.bolt.tls.certresolver=letsencrypt
       - traefik.http.routers.bolt.rule=Host(`${NOIP_URL3}`)  #&& PathPrefix(`/bolt`)
-    command: pnpm run dockerstart
-    profiles:
-      - prebuilt
+    command: sh -c "touch .env.local && pnpm run dockerstart"
+    #profiles: - prebuilt
     networks:
       - proxy_default
-      - llm
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+        
