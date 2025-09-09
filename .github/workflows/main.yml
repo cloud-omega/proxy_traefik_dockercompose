@@ -35,7 +35,7 @@ jobs:
       VOL_CROWDSECDB: ${{ secrets.VOL_PROXY }}/crowdsec_data
       VOL_CROWDSECETC: ${{ secrets.VOL_PROXY }}/crowdsec_etc
       VOL_OLLAMA: ${{ secrets.VOL_OLLAMA }}
-      VOL_FILEBROSWER: /opt/files/filebrowser
+      VOL_FILEBROWSER: /opt/files/filebrowser
       CROWDSEC_TRAEFIK: ${{ secrets.CROWDSEC_TRAEFIK }}
       FILE_PPTP: ${{ secrets.VOL_PROXY }}/pptp_user
       NOIP_USER: ${{secrets.NOIP_USER}}

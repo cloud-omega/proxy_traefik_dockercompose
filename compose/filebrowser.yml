@@ -20,6 +20,6 @@ services:
       - traefik.http.services.file.loadbalancer.server.port=80
       - traefik.http.routers.file.tls.certresolver=letsencrypt
       - traefik.frontend.entryPoints=http,https
-      - traefik.http.routers.file.rule=Host(`${IP_URL1}`) && PathPrefix(`/acessoweb`) 
+      - traefik.http.routers.file.rule=Host(`${NOIP_URL1}`) && PathPrefix(`/acessoweb`) 
     networks:
       - proxy_default
