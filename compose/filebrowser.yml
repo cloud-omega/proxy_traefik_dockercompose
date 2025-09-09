@@ -11,8 +11,8 @@ services:
       - PGID=1000
       - TZ
     volumes:
-      - ${FILEBROWSER}/database/database.db:/database.db
-      - ${FILEBROWSER}/database/filebrowser.json:/config/settings.json
+      - ${VOL_FILEBROWSER}/database/database.db:/database.db
+      - ${VOL_FILEBROWSER}/database/filebrowser.json:/config/settings.json
       - /opt/files:/srv
     labels:
       - traefik.enable=true
