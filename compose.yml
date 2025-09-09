@@ -24,3 +24,4 @@ include:
   #- compose/homeassistant.yml
   #- compose/anythingllm.yml
   - compose/portainer.yml
+  - compose/filebrowser.yml
