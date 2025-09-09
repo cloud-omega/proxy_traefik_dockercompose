@@ -1,0 +1,25 @@
+
+services:
+
+
+  acessoweb:
+    image: filebrowser/filebrowser
+    container_name: acessoweb
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ
+    volumes:
+      - ${FILEBROWSER}/database/database.db:/database.db
+      - ${FILEBROWSER}/database/filebrowser.json:/config/settings.json
+      - /opt/files:/srv
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.http.services.file_${SITE_PATH}.loadbalancer.server.port=80
+      - traefik.http.routers.file_${SITE_PATH}.tls.certresolver=letsencrypt
+      - traefik.frontend.entryPoints=http,https
+      - traefik.http.routers.file_${SITE_PATH}.rule=Host(`${DOMAIN_URL}`) && PathPrefix(`/acessoweb`) 
+    networks:
+      - proxy_default
