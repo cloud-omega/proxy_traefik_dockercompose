@@ -1,0 +1,22 @@
+services:
+  portal:
+    image: marcoslkz/landingpage:v1
+    #ports:      - '5173:5173'
+    #env_file: ".env.local"
+    environment:
+      - NODE_ENV=production
+      - COMPOSE_PROFILES=production
+      - RUNNING_IN_DOCKER=true
+      - INSTAGRAM_KEY=true
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.frontend.entryPoints=web,websecure
+      #- traefik.http.services.portal.loadbalancer.server.port=5173
+      - traefik.http.routers.portal.tls=true
+      - traefik.http.routers.portal.tls.certresolver=letsencrypt
+      - traefik.http.routers.portal.rule=Host(`pilatesmagleides.com.br`)  #&& PathPrefix(`/portal`)
+    networks:
+      - proxy_default
+
+        
