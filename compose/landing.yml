@@ -21,4 +21,3 @@ services:
     networks:
       - proxy_default
 
-C
