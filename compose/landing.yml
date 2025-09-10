@@ -1,7 +1,8 @@
 services:
   portal:
     image: marcoslkz/landingpage:v1
-    #ports:      - '5173:5173'
+    ports:      
+      - '3000:3000'
     #env_file: ".env.local"
     environment:
       - NODE_ENV=production
@@ -12,7 +13,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
       - traefik.frontend.entryPoints=web,websecure
-      #- traefik.http.services.portal.loadbalancer.server.port=5173
+      - traefik.http.services.portal.loadbalancer.server.port=3000
       - traefik.http.routers.portal.tls=true
       - traefik.http.routers.portal.tls.certresolver=letsencrypt
       - traefik.http.routers.portal.rule=Host(`studiomagleides.com.br`)  #&& PathPrefix(`/portal`)
