@@ -16,7 +16,7 @@ services:
     healthcheck:
       test: ["CMD", "cscli", "capi", "status"]
     networks:
-      - sec 
+      - proxy_default
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - crowdsec_db:/var/lib/crowdsec/data
@@ -98,7 +98,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - proxy_default
-      - sec 
     security_opt:
       - no-new-privileges:true
       
@@ -108,7 +107,7 @@ services:
     restart: unless-stopped
     command: tunnel run
     networks:
-      - traefik
+      - proxy_default
     environment:
       - TUNNEL_TOKEN=${TUNNEL_TOKEN}
       
@@ -138,9 +137,10 @@ services:
       - DOMAIN1_PROXIED=TRUE
     restart: always
     networks:
-      - sec
+      - proxy_default
     secrets:
       - cf_token
+      
 volumes:
   accesslog:
   crowdsec_db:
