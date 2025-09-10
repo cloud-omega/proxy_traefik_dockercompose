@@ -1,6 +1,6 @@
 services:
   portal:
-    image: marcoslkz/landingpage:v1
+    #image: marcoslkz/landingpage:v1
     image: nginx
     ports:      
       - '3000:3000'
