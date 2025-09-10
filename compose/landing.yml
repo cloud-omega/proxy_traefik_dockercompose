@@ -15,7 +15,7 @@ services:
       #- traefik.http.services.portal.loadbalancer.server.port=5173
       - traefik.http.routers.portal.tls=true
       - traefik.http.routers.portal.tls.certresolver=letsencrypt
-      - traefik.http.routers.portal.rule=Host(`pilatesmagleides.com.br`)  #&& PathPrefix(`/portal`)
+      - traefik.http.routers.portal.rule=Host(`studiomagleides.com.br`)  #&& PathPrefix(`/portal`)
     networks:
       - proxy_default
 
