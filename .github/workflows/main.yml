@@ -56,7 +56,18 @@ jobs:
       OLLAMA_APIKEY: ${{ secrets.OLLAMA_APIKEY }}
       OLLAMA_BASE_URL: "http://ollama:11434"
       OLLAMA_MODEL: "qwen2.5-coder:7b"
-
+      HTTP_TIMEOUT: 60
+      POLLING_INTERVAL: 10
+      PROPAGATION_TIMEOUT: 3600
+      TTL: 300
+      LOG_LEVEL: INFO
+      ROOT_DOMAIN: ${{ secrets.DOMAIN_STUDIO }}
+      PROVIDERS_GOOGLE_CLIENT_ID: ${{ secrets.PROVIDERS_GOOGLE_CLIENT_ID }}
+      PROVIDERS_GOOGLE_CLIENT_SECRET: ${{ secrets.PROVIDERS_GOOGLE_CLIENT_SECRET }}
+      SECRET: ${{ secrets.SECRET_STUDIO }}
+      WHITELIST: ${{ secrets.GMAIL }}
+      ZONE_ID: ${{ secrets.ZONE_ID_STUDIO }}
+      TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
       UID: 1001
       GID: 1001
 
