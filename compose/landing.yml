@@ -1,7 +1,6 @@
 services:
   portal:
-    #image: marcoslkz/landingpage:v1
-    image: nginx
+    image: marcoslkz/landingpage:v1
     ports:      
       - '3000:3000'
     #env_file: ".env.local"

@@ -140,7 +140,13 @@ services:
       - proxy_default
     secrets:
       - cf_token
-      
+     
+ 
+
+secrets:
+  cf_token:
+    environment: TUNNEL_TOKEN
+
 volumes:
   accesslog:
   crowdsec_db:
