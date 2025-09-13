@@ -49,7 +49,7 @@ services:
       - --global.sendanonymoususage=${TRAEFIK_SEND_ANONYMOUS_USAGE:-false}
       - --ping
       - --entrypoints.websecure.http3
-      - --entrypoints.websecure.http.middlewares=compress@file,crowdsec@file${TRAEFIK_PLUGINS:-}
+      #- --entrypoints.websecure.http.middlewares=${TRAEFIK_PLUGINS:-}
       #- --log.filePath=/var/log/traefik/traefik.log
       - --accesslog=true
       - --accesslog.filepath=/var/log/traefik/access.log
