@@ -3,7 +3,7 @@ services:
     image: quay.io/keycloak/keycloak
     container_name: keycloak_web
     environment:
-      KC_DB: keycloak 
+      KC_DB: postgres 
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
@@ -28,4 +28,5 @@ services:
 
     networks:
       - proxy_default
+      - db
 
