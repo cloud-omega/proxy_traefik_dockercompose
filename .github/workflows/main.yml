@@ -29,7 +29,7 @@ jobs:
       TZ: ${{ secrets.TZ }}
       MAILMANAGER: ${{ secrets.MAILMANAGER }}
       SITE_PATH: ${{ secrets.PORTAINER_PATH }}
-      DOMAIN_NAME: ${{ secrets.PORTAINER_URL }}
+      DOMAIN_NAME: ${{ secrets.NOIP_URL1 }}
       VOL_PROXY: ${{ secrets.VOL_PROXY }}
       VOL_PORTAINER: ${{ secrets.VOL_PORTAINER }}
       VOL_CROWDSECDB: ${{ secrets.VOL_PROXY }}/crowdsec_data
@@ -72,7 +72,7 @@ jobs:
       GID: 1001
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           sparse-checkout: |
             .
@@ -102,20 +102,21 @@ jobs:
         if: always()
         run: docker compose pull
 
-      - name: Stop Docker Compose
-        if: always()
-        run: docker compose down --remove-orphans -v
-        
       - name: Env file
         run: |
           # cat compose.yml 
           printenv > $VOL_PROXY/.env
+
+      - name: Stop Docker Compose
+        if: always()
+        run: docker compose down --remove-orphans -v
 
       - name: Run Docker Compose Up
         run: docker compose up -d --wait #--force-recreate
         
       - name: Views logs
         run: docker compose logs --tail 30
+
       - name: crowdsec update
         run: |
           docker compose exec crowdsec cscli hub update

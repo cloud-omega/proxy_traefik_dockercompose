@@ -20,6 +20,7 @@ include:
   #- compose/openhands.yml
   #- compose/ojs.yml
   - compose/postgres.yml
+  - compose/adminer.yml
   #- compose/n8n.yml
   #- compose/homeassistant.yml
   #- compose/anythingllm.yml
