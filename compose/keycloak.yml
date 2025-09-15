@@ -26,7 +26,7 @@ services:
       - traefik.http.routers.keycloak.rule=Host(`${NOIP_URL2}`) #  && PathPrefix(`/auth`)
       - "traefik.http.services.keycloak.loadbalancer.server.port=8443"
       - "traefik.http.services.keycloak.loadbalancer.server.scheme=https"
-      - "traefik.http.services.keycloak.loadbalancer.serversTransport=mytransport"
+      - "traefik.http.services.keycloak.loadbalancer.serversTransport=mytransport@file"
 
 
 
