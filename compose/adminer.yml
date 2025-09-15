@@ -1,0 +1,24 @@
+services:
+  adminer:
+    image: adminer
+    container_name: "adminer"
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.adminer.loadbalancer.server.port=8080
+      - traefik.http.routers.adminer.tls.certresolver=letsencrypt
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.routers.adminer.tls=true
+      - traefik.http.routers.adminer.tls.certresolver=letsencrypt
+      - traefik.docker.network=proxy_default
+      - traefik.http.routers.adminer.rule=Host(`${DOMAIN_NAME}`) && ( PathPrefix(`/acessodb`) )
+        #$- traefik.http.routers.adminer.rule=Host(`${NOIP_URL1}`) && ( PathPrefix(`/acessodb`) )
+    networks: 
+      - proxy_default
+      - db 
+  
+networks:
+  postgresql:
+    external: true
+  proxy_default:
+    external: true
