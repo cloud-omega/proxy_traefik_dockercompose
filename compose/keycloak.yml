@@ -7,7 +7,7 @@ services:
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
-      KC_HOSTNAME: postgres 
+      KC_HOSTNAME: ${NOIP_URL2}/auth
       KC_HOSTNAME_STRICT: false
       KC_HOSTNAME_STRICT_HTTPS: false
       KC_LOG_LEVEL: info
@@ -24,7 +24,7 @@ services:
       - traefik.http.services.keycloak.loadbalancer.server.port=8080
       - traefik.http.routers.keycloak.tls=true
       - traefik.http.routers.keycloak.tls.certresolver=letsencrypt
-      - traefik.http.routers.keycloak.rule=Host(`${DOMAIN_NAME}`)  #&& PathPrefix(`/keycloak`)
+      - traefik.http.routers.keycloak.rule=Host(`${NOIP_URL2}`)  && PathPrefix(`/auth`)
 
     networks:
       - proxy_default
