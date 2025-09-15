@@ -1,14 +1,13 @@
 services:
-
   keycloak_web:
     image: quay.io/keycloak/keycloak
     container_name: keycloak_web
     environment:
-      KC_DB: postgres
+      KC_DB: keycloak 
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
-      KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: password
-      KC_HOSTNAME: localhost
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_HOSTNAME: postgres 
       KC_HOSTNAME_STRICT: false
       KC_HOSTNAME_STRICT_HTTPS: false
       KC_LOG_LEVEL: info
@@ -17,5 +16,15 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     command: start-dev
-    ports:
-      - 8080:8080
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.services.keycloak.loadbalancer.server.port=8080
+      - traefik.http.routers.keycloak.tls=true
+      - traefik.http.routers.keycloak.tls.certresolver=letsencrypt
+      - traefik.http.routers.keycloak.rule=Host(`%DOMAIN_NAME`)  #&& PathPrefix(`/keycloak`)
+
+    networks:
+      - proxy_default
+

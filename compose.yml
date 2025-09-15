@@ -27,3 +27,4 @@ include:
   #- compose/portainer.yml
   #- compose/filebrowser.yml
   - compose/landing.yml
+  - compose/keycloak.yml
