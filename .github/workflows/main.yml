@@ -37,6 +37,8 @@ jobs:
       VOL_OLLAMA: ${{ secrets.VOL_OLLAMA }}
       VOL_FILEBROWSER: /opt/files/filebrowser
       CROWDSEC_TRAEFIK: ${{ secrets.CROWDSEC_TRAEFIK }}
+      ADMIN_USER: ${{ secrets.ADMIN_USER }}
+      KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
       FILE_PPTP: ${{ secrets.VOL_PROXY }}/pptp_user
       NOIP_USER: ${{secrets.NOIP_USER}}
       NOIP_PASS: ${{secrets.NOIP_PASS}}
