@@ -1,6 +1,6 @@
 services:
   portal:
-    image: marcoslkz/landingpage:v1
+    image: marcoslkz/landingpage
     #env_file: ".env.local"
     environment:
       - NODE_ENV=production
