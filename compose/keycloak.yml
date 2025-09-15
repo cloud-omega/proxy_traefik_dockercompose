@@ -13,8 +13,8 @@ services:
       KC_LOG_LEVEL: info
       KC_METRICS_ENABLED: true
       KC_HEALTH_ENABLED: true
-      KEYCLOAK_ADMIN: ${ADMIN_USER}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${ADMIN_USER}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
       
     command: start-dev
     labels:
@@ -24,7 +24,7 @@ services:
       - traefik.http.services.keycloak.loadbalancer.server.port=8080
       - traefik.http.routers.keycloak.tls=true
       - traefik.http.routers.keycloak.tls.certresolver=letsencrypt
-      - traefik.http.routers.keycloak.rule=Host(`%DOMAIN_NAME`)  #&& PathPrefix(`/keycloak`)
+      - traefik.http.routers.keycloak.rule=Host(`${DOMAIN_NAME}`)  #&& PathPrefix(`/keycloak`)
 
     networks:
       - proxy_default
