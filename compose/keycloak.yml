@@ -7,24 +7,28 @@ services:
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
-      KC_HOSTNAME: ${NOIP_URL2}/auth
-      KC_HOSTNAME_STRICT: false
-      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HOSTNAME: ${NOIP_URL2}
       KC_LOG_LEVEL: info
       KC_METRICS_ENABLED: true
       KC_HEALTH_ENABLED: true
       KC_BOOTSTRAP_ADMIN_USERNAME: ${ADMIN_USER}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_PROXY: edge
+
       
     command: start-dev
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
       - traefik.frontend.entryPoints=web,websecure
-      - traefik.http.services.keycloak.loadbalancer.server.port=8080
       - traefik.http.routers.keycloak.tls=true
       - traefik.http.routers.keycloak.tls.certresolver=letsencrypt
-      - traefik.http.routers.keycloak.rule=Host(`${NOIP_URL2}`)  && PathPrefix(`/auth`)
+      - traefik.http.routers.keycloak.rule=Host(`${NOIP_URL2}`) #  && PathPrefix(`/auth`)
+      - "traefik.http.services.keycloak.loadbalancer.server.port=8443"
+      - "traefik.http.services.keycloak.loadbalancer.server.scheme=https"
+      - "traefik.http.services.keycloak.loadbalancer.serversTransport=mytransport"
+
+
 
     networks:
       - proxy_default
