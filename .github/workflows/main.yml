@@ -51,6 +51,7 @@ jobs:
       VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
       VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
       VOL_OHANDS: ${{ secrets.VOL_PROXY }}/openhands
+      VOL_HOMEPAGE: ${{ secrets.VOL_PROXY }}/homepage
       VOL_POSTGRES: ${{ secrets.VOL_POSTGRES }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_DB: ${{ secrets.POSTGRES_USER }}

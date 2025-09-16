@@ -28,8 +28,8 @@ services:
       - traefik.http.routers.keycloak.tls.certresolver=letsencrypt
       - traefik.http.routers.keycloak.rule=Host(`${NOIP_URL2}`) #&& PathPrefix(`/admin`)
       - traefik.http.services.keycloak.loadbalancer.server.port=8080
-      #- "traefik.http.services.keycloak.loadbalancer.server.scheme=https"
-      #- "traefik.http.services.keycloak.loadbalancer.serversTransport=mytransport@file"
+      #- traefik.http.services.keycloak.loadbalancer.server.scheme=https
+      #- traefik.http.services.keycloak.loadbalancer.serversTransport=mytransport@file
 
 
 
