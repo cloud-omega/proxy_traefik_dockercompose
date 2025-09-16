@@ -15,6 +15,7 @@ networks:
 include:
   - compose/proxy.yml
   - compose/watchtower.yml
+  - /compose/homepage.yml
   #- compose/ollama.yml
   #- compose/boltdiy.yml
   #- compose/openhands.yml
