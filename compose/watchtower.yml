@@ -10,3 +10,11 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 3000
+    labels:
+      - homepage.group=System
+      - homepage.name=watchtower
+      - homepage.icon=watchtower
+      - homepage.href=http://watchtower:80
+      - homepage.description=Update images 
+    networks: 
+      - local

@@ -14,11 +14,10 @@ services:
         #- ${VOL_FILEBROWSER}/database/filebrowser.json:/config/settings.json
       - /opt/files:/srv
     labels:
-      - traefik.enable=true
-      - traefik.docker.network=proxy_default
-      - traefik.http.services.file.loadbalancer.server.port=80
-      - traefik.http.routers.file.tls.certresolver=letsencrypt
-      - traefik.frontend.entryPoints=http,https
-      - traefik.http.routers.file.rule=Host(`${NOIP_URL1}`) && PathPrefix(`/acessoweb`) 
-    networks:
-      - local 
+      - homepage.group=System
+      - homepage.name=filebrowser
+      - homepage.icon=filebrowser
+      - homepage.href=http://filebrowser:80
+      - homepage.description=File explorer 
+    networks: 
+      - local

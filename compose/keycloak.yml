@@ -30,10 +30,13 @@ services:
       - traefik.http.services.keycloak.loadbalancer.server.port=8080
       #- traefik.http.services.keycloak.loadbalancer.server.scheme=https
       #- traefik.http.services.keycloak.loadbalancer.serversTransport=mytransport@file
-
-
-
-    networks:
+      - homepage.group=System
+      - homepage.name=keycloak
+      - homepage.icon=keycloak
+      - homepage.href=http://keycloak:8080
+      - homepage.description=Auth 
+    networks: 
+      - local
       - proxy_default
       - db
 

@@ -28,7 +28,7 @@ include:
   #- compose/n8n.yml
   #- compose/homeassistant.yml
   #- compose/anythingllm.yml
-  #- compose/portainer.yml
+  - compose/portainer.yml
   #- compose/filebrowser.yml
   - compose/landing.yml
   - compose/keycloak.yml

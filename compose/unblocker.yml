@@ -20,3 +20,11 @@ services:
       - proxy_default
       - local
         #volumes:      - $VOL_PROXY/unblocker:/app/config 
+    labels:
+      - homepage.group=System
+      - homepage.name=home
+      - homepage.icon=unblocker
+      - homepage.href=https://cloudomega.sytes.net
+      - homepage.description=HOME
+    networks: 
+      - local

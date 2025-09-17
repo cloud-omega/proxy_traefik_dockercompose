@@ -11,17 +11,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
     labels:
-      - traefik.enable=true
-      - traefik.docker.network=proxy_default
-      - traefik.frontend.entryPoints=web,websecure
-      - traefik.http.services.portainer.loadbalancer.server.port=9000
-      - traefik.http.routers.portainer.tls=true
-      - traefik.http.routers.portainer.tls.certresolver=letsencrypt
-      - traefik.http.routers.portainer.rule=Host(`${NOIP_URL1}`) && PathPrefix(`/gerencia`)
-      - "traefik.http.middlewares.portainerpathstrip.stripprefix.prefixes=/gerencia"
-      - "traefik.http.routers.portainer.middlewares=portainerpathstrip@docker"
-    networks:
-      - proxy_default
+      - homepage.group=System
+      - homepage.name=portainer
+      - homepage.icon=portainer
+      - homepage.href=http://portainer:80
+      - homepage.description=Docker manager 
+    networks: 
+      - local
       
 volumes:
   portainer_data:
