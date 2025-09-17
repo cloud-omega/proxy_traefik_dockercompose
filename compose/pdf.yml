@@ -1,0 +1,20 @@
+services:
+  pdf:
+    image: docker.stirlingpdf.com/stirlingtools/stirling-pdf:latest
+    #ports:      - '8080:8080'
+    container_name: pdf
+    restart: unless-stopped
+    volumes:
+      - $VOL_PROXY/StirlingPDF/trainingData:/usr/share/tessdata # Required for extra OCR languages
+      - $VOL_PROXY/StirlingPDF/extraConfigs:/configs
+      - $VOL_PROXY/StirlingPDF/customFiles:/customFiles/
+      - $VOL_PROXY/StirlingPDF/logs:/logs/
+      - $VOL_PROXY/StirlingPDF/pipeline:/pipeline/
+    environment:
+      - DISABLE_ADDITIONAL_FEATURES=false
+      - LANGS=pt_BR
+      - TZ
+      - NODE_ENV='production'
+    networks: 
+      - local
+        #volumes:      - $VOL_PROXY/unblocker:/app/config 
