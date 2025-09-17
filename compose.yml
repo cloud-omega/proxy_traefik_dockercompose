@@ -11,6 +11,9 @@ networks:
     external: true
   db:
     external: true
+  local:
+    external: true
+
 
 include:
   - compose/proxy.yml
@@ -29,3 +32,6 @@ include:
   #- compose/filebrowser.yml
   - compose/landing.yml
   - compose/keycloak.yml
+  - compose/unblocker.yml
+  - compose/pdf.yml
+  - compose/dockerproxy.yml

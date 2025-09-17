@@ -71,8 +71,8 @@ jobs:
       WHITELIST: ${{ secrets.GMAIL }}
       ZONE_ID: ${{ secrets.ZONE_ID_STUDIO }}
       TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
-      UID: 1001
-      GID: 1001
+      PUID: 1001
+      PGID: 1001
 
     steps:
       - uses: actions/checkout@v5

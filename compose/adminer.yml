@@ -15,12 +15,15 @@ services:
       - traefik.http.routers.adminer.tls.certresolver=letsencrypt
       - traefik.docker.network=proxy_default
       - traefik.http.routers.adminer.rule=Host(`${DOMAIN_NAME}`) && ( PathPrefix(`/acessodb`) )
+      - homepage.group=Database
+      - homepage.name=adminer
+      - homepage.icon=adminer
+      - homepage.href=http://adminer:8080
+      - homepage.description=DB client 
     networks: 
       - proxy_default
       - db 
-  
-networks:
-  postgresql:
-    external: true
-  proxy_default:
-    external: true
+
+
+
+

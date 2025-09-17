@@ -1,10 +1,9 @@
 
 services:
 
-
-  acessoweb:
+  filebrowser:
     image: filebrowser/filebrowser
-    container_name: acessoweb
+    container_name: filebrowser
     restart: unless-stopped
     environment:
       - PUID=1000
@@ -12,7 +11,7 @@ services:
       - TZ
     volumes:
       - ${VOL_FILEBROWSER}/database/database.db:/database.db
-      #- ${VOL_FILEBROWSER}/database/filebrowser.json:/config/settings.json
+        #- ${VOL_FILEBROWSER}/database/filebrowser.json:/config/settings.json
       - /opt/files:/srv
     labels:
       - traefik.enable=true
@@ -22,4 +21,4 @@ services:
       - traefik.frontend.entryPoints=http,https
       - traefik.http.routers.file.rule=Host(`${NOIP_URL1}`) && PathPrefix(`/acessoweb`) 
     networks:
-      - proxy_default
+      - local 
