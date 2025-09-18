@@ -16,15 +16,12 @@ services:
       - traefik.http.routers.unblocker.tls.certresolver=letsencrypt
       - traefik.docker.network=proxy_default
       - traefik.http.routers.unblocker.rule=Host(`${DOMAIN_NAME}`) # && ( PathPrefix(`/proxy`) )
+      - homepage.group=System
+      - homepage.name=home
+      - homepage.icon=proxy
+      - homepage.href=https://cloudomega.sytes.net
+      - homepage.description=HOME
     networks: 
       - proxy_default
       - local
         #volumes:      - $VOL_PROXY/unblocker:/app/config 
-    labels:
-      - homepage.group=System
-      - homepage.name=home
-      - homepage.icon=unblocker
-      - homepage.href=https://cloudomega.sytes.net
-      - homepage.description=HOME
-    networks: 
-      - local
