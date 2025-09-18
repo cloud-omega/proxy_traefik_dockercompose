@@ -5,10 +5,9 @@ services:
     container_name: noip-duc
     restart: unless-stopped
     environment:
-      # Herda as variáveis já existentes no host
-      NOIP_USERNAME: ${NOIP_USERNAME}
-      NOIP_PASSWORD: ${NOIP_PASSWORD}
-      NOIP_HOSTNAMES: ${NOIP_HOSTNAMES}
+      - NOIP_USERNAME
+      - NOIP_PASSWORD
+      - NOIP_HOSTNAMES= ${NOIP_URL1} ${NOIP_URL2} ${NOIP_URL3}
     labels:
       # Labels para integração com o Homepage
       homepage.group: "Serviços"
