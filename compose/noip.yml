@@ -7,8 +7,7 @@ services:
     environment:
       - NOIP_USERNAME
       - NOIP_PASSWORD
-     #- NOIP_HOSTNAMES=${NOIP_URL1},${NOIP_URL2},${NOIP_URL3}
-      - NOIP_HOSTNAMES=${NOIP_URL1},${NOIP_URL2}
+      - NOIP_HOSTNAMES=${NOIP_URL1},${NOIP_URL2},${NOIP_URL3}
     labels:
       # Labels para integração com o Homepage
       homepage.group: System
