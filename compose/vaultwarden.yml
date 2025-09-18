@@ -5,18 +5,27 @@ services:
     container_name: vaultwarden
     restart: unless-stopped
     environment:
-      #DOMAIN: ${VAULTWARDEN_DOMAIN}
+      DOMAIN: ${NOIP_URL3}
       SIGNUPS_ALLOWED: "false"
       WEBSOCKET_ENABLED: "true"
       ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
     volumes:
       - $VOL_PROXY/vaultwarden_data:/data
     labels:
-      homepage.group: System
-      homepage.name: Vaultwarden
-      homepage.icon: mdi:shield-key
-      homepage.href: http://vaultwarden:80
-      homepage.description: "Gerenciador de senhas "
+      - traefik.enable=true
+      #- traefik.http.services.wault.loadbalancer.server.port=3000
+      - traefik.http.routers.wault.tls.certresolver=letsencrypt
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.routers.wault.tls=true
+      - traefik.http.routers.wault.tls.certresolver=letsencrypt
+      - traefik.docker.network=proxy_default
+      - traefik.http.routers.wault.rule=Host(`${NOIP_URL3}`) # && ( PathPrefix(`/proxy`) )
+      - homepage.group=System
+      - homepage.name=Vaultwarden
+      - homepage.icon=mdi-shield-key
+      - homepage.href=https://${NOIP_URL3}
+      - homepage.description="Gerenciador de senhas"
     networks: 
-      - local
+      - proxy_default
+        #volumes:      - $VOL_PROXY/wault:/app/config 
 
