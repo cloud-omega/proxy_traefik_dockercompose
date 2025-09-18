@@ -2,7 +2,7 @@
 services:
   unblocker:
     #image: marcoslkz/holy-unblocker:master
-    image: quiteafancyemerald/holy-unblocker:6.9.1
+    image: quiteafancyemerald/holy-unblocker
     container_name: unblocker
     restart: unless-stopped
     environment:
