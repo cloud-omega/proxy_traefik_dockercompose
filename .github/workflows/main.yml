@@ -40,6 +40,7 @@ jobs:
       ADMIN_USER: ${{ secrets.ADMIN_USER }}
       KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
       FILE_PPTP: ${{ secrets.VOL_PROXY }}/pptp_user
+      TAILSCALE_KEY: ${{secrets.TAILSCALE_KEY}}
       NOIP_USER: ${{secrets.NOIP_USER}}
       NOIP_PASS: ${{secrets.NOIP_PASS}}
       NOIP_URL1: ${{secrets.NOIP_URL1}}
