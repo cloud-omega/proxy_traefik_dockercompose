@@ -1,8 +1,7 @@
 
 services:
   unblocker:
-    #image: marcoslkz/holy-unblocker:master
-    image: ghcr.io/browserless/chromium
+    image: marcoslkz/holy-unblocker:master
     container_name: unblocker
     restart: unless-stopped
     environment:
@@ -10,7 +9,7 @@ services:
       - NODE_ENV='production'
     labels:
       - traefik.enable=true
-      #- traefik.http.services.unblocker.loadbalancer.server.port=8080
+      #- traefik.http.services.unblocker.loadbalancer.server.port=3000
       - traefik.http.routers.unblocker.tls.certresolver=letsencrypt
       - traefik.frontend.entryPoints=web,websecure
       - traefik.http.routers.unblocker.tls=true
