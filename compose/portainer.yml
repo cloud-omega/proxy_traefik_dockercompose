@@ -1,6 +1,6 @@
 services:
   portainer:
-    image: portainer/portainer-ee:latest
+    image: portainer/portainer-ee:lts
     container_name: portainer
     restart: unless-stopped
     environment:
@@ -12,9 +12,9 @@ services:
       - portainer_data:/data
     labels:
       - homepage.group=System
-      - homepage.name=portainer
+      - homepage.name=Portainer
       - homepage.icon=portainer
-      - homepage.href=http://portainer:8080
+      - homepage.href=https://portainer:9443
       - homepage.description=Docker manager 
     networks: 
       - local
