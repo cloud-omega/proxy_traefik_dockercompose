@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     environment:
       DOMAIN: https://${NOIP_URL3}
-      SIGNUPS_ALLOWED: "true"
+      SIGNUPS_ALLOWED: "false"
       WEBSOCKET_ENABLED: "true"
       ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
     volumes:
