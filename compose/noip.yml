@@ -1,0 +1,22 @@
+
+services:
+  noip-duc:
+    image: ghcr.io/noipcom/noip-duc:latest
+    container_name: noip-duc
+    restart: unless-stopped
+    environment:
+      # Herda as variáveis já existentes no host
+      NOIP_USERNAME: ${NOIP_USERNAME}
+      NOIP_PASSWORD: ${NOIP_PASSWORD}
+      NOIP_HOSTNAMES: ${NOIP_HOSTNAMES}
+    labels:
+      # Labels para integração com o Homepage
+      homepage.group: "Serviços"
+      homepage.name: "No-IP DUC"
+      homepage.icon: "mdi:dns"
+      homepage.href: "https://www.noip.com/"
+      homepage.description: "Atualizador de DNS dinâmico No-IP"
+
+
+
+

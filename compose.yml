@@ -35,4 +35,5 @@ include:
   - compose/unblocker.yml
   - compose/pdf.yml
   - compose/dockerproxy.yml
-  - compose/tailscale.yml
+  - compose/noip.yml
+  #- compose/tailscale.yml
