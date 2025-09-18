@@ -7,12 +7,13 @@ services:
     environment:
       - NOIP_USERNAME
       - NOIP_PASSWORD
-      - NOIP_HOSTNAMES="${NOIP_URL1},${NOIP_URL2},${NOIP_URL3}"
+     #- NOIP_HOSTNAMES=${NOIP_URL1},${NOIP_URL2},${NOIP_URL3}
+      - NOIP_HOSTNAMES=${NOIP_URL1},${NOIP_URL2}
     labels:
       # Labels para integração com o Homepage
-      homepage.group: "Serviços"
+      homepage.group: System
       homepage.name: "No-IP DUC"
-      homepage.icon: "mdi:dns"
+      homepage.icon: "mdi-dns"
       homepage.href: "https://www.noip.com/"
       homepage.description: "Atualizador de DNS dinâmico No-IP"
 

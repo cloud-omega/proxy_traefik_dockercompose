@@ -1,0 +1,22 @@
+---
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    environment:
+      #DOMAIN: ${VAULTWARDEN_DOMAIN}
+      SIGNUPS_ALLOWED: "false"
+      WEBSOCKET_ENABLED: "true"
+      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
+    volumes:
+      - $VOL_PROXY/vaultwarden_data:/data
+    labels:
+      homepage.group: System
+      homepage.name: Vaultwarden
+      homepage.icon: mdi:shield-key
+      homepage.href: http://vaultwarden:80
+      homepage.description: "Gerenciador de senhas "
+    networks: 
+      - local
+

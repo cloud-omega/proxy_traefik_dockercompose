@@ -41,6 +41,7 @@ jobs:
       KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
       FILE_PPTP: ${{ secrets.VOL_PROXY }}/pptp_user
       TAILSCALE_KEY: ${{secrets.TAILSCALE_KEY}}
+      VAULTWARDEN_ADMIN_TOKEN: ${{secrets.VAULTWARDEN_ADMIN_TOKEN}}
       NOIP_USERNAME: ${{secrets.NOIP_USER}}
       NOIP_PASSWORD: ${{secrets.NOIP_PASS}}
       NOIP_URL1: ${{secrets.NOIP_URL1}}
