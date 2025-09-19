@@ -2,6 +2,9 @@
 services:
   dns:
     image: dockurr/dnsmasq
+    environment:
+    - DNS1=127.0.0.11
+    - DNS2=10.0.0.20
     container_name: dns
     command: -k -S /local/127.0.0.11 --dhcp-option=option:dns-server,127.0.0.1
     #ports:      - "53:53/udp"
