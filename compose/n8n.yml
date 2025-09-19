@@ -18,16 +18,16 @@ x-n8n: &service-n8n
   image: n8nio/n8n:latest
   environment:
     - TZ
-    - N8N_HOST=psy.serveblog.net
+    - N8N_HOST=n8n.local
     - N8N_PORT=5678
     - N8N_PROTOCOL=https
     - NODE_ENV=production
-    - WEBHOOK_URL=https://psy2.serveblog.net/
+    - WEBHOOK_URL=https://cloudomega.sytes.net
     - GENERIC_TIMEZONE="${TZ}"
     - N8N_DIAGNOSTICS_ENABLED=false
     - N8N_PERSONALIZATION_ENABLED=false
   networks:
-    - n8n
+    - local
     - proxy_default
     - db
   volumes:
@@ -56,40 +56,14 @@ services:
       - traefik.docker.network=proxy_default
       - traefik.frontend.entryPoints=web,websecure
       - traefik.http.services.n8n.loadbalancer.server.port=5678
-      - traefik.http.routers.n8n.tls=true
-      - traefik.http.routers.n8n.tls.certresolver=letsencrypt
-      - traefik.http.routers.n8n.rule=Host(`psy.serveblog.net`) # && PathPrefix(`/n8n`)
+      - traefik.http.routers.n8n.rule=Host(`n8n.local`) 
+      - homepage.group=Tools
+      - homepage.name=n8n
+      - homepage.icon=n8n
+      - homepage.href=http://n8n.local
+      - homepage.description=Plataforma de automação
+        # homepage.widget.type=iframe
+        # homepage.widget.url=http://n8n.local:5678
+        # homepage.widget.height=400
 
-  ollama-cpu:
-    image: ollama/ollama:latest
-    environment:
-      - TZ
-      - OLLAMA_MAX_LOADED=1
-      - OLLAMA_NUM_THREADS=2
-      - OLLAMA_CUDA=0
-      - OLLAMA_MODELS=llama3.1
-    container_name: ollama
-    networks:
-      - n8n
-    restart: unless-stopped
-    ports:
-      - 11434:11434
-    volumes:
-      - ollama_storage:/root/.ollama
-    healthcheck:
-      #test: ["CMD-SHELL", "ollama pull ${OLLAMA_MODEL} || exit 1"]
-      test: ["CMD-SHELL", "ollama list || exit 1"]
-    #entrypoint: /bin/sh
-    #command:      - "-c"      - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull llama3.1; "
-    
-  gotenberg:
-    image: gotenberg/gotenberg:8
-    container_name: gotenberg
-    environment:
-      - TZ
-      - UID=${UID}
-      - GID=${GID}
-    #ports:      - "3000:3000"
-    networks:
-      - n8n
 

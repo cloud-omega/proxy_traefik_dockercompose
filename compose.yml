@@ -24,7 +24,7 @@ include:
   #- compose/ojs.yml
   - compose/postgres.yml
   - compose/adminer.yml
-  #- compose/n8n.yml
+  - compose/n8n.yml
   #- compose/homeassistant.yml
   #- compose/anythingllm.yml
   - compose/portainer.yml
