@@ -1,8 +1,7 @@
 
 services:
   unblocker:
-    #image: marcoslkz/holy-unblocker:master
-    image: quiteafancyemerald/holy-unblocker
+    image: marcoslkz/holy-unblocker:master
     container_name: unblocker
     restart: unless-stopped
     environment:
