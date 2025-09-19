@@ -18,7 +18,7 @@ services:
       local:
 
     volumes:
-      - etc_wireguard:/etc/wireguard
+      - ${VOL_PROXY}/wg:/etc/wireguard
       - /lib/modules:/lib/modules:ro
     ports:
       - "51820:51820/udp"
@@ -41,6 +41,3 @@ services:
       homepage.href: "http://wg-easy:51821"
       homepage.description: "WireGuard (wg-easy)"
 
-
-volumes:
-  etc_wireguard:
