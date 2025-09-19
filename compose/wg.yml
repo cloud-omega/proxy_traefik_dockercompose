@@ -38,7 +38,7 @@ services:
       homepage.group: "System"
       homepage.name: "WireGuard"
       homepage.icon: "wireguard"
-      homepage.href: "http://wg-ease:51821"
+      homepage.href: "http://wg-easy:51821"
       homepage.description: "WireGuard (wg-easy)"
 
 
