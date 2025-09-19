@@ -13,9 +13,6 @@ networks:
     external: true
   local:
     external: true
-    dns:
-      - dns
-
 
 include:
   - compose/proxy.yml
