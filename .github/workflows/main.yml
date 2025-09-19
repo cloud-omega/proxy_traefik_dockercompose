@@ -37,7 +37,7 @@ jobs:
       VOL_OLLAMA: ${{ secrets.VOL_OLLAMA }}
       VOL_FILEBROWSER: /opt/files/filebrowser
       CROWDSEC_TRAEFIK: ${{ secrets.CROWDSEC_TRAEFIK }}
-      #ADMIN_USER: ${{ secrets.ADMIN_USER }}
+      ADMIN_USER: "" # ADMIN_USER
       KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
       FILE_PPTP: ${{ secrets.VOL_PROXY }}/pptp_user
       TAILSCALE_KEY: ${{secrets.TAILSCALE_KEY}}
@@ -102,6 +102,7 @@ jobs:
           #echo "${NOIP_USER} * ${NOIP_PASS} *" > /root/chap-secrets
           docker network create proxy_network --subnet "192.168.177.0/24" || true
           docker network create db --subnet "192.168.179.0/24" || true
+          docker network create local --subnet "192.168.180.0/24" || true
 
       - name: Update Docker Compose
         if: always()
