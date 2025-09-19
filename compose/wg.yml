@@ -9,14 +9,12 @@ services:
     #  - PASSWORD=uma_senha_forte
       - WG_HOST=${DOMAIN_NAME}
       - WG_PORT=51820
-      #- WG_DEFAULT_DNS=1.1.1.1
+      - WG_DEFAULT_DNS=192.168.180.254
       - WG_ALLOWED_IPS=10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
     image: ghcr.io/wg-easy/wg-easy
     container_name: wg-easy
     networks:
-      #wg:        ipv4_address: 10.42.42.42
       local:
-
     volumes:
       - ${VOL_PROXY}/wg:/etc/wireguard
       - /lib/modules:/lib/modules:ro

@@ -9,6 +9,7 @@ services:
     command: -k -S /local/127.0.0.11 --dhcp-option=option:dns-server,127.0.0.1
     #ports:      - "53:53/udp"
     networks:
-      - proxy_default
-      - local
+      local:
+        ipv4_address: 192.168.180.254
+
     restart: always
