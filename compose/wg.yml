@@ -10,8 +10,7 @@ services:
     image: ghcr.io/wg-easy/wg-easy:15
     container_name: wg-easy
     networks:
-      wg:
-        ipv4_address: 10.42.42.42
+      #wg:        ipv4_address: 10.42.42.42
       local:
 
     volumes:
