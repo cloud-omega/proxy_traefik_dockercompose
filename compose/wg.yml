@@ -1,13 +1,12 @@
 
 services:
   wg-easy:
-    #environment:
+    environment:
     #  Optional:
     #  - PORT=51821
     #  - HOST=0.0.0.0
-    #  - INSECURE=false
-
-    image: ghcr.io/wg-easy/wg-easy:15
+      - INSECURE=false
+    image: ghcr.io/wg-easy/wg-easy
     container_name: wg-easy
     networks:
       #wg:        ipv4_address: 10.42.42.42
@@ -27,9 +26,9 @@ services:
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
-      - net.ipv6.conf.all.disable_ipv6=1
-      #- net.ipv6.conf.all.forwarding=1
-      #- net.ipv6.conf.default.forwarding=1
+      - net.ipv6.conf.all.disable_ipv6=0
+      - net.ipv6.conf.all.forwarding=1
+      - net.ipv6.conf.default.forwarding=1
 
 volumes:
   etc_wireguard:
