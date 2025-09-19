@@ -1,0 +1,11 @@
+services:
+  wg-easy:
+    # sync container name and port according to Caddyfile
+    container_name: wg-easy
+    environment:
+      - PORT=80
+    # no need to publish the HTTP server anymore
+    ports:
+      - "51820:51820/udp"
+    network:
+      - local
