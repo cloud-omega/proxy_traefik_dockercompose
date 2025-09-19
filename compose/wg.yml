@@ -7,5 +7,5 @@ services:
     # no need to publish the HTTP server anymore
     ports:
       - "51820:51820/udp"
-    network:
+    networks: 
       - local
