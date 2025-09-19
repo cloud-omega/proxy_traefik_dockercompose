@@ -37,4 +37,5 @@ include:
   - compose/vaultwarden.yml
   - compose/noip.yml
   - compose/wg.yml
+  - compose/dns.yml
   #- compose/tailscale.yml
