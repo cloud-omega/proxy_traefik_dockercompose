@@ -26,6 +26,7 @@ x-n8n: &service-n8n
     - GENERIC_TIMEZONE="${TZ}"
     - N8N_DIAGNOSTICS_ENABLED=false
     - N8N_PERSONALIZATION_ENABLED=false
+    - N8N_SECURE_COOKIE=false
   networks:
     - local
     - proxy_default
