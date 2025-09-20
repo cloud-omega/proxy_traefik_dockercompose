@@ -1,0 +1,174 @@
+{
+  "name": "AI MCP",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "5b410409-5b0b-47bd-b413-5b9b1000a063",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        360,
+        20
+      ],
+      "webhookId": "a889d2ae-2159-402f-b326-5f61e90f602e"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=Você é um agente que usa MCP (model context protocol). Use o 'BuscarTool' para informações de ferramentas. Use 'ExecutarTool' para executar ferramentas."
+        }
+      },
+      "id": "29963449-1dc1-487d-96f2-7ff0a5c3cd97",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        560,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "cbaedf86-9153-4778-b893-a7e50d3e04ba",
+      "name": "OpenAI Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        520,
+        220
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "DIaU1P98PKdbPBgv",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 50
+      },
+      "id": "75481370-bade-4d90-a878-3a3b0201edcc",
+      "name": "Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        680,
+        220
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        820,
+        240
+      ],
+      "id": "6490c1a1-d4c8-45ab-bd73-1ddc55f5dc14",
+      "name": "BuscarTools",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "gjcBiKiiwLOS2g84",
+          "name": "CLIENT EVO"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeTool",
+        "toolName": "={{ $fromAI(\"toolName\", \"nome da tool a serr chamada\") }}",
+        "toolParameters": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Tool_Parameters', ``, 'json') }}"
+      },
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        960,
+        240
+      ],
+      "id": "cd724a24-3cf5-4394-8c3c-ee23f67ed9f4",
+      "name": "ExecutarTools",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "gjcBiKiiwLOS2g84",
+          "name": "CLIENT EVO"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BuscarTools": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ExecutarTools": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d10cb557-61ff-4fd1-8eb5-9992ce7801c6",
+  "meta": {
+    "templateId": "PT1i+zU92Ii5O2XCObkhfHJR5h9rNJTpiCIkYJk9jHU=",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9faa05acf07c9b6fbc8a10142cf2c2a6ec03fca8692b8d6cd7c6ad53aa9c8c50"
+  },
+  "id": "TSqMo5dZWOl5WjcI",
+  "tags": []
+}

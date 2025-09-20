@@ -1,0 +1,41 @@
+### MCP N8N + API WHATSAPP ###
+
+1- Instalar o Docker Desktop e Node
+
+2- Instalar N8N
+	- RUN:
+		> definir pasta | /home/node/.n8n
+		> definir variável
+			- GENERIC_TIMEZONE=America/Sao_Paulo | America/Sao_Paulo
+
+	- Abrir o N8N
+		> Download community nodes | n8n-nodes-mcp
+
+3- Instalar Evolution
+	- Download do Pacote
+		> docker compose up
+
+4- Instalar o MCP Server
+	- Download do Pacote
+		> npm i
+
+5- Criar o Node (usar o modelo ou fazer do zero)
+
+	- AI Agent
+		> configurar credenciais de API Key (OpenAi Model)
+		> configurar o prompt (AI Agent)
+			- Você é um agente que usa MCP (model context protocol). Use o 'BuscarTool' para informações de ferramentas. Use 'ExecutarTool' para executar ferramentas.
+
+	- MCP
+		> configurar credenciais
+			- listTools
+				> command: node
+				> arguments: /home/node/.n8n/index.js
+				> enviorment
+					EVOLUTION_INSTANCIA=
+					EVOLUTION_APIKEY=
+					EVOLUTION_API_BASE=
+
+			- executeTools
+				> Tool Name: {{ $fromAI("toolName", "nome da tool a serr chamada") }}
+				> Tool Parameter: Defined automatically by the model (AI)
