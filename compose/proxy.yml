@@ -111,7 +111,7 @@ services:
     volumes:
       - proxydata:/data
       - accesslog:/var/log/traefik
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      #- /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - proxy_default
       - sec 
