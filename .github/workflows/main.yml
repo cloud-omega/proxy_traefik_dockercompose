@@ -73,6 +73,7 @@ jobs:
       WHITELIST: ${{ secrets.GMAIL }}
       ZONE_ID: ${{ secrets.ZONE_ID_STUDIO }}
       TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
+      WATCHTOWER_HTTP_API_TOKEN: ${{ secrets.TUNNEL_TOKEN }}wWw1
       PUID: 1001
       PGID: 1001
 
@@ -112,13 +113,12 @@ jobs:
         run: |
           # cat compose.yml 
           printenv > $VOL_PROXY/.env
-
-      - name: Stop Docker Compose
-        if: always()
-        run: docker compose down --remove-orphans -v
-
+          
       - name: Run Docker Compose Up
-        run: docker compose up -d --wait #--force-recreate
+        if: always()
+        run: |
+          docker compose down --remove-orphans -v
+          docker compose up -d --wait #--force-recreate
         
       - name: Views logs
         run: docker compose logs --tail 30
