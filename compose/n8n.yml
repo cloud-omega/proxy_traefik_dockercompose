@@ -22,7 +22,7 @@ x-n8n: &service-n8n
     - N8N_PORT=5678
     - N8N_PROTOCOL=https
     - NODE_ENV=production
-    - WEBHOOK_URL=https://cloudomega.sytes.net
+    - WEBHOOK_URL=https://$NOIP_URL1/chat
     - GENERIC_TIMEZONE="${TZ}"
     - N8N_DIAGNOSTICS_ENABLED=false
     - N8N_PERSONALIZATION_ENABLED=false
@@ -60,7 +60,7 @@ services:
       - homepage.group=Tools
       - homepage.name=n8n
       - homepage.icon=n8n
-      - homepage.href=http://n8n.local
+      - homepage.href=http://n8n.local:5678
       - homepage.description=Plataforma de automação
         # homepage.widget.type=iframe
         # homepage.widget.url=http://n8n.local:5678
