@@ -6,7 +6,7 @@ services:
     environment:
       TZ: ${TZ}
       BOUNCER_KEY_TRAEFIK: ${CROWDSEC_TRAEFIK}
-      COLLECTIONS: crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules  crowdsecurity/http-cve  crowdsecurity/appsec-crs crowdsecurity/whitelist-good-actors 
+      COLLECTIONS: crowdsecurity/wordpress crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules  crowdsecurity/http-cve  crowdsecurity/appsec-crs crowdsecurity/whitelist-good-actors 
       #DISABLE_COLLECTIONS: crowdsecurity/http-probing crowdsecurity/http-crawl-non_statics 
       #ENROLL_INSTANCE_NAME:	${RUNNER_NAME}
       POSTOVERFLOWS: crowdsecurity/seo-bots-whitelist
@@ -87,9 +87,8 @@ services:
       - homepage.icon=traefik
       - homepage.href=http://proxy.local:8080
       - homepage.description=Reverse Proxy e Load Balancer
-      - homepage.widget.type=iframe
-      - homepage.widget.url=http://proxy.local:8080
-      - homepage.widget.height=400
+      - homepage.widget.type=traefik
+      - homepage.widget.url=http://proxy:8080
     links:
       - crowdsec
     depends_on:
