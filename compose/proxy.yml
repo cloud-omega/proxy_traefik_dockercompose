@@ -35,7 +35,7 @@ services:
       - TZ
     command:
       - --providers.docker.network=proxy_default
-      #- --providers.docker.endpoint='tcp://dockerproxy:2375'
+      - --providers.docker.endpoint='tcp://dockerproxy:2375'
       - --providers.docker.exposedbydefault=false
       - --providers.docker=true
       - --entrypoints.web.address=:80
@@ -82,6 +82,14 @@ services:
       #- traefik.frontend.headers.customResponseHeaders.X-Robots-Tag="none,noarchive,nosnippet,notranslate,noimageindex"
       #- traefik.frontend.headers.customResponseHeaders.X-Forwarded-Proto="https"
       #- traefik.frontend.headers.customResponseHeaders.Content-Security-Policy="default-src 'none'; script-src 'unsafe-inline' https:; frame-ancestors 'none';"
+      - homepage.group=Infra
+      - homepage.name=Traefik
+      - homepage.icon=traefik
+      - homepage.href=http://proxy.local:8080
+      - homepage.description=Reverse Proxy e Load Balancer
+      - homepage.widget.type=iframe
+      - homepage.widget.url=http://proxy.local:8080
+      - homepage.widget.height=400
     links:
       - crowdsec
     depends_on:
@@ -107,8 +115,6 @@ services:
     networks:
       - proxy_default
       - sec 
-networks:
-  sec:
 
 volumes:
   accesslog:

@@ -7,9 +7,19 @@ services:
         - SERVICES=1 # Allow access to viewing services (necessary when using Docker Swarm)
         - TASKS=1 # Allow access to viewing tasks (necessary when using Docker Swarm)
         - POST=0 # Disallow any POST operations (effectively read-only)
+        - NETWORKS=1
+        - SWARM=0
+        - NODES=0
+        - SECRETS=0
       #ports:        - 127.0.0.1:2375:2375
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
       restart: unless-stopped
       networks: 
-        - local
+        - sec
+      labels:
+        - homepage.group=Infra
+        - homepage.name=Docker Proxy
+        - homepage.icon=docker
+        - homepage.href=http://dockerproxy.local:2375
+        - homepage.description=Proxy seguro do Docker

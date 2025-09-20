@@ -20,7 +20,7 @@ x-n8n: &service-n8n
     - TZ
     - N8N_HOST=n8n.local
     - N8N_PORT=5678
-    - N8N_PROTOCOL=https
+    #- N8N_PROTOCOL=https
     - NODE_ENV=production
     - WEBHOOK_URL=https://$NOIP_URL1/chat
     - GENERIC_TIMEZONE="${TZ}"
