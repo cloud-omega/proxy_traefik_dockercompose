@@ -14,7 +14,10 @@ services:
       - homepage.group=System
       - homepage.name=watchtower
       - homepage.icon=watchtower
-      - homepage.href=http://watchtower:80
+      - homepage.href=http://watchtower.local:8080
       - homepage.description=Update images 
+      - homepage.widget.type=watchtower
+      - homepage.widget.url: http://watchtower.local:8080
+      #- homepage.widget.key: demotoken
     networks: 
       - local
