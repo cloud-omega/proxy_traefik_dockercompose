@@ -54,8 +54,8 @@ services:
       - --accesslog=true
       - --accesslog.filepath=/var/log/traefik/access.log
       - --providers.file.filename=/data/traefik.yml
-      - --api.dashboard=false
-      - --api.insecure=false
+      - --api.dashboard=true
+      - --api.insecure=true
       ###- --serverstransport.insecureskipverify=true
       ## plugins
       - --experimental.plugins.bouncer.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
