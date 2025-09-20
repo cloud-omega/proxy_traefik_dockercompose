@@ -35,7 +35,7 @@ services:
       - TZ
     command:
       - --providers.docker.network=proxy_default
-      - --providers.docker.endpoint='tcp://dockerproxy:2375'
+      - --providers.docker.endpoint=tcp://dockerproxy:2375
       - --providers.docker.exposedbydefault=false
       - --providers.docker=true
       - --entrypoints.web.address=:80
