@@ -1,0 +1,101 @@
+services: 
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=n8n-postgres
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=<SUA_SENHA_POSTGRES>
+      - N8N_HOST=cloudomega.syte
+      - N8N_PROTOCOL=https
+      - WEBHOOK_URL=https://${NOIP_URL1}
+      - N8N_BASIC_AUTH_ACTIVE=false # Defina como true para ativar autenticação
+      - N8N_AI_AGENT_ENABLED=true
+      - N8N_AI_AGENT_OPENAI_API_KEY=<SUA_CHAVE_API_OPENAI> # Insira sua chave
+      - N8N_ENCRYPTION_KEY=<CHAVE_DE_CRIPTOGRAFIA> # Chave de criptografia para credenciais
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+    networks:
+      - traefik-public
+      - n8n-internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.n8n.rule=Host(`cloudomega.syte`)"
+      - "traefik.http.routers.n8n.entrypoints=websecure"
+      - "traefik.http.routers.n8n.tls.certresolver=letsencrypt"
+      - "traefik.http.services.n8n.loadbalancer.server.port=5678"
+      - "homepage.group=Tools"
+      - "homepage.name=n8n"
+      - "homepage.icon=n8n.png"
+      - "homepage.href=http://n8n.local:5678"
+      - "homepage.description=Fluxos de trabalho"
+
+
+version: "3.8"
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    restart: always
+    environment:
+      - N8N_HOST=n8n.local
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=https://cloud.vps.com/
+      - N8N_EDITOR_BASE_URL=https://cloud.vps.com
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER_FILE=/run/secrets/n8n_basic_auth_user
+      - N8N_BASIC_AUTH_PASSWORD_FILE=/run/secrets/n8n_basic_auth_password
+      # Example for API keys using Docker secrets
+      - FACEBOOK_API_KEY_FILE=/run/secrets/facebook_api_key
+      - INSTAGRAM_API_KEY_FILE=/run/secrets/instagram_api_key
+      - WHATSAPP_API_KEY_FILE=/run/secrets/whatsapp_api_key
+      - KEYCLOAK_CLIENT_SECRET_FILE=/run/secrets/keycloak_client_secret
+      - CANVAS_API_KEY_FILE=/run/secrets/canvas_api_key
+      - GOOGLE_DRIVE_CLIENT_SECRET_FILE=/run/secrets/google_drive_client_secret
+      - GOOGLE_DRIVE_CLIENT_ID_FILE=/run/secrets/google_drive_client_id
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    secrets:
+      - n8n_basic_auth_user
+      - n8n_basic_auth_password
+      - facebook_api_key
+      - instagram_api_key
+      - whatsapp_api_key
+      - keycloak_client_secret
+      - canvas_api_key
+      - google_drive_client_secret
+      - google_drive_client_id
+
+volumes:
+  n8n_data:
+
+secrets:
+  n8n_basic_auth_user:
+    file: ./secrets/n8n_basic_auth_user
+  n8n_basic_auth_password:
+    file: ./secrets/n8n_basic_auth_password
+  facebook_api_key:
+    file: ./secrets/facebook_api_key
+  instagram_api_key:
+    file: ./secrets/instagram_api_key
+  whatsapp_api_key:
+    file: ./secrets/whatsapp_api_key
+  keycloak_client_secret:
+    file: ./secrets/keycloak_client_secret
+  canvas_api_key:
+    file: ./secrets/canvas_api_key
+  google_drive_client_secret:
+    file: ./secrets/google_drive_client_secret
+  google_drive_client_id:
+    file: ./secrets/google_drive_client_id
+    
+    
