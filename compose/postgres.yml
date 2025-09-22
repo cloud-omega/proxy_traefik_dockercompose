@@ -23,7 +23,6 @@ services:
       - homepage.description=Database local 
     networks: 
       - db
-      - local
 
 volumes:
   postgres_storage:
