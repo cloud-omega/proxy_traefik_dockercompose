@@ -6,14 +6,14 @@ services:
     environment:
       - TZ
       - WATCHTOWER_LOG_LEVEL=warn
-      - DOCKER_HOST=tcp://dockerproxy:2375
+      #- DOCKER_HOST=tcp://dockerproxy:2375
       - WATCHTOWER_MONITOR_ONLY=true
       - WATCHTOWER_HTTP_API_UPDATE=true
       - WATCHTOWER_HTTP_API_METRICS=true
       - WATCHTOWER_HTTP_API_TOKEN
       - WATCHTOWER_HTTP_API_PERIODIC_POLLS=true
       - DOCKER_TLS_VERIFY=true
-    #volumes:      - /var/run/docker.sock:/var/run/docker.sock
+    volumes:      - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 3000 --http-api-update
     labels:
       - homepage.group=System
