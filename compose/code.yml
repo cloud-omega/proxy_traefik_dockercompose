@@ -1,13 +1,13 @@
 
 services:
   code:
-    image: code-server:latest
+    image: codercom/code-server:latest
     container_name: code
     restart: unless-stopped
     #ports:      - "8080:8080"
     volumes:
-      - ./code-server/config:/home/coder/.config/code-server
-      - ./code-server/projects:/home/coder/projects
+      #- ./code-server/config:/home/coder/.config/code-server
+      - $PROJECTS_GIT:/home/coder/projects
     environment:
       - PUID=1000
       - PGID=1000

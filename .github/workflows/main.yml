@@ -36,6 +36,7 @@ jobs:
       VOL_CROWDSECETC: ${{ secrets.VOL_PROXY }}/crowdsec_etc
       VOL_OLLAMA: ${{ secrets.VOL_OLLAMA }}
       VOL_FILEBROWSER: /opt/files/filebrowser
+      PROJECTS_GIT: /home/coder/project
       CROWDSEC_TRAEFIK: ${{ secrets.CROWDSEC_TRAEFIK }}
       ADMIN_USER: "" # ADMIN_USER
       KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
