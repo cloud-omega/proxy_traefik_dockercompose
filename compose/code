@@ -1,0 +1,22 @@
+
+services:
+  code:
+    image: code-server:latest
+    container_name: code
+    restart: unless-stopped
+    #ports:      - "8080:8080"
+    volumes:
+      - ./code-server/config:/home/coder/.config/code-server
+      - ./code-server/projects:/home/coder/projects
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ
+      - DOCKER_MODS=linuxserver/mods:code-server-vscodium
+    labels:
+      homepage.group: 
+      dev 
+      homepage.name: "Code-Server"
+      homepage.icon: "vscode.png"
+      homepage.href: "http://code-server.local:8080"
+      homepage.description: "Ambiente de desenvolvimento no navegador"

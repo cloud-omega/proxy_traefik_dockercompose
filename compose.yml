@@ -40,4 +40,6 @@ include:
   - compose/noip.yml
   - compose/wg.yml
   - compose/dns.yml
+  - compose/dozzle.yml
+  - compose/code.yml
   #- compose/tailscale.yml

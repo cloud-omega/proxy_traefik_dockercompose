@@ -1,0 +1,15 @@
+services:
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      homepage.group: system
+      homepage.name: "Dozzle"
+      homepage.icon: "docker.png"
+      homepage.href: "http://dozzle.local:8080"
+      homepage.description: "Logs"
