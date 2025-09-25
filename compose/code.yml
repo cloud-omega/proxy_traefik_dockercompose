@@ -8,12 +8,12 @@ services:
     volumes:
       #- ./code-server/config:/home/coder/.config/code-server
       - $PROJECTS_GIT:/home/coder/projects
-      - PASSWORD=dev@456
     environment:
       - PUID=1000
       - PGID=1000
       - TZ
       - DOCKER_MODS=linuxserver/mods:code-server-vscodium
+      - PASSWORD=dev@234
     networks: 
       - local
     labels:
