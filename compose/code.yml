@@ -13,6 +13,8 @@ services:
       - PGID=1000
       - TZ
       - DOCKER_MODS=linuxserver/mods:code-server-vscodium
+    networks: 
+      - local
     labels:
       homepage.group: dev 
       homepage.name: "Code-Server"
