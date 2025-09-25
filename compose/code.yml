@@ -8,6 +8,7 @@ services:
     volumes:
       #- ./code-server/config:/home/coder/.config/code-server
       - $PROJECTS_GIT:/home/coder/projects
+      - PASSWORD=dev@456
     environment:
       - PUID=1000
       - PGID=1000
@@ -19,5 +20,5 @@ services:
       homepage.group: dev 
       homepage.name: "Code-Server"
       homepage.icon: "vscode.png"
-      homepage.href: "http://code-server.local:8080"
+      homepage.href: "http://code.local:8080"
       homepage.description: "Ambiente de desenvolvimento no navegador"
