@@ -60,6 +60,7 @@ jobs:
       POSTGRES_DB: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       OLLAMA_APIKEY: ${{ secrets.OLLAMA_APIKEY }}
+      PORTAINER_TOKEN: ${{ secrets.PORTAINER_TOKEN }}
       OLLAMA_BASE_URL: "http://ollama:11434"
       OLLAMA_MODEL: "qwen2.5-coder:7b"
       HTTP_TIMEOUT: 60

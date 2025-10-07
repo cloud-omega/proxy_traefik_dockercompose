@@ -6,7 +6,7 @@ services:
     environment:
       TZ: ${TZ}
       BOUNCER_KEY_TRAEFIK: ${CROWDSEC_TRAEFIK}
-      COLLECTIONS: crowdsecurity/wordpress crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules  crowdsecurity/http-cve  crowdsecurity/appsec-crs crowdsecurity/whitelist-good-actors 
+      COLLECTIONS: inherent-io/keycloak crowdsecurity/wordpress crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules  crowdsecurity/http-cve  crowdsecurity/appsec-crs crowdsecurity/whitelist-good-actors 
       #DISABLE_COLLECTIONS: crowdsecurity/http-probing crowdsecurity/http-crawl-non_statics 
       #ENROLL_INSTANCE_NAME:	${RUNNER_NAME}
       POSTOVERFLOWS: crowdsecurity/seo-bots-whitelist
@@ -23,7 +23,7 @@ services:
       - crowdsec_etc:/etc/crowdsec
       - accesslog:/var/log/traefik:ro
       #- ./acquis.yaml:/etc/crowdsec/acquis.yaml:ro #CICD
-      #- /var/log/auth.log:/var/log/auth.log:ro
+      - /var/log/auth.log:/var/log/auth.log:ro
       #- /var/log/crowdsec:/var/log/crowdsec:ro
     restart: unless-stopped
 
