@@ -17,7 +17,7 @@ services:
       - homepage.href=https://portainer:9443
       - homepage.description=Docker manager 
       - homepage.widget.type=portainer
-      - homepage.widget.url=https://portainer:9443
+      - homepage.widget.url=http://portainer:9000
       - homepage.widget.key=${PORTAINER_TOKEN}
       - homepage.widget.env=1
       - homepage.widget.kubernetes=false
