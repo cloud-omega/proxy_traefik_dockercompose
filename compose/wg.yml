@@ -39,6 +39,6 @@ services:
       homepage.href: "http://wg-easy:51821"
       homepage.description: "WireGuard (wg-easy)"
       homepage.widget.type: wgeasy
-      homepage.widget.url: http://wg-easy:8080
+      homepage.widget.url: http://wg-easy:51821
       homepage.widget.version: 2
       homepage.widget.threshold: 2
