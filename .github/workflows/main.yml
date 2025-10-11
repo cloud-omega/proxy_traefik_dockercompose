@@ -8,41 +8,53 @@ permissions:
   contents: write
 
 jobs:
-  #readme:
-    #runs-on: self-hosted
-    #steps:
-        #- name: action-docs
-          #uses: Dirrk/action-docs@v1.0.1
-          #with:
-            # Directory that contains the action.yml and README.md
-            #action_docs_working_dir: .github/workflows # optional, default is .
-            # Template file to use for rendering the markdown docs
-            #action_docs_template_file: # optional, default is /src/default_template.tpl
-            # If true it will commit and push the changes
-            #action_docs_git_push: # optional, default is true
-            # Commit message
-            #action_docs_git_commit_message: # optional, default is action-docs: automated action
-          
   run:
     runs-on: self-hosted    
     env:
+      # === Configurações Globais ===
       TZ: ${{ secrets.TZ }}
-      MAILMANAGER: ${{ secrets.MAILMANAGER }}
-      SITE_PATH: ${{ secrets.PORTAINER_PATH }}
       DOMAIN_NAME: ${{ secrets.NOIP_URL1 }}
+      SITE_PATH: ${{ secrets.PORTAINER_PATH }}
+      PUID: 1001
+      PGID: 1001
+      ADMIN_USER: "" # ADMIN_USER
+      PROJECTS_GIT: /opt/git
+
+      # === Volumes ===
       VOL_PROXY: ${{ secrets.VOL_PROXY }}
       VOL_PORTAINER: ${{ secrets.VOL_PORTAINER }}
       VOL_CROWDSECDB: ${{ secrets.VOL_PROXY }}/crowdsec_data
       VOL_CROWDSECETC: ${{ secrets.VOL_PROXY }}/crowdsec_etc
       VOL_OLLAMA: ${{ secrets.VOL_OLLAMA }}
       VOL_FILEBROWSER: /opt/files/filebrowser
-      PROJECTS_GIT: /opt/git
+      VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
+      VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
+      VOL_OHANDS: ${{ secrets.VOL_PROXY }}/openhands
+      VOL_HOMEPAGE: ${{ secrets.VOL_PROXY }}/homepage
+      VOL_POSTGRES: ${{ secrets.VOL_POSTGRES }}
+
+      # === Traefik & CrowdSec ===
+      MAILMANAGER: ${{ secrets.MAILMANAGER }}
       CROWDSEC_TRAEFIK: ${{ secrets.CROWDSEC_TRAEFIK }}
-      ADMIN_USER: "" # ADMIN_USER
+
+      # === Banco de Dados (Postgres) ===
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
+      # === Keycloak ===
       KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
+
+      # === Wireguard / VPN ===
       FILE_PPTP: ${{ secrets.VOL_PROXY }}/pptp_user
+
+      # === Tailscale ===
       TAILSCALE_KEY: ${{secrets.TAILSCALE_KEY}}
+
+      # === Vaultwarden (Bitwarden) ===
       VAULTWARDEN_ADMIN_TOKEN: ${{secrets.VAULTWARDEN_ADMIN_TOKEN}}
+
+      # === DDNS (No-IP, Dynu, etc) ===
       NOIP_USERNAME: ${{secrets.NOIP_USER}}
       NOIP_PASSWORD: ${{secrets.NOIP_PASS}}
       NOIP_URL1: ${{secrets.NOIP_URL1}}
@@ -51,23 +63,16 @@ jobs:
       DYNU_SITE1: ${{secrets.DYNU_SITE1}}
       DYNV6_SITE1: ${{secrets.DYNV6_SITE1}}
       DYNV6_SITE2: ${{secrets.DYNV6_SITE2}}
-      VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
-      VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
-      VOL_OHANDS: ${{ secrets.VOL_PROXY }}/openhands
-      VOL_HOMEPAGE: ${{ secrets.VOL_PROXY }}/homepage
-      VOL_POSTGRES: ${{ secrets.VOL_POSTGRES }}
-      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_DB: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
+      # === Ollama ===
       OLLAMA_APIKEY: ${{ secrets.OLLAMA_APIKEY }}
-      PORTAINER_TOKEN: ${{ secrets.PORTAINER_TOKEN }}
       OLLAMA_BASE_URL: "http://ollama:11434"
       OLLAMA_MODEL: "qwen2.5-coder:7b"
-      HTTP_TIMEOUT: 60
-      POLLING_INTERVAL: 10
-      PROPAGATION_TIMEOUT: 3600
-      TTL: 300
-      LOG_LEVEL: INFO
+
+      # === Portainer ===
+      PORTAINER_TOKEN: ${{ secrets.PORTAINER_TOKEN }}
+
+      # === Cloudflare Tunnels ===
       ROOT_DOMAIN: ${{ secrets.DOMAIN_STUDIO }}
       PROVIDERS_GOOGLE_CLIENT_ID: ${{ secrets.PROVIDERS_GOOGLE_CLIENT_ID }}
       PROVIDERS_GOOGLE_CLIENT_SECRET: ${{ secrets.PROVIDERS_GOOGLE_CLIENT_SECRET }}
@@ -75,9 +80,16 @@ jobs:
       WHITELIST: ${{ secrets.GMAIL }}
       ZONE_ID: ${{ secrets.ZONE_ID_STUDIO }}
       TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
+
+      # === Watchtower ===
       WATCHTOWER_HTTP_API_TOKEN: ${{ secrets.TUNNEL_TOKEN }}wWw1
-      PUID: 1001
-      PGID: 1001
+
+      # === DNS Challenge Settings ===
+      HTTP_TIMEOUT: 60
+      POLLING_INTERVAL: 10
+      PROPAGATION_TIMEOUT: 3600
+      TTL: 300
+      LOG_LEVEL: INFO
 
     steps:
       - uses: actions/checkout@v5
@@ -87,13 +99,7 @@ jobs:
             compose
             conf
 
-      #- name: Login to Docker Hub (optional)
-      #  run: |
-      #    echo "$DOCKER_HUB_USERNAME:$DOCKER_HUB_PASSWORD" | docker login --username --password-stdin
-
-
       - name: Prepare env
-        if: always()
         run: |
           mkdir -pv $VOL_OHANDS $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_N8N $VOL_HA $VOL_POSTGRES
           cat conf/ha-conf.yaml > $VOL_HA/configuration.yaml
@@ -102,31 +108,79 @@ jobs:
           sed -i "s,REPLACE_DOMAIN,${DOMAIN_NAME},g" conf/traefik.yml         
           cat conf/traefik.yml > $VOL_PROXY/traefik.yml
           cat conf/acquis.yaml > $VOL_CROWDSECETC/acquis.yaml
-          #echo "${NOIP_USER} * ${NOIP_PASS} *" > /root/chap-secrets
           docker network create proxy_network --subnet "192.168.177.0/24" || true
           docker network create db --subnet "192.168.179.0/24" || true
           docker network create local --subnet "192.168.180.0/24" || true
 
-      - name: Update Docker Compose
-        if: always()
+      - name: Update Docker Images
         run: docker compose pull
 
-      - name: Env file
+      - name: Create explicit .env file
         run: |
-          # cat compose.yml 
-          printenv > $VOL_PROXY/.env
+          cat << EOF > $VOL_PROXY/.env
+          TZ=${TZ}
+          DOMAIN_NAME=${DOMAIN_NAME}
+          SITE_PATH=${SITE_PATH}
+          PUID=${PUID}
+          PGID=${PGID}
+          ADMIN_USER=${ADMIN_USER}
+          PROJECTS_GIT=${PROJECTS_GIT}
+          VOL_PROXY=${VOL_PROXY}
+          VOL_PORTAINER=${VOL_PORTAINER}
+          VOL_CROWDSECDB=${VOL_CROWDSECDB}
+          VOL_CROWDSECETC=${VOL_CROWDSECETC}
+          VOL_OLLAMA=${VOL_OLLAMA}
+          VOL_FILEBROWSER=${VOL_FILEBROWSER}
+          VOL_HA=${VOL_HA}
+          VOL_N8N=${VOL_N8N}
+          VOL_OHANDS=${VOL_OHANDS}
+          VOL_HOMEPAGE=${VOL_HOMEPAGE}
+          VOL_POSTGRES=${VOL_POSTGRES}
+          MAILMANAGER=${MAILMANAGER}
+          CROWDSEC_TRAEFIK=${CROWDSEC_TRAEFIK}
+          POSTGRES_USER=${POSTGRES_USER}
+          POSTGRES_DB=${POSTGRES_DB}
+          POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+          KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+          FILE_PPTP=${FILE_PPTP}
+          TAILSCALE_KEY=${TAILSCALE_KEY}
+          VAULTWARDEN_ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
+          NOIP_USERNAME=${NOIP_USERNAME}
+          NOIP_PASSWORD=${NOIP_PASSWORD}
+          NOIP_URL1=${NOIP_URL1}
+          NOIP_URL2=${NOIP_URL2}
+          NOIP_URL3=${NOIP_URL3}
+          DYNU_SITE1=${DYNU_SITE1}
+          DYNV6_SITE1=${DYNV6_SITE1}
+          DYNV6_SITE2=${DYNV6_SITE2}
+          OLLAMA_APIKEY=${OLLAMA_APIKEY}
+          OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
+          OLLAMA_MODEL=${OLLAMA_MODEL}
+          PORTAINER_TOKEN=${PORTAINER_TOKEN}
+          ROOT_DOMAIN=${ROOT_DOMAIN}
+          PROVIDERS_GOOGLE_CLIENT_ID=${PROVIDERS_GOOGLE_CLIENT_ID}
+          PROVIDERS_GOOGLE_CLIENT_SECRET=${PROVIDERS_GOOGLE_CLIENT_SECRET}
+          SECRET=${SECRET}
+          WHITELIST=${WHITELIST}
+          ZONE_ID=${ZONE_ID}
+          TUNNEL_TOKEN=${TUNNEL_TOKEN}
+          WATCHTOWER_HTTP_API_TOKEN=${WATCHTOWER_HTTP_API_TOKEN}
+          HTTP_TIMEOUT=${HTTP_TIMEOUT}
+          POLLING_INTERVAL=${POLLING_INTERVAL}
+          PROPAGATION_TIMEOUT=${PROPAGATION_TIMEOUT}
+          TTL=${TTL}
+          LOG_LEVEL=${LOG_LEVEL}
+          EOF
           
-      - name: Run Docker Compose Up
-        if: always()
+      - name: Deploy Docker Stack
         run: |
-          docker compose down --remove-orphans -v
-          docker compose up -d --wait #--force-recreate
+          docker compose up -d --remove-orphans --wait
         
-      - name: Views logs
+      - name: View logs
         run: docker compose logs --tail 30
 
-      - name: crowdsec update
+      - name: CrowdSec Hub Update
         run: |
           docker compose exec crowdsec cscli hub update
           docker compose exec crowdsec cscli hub upgrade
-          docker compose up -d     
+          docker compose up -d

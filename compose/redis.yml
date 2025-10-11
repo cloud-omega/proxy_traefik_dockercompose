@@ -1,0 +1,15 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - cache
+    labels:
+      - homepage.group=Database
+      - homepage.name=Redis
+      - homepage.icon=redis
+      - homepage.description=In-memory data store
+
+networks:
+  cache:

@@ -1,9 +1,14 @@
 ---
 services:
   vaultwarden:
-    image: vaultwarden/server:latest
+    image: vaultwarden/server:alpine
     container_name: vaultwarden
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/alive"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
     environment:
       DOMAIN: https://${NOIP_URL3}
       SIGNUPS_ALLOWED: "false"
@@ -13,13 +18,22 @@ services:
       - $VOL_PROXY/vaultwarden_data:/data
     labels:
       - traefik.enable=true
-      #- traefik.http.services.wault.loadbalancer.server.port=3000
-      - traefik.http.routers.wault.tls.certresolver=letsencrypt
-      - traefik.frontend.entryPoints=web,websecure
-      - traefik.http.routers.wault.tls=true
-      - traefik.http.routers.wault.tls.certresolver=letsencrypt
       - traefik.docker.network=proxy_default
-      - traefik.http.routers.wault.rule=Host(`${NOIP_URL3}`) # && ( PathPrefix(`/proxy`) )
+
+      # --- Roteador Principal para o Cofre ---
+      - traefik.http.routers.vaultwarden.rule=Host(`${NOIP_URL3}`)
+      - traefik.http.routers.vaultwarden.entrypoints=websecure
+      - traefik.http.routers.vaultwarden.tls.certresolver=letsencrypt
+      - traefik.http.services.vaultwarden.loadbalancer.server.port=80
+
+      # --- Roteador Seguro para a Página de Administração ---
+      - traefik.http.routers.vaultwarden-admin.rule=Host(`${NOIP_URL3}`) && PathPrefix(`/admin`)
+      - traefik.http.routers.vaultwarden-admin.entrypoints=websecure
+      - traefik.http.routers.vaultwarden-admin.tls.certresolver=letsencrypt
+      - traefik.http.routers.vaultwarden-admin.middlewares=admin-ip-whitelist@docker
+      - traefik.http.middlewares.admin-ip-whitelist.ipwhitelist.sourcerange=10.8.0.0/24, 127.0.0.1/32
+
+      # --- Labels para o Homepage ---
       - homepage.group=System
       - homepage.name=Vaultwarden
       - homepage.icon=mdi-shield-key
@@ -27,5 +41,3 @@ services:
       - homepage.description="Gerenciador de senhas"
     networks: 
       - proxy_default
-        #volumes:      - $VOL_PROXY/wault:/app/config 
-
