@@ -15,7 +15,10 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
       KC_PROXY_HEADERS: forwarded
 
-    command: start --optimized
+    command:
+      - /bin/sh
+      - -c
+      - "/opt/keycloak/bin/kc.sh build && /opt/keycloak/bin/kc.sh start --optimized"
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
