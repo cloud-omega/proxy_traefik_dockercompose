@@ -13,13 +13,9 @@ services:
       KC_HEALTH_ENABLED: true
       KC_BOOTSTRAP_ADMIN_USERNAME: ${ADMIN_USER}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
-      KC_PROXY: edge
-      KC_PROXY_ADDRESS_FORWARDING: "true"
       KC_PROXY_HEADERS: forwarded
-      KC_HTTP_ENABLED: "true" 
-      KC_HOSTNAME_STRICT_HTTPS: "false"
 
-    command: start
+    command: start --optimized
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
