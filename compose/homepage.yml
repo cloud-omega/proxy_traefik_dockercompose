@@ -1,11 +1,10 @@
 services:
   homepage:
-    image: ghcr.io/gethomepage/homepage:v0.8.12 # Versão fixada para estabilidade
+    image: ghcr.io/gethomepage/homepage
     container_name: homepage
     volumes:
       - $VOL_HOMEPAGE:/app/config
     environment:
-      # Considere restringir os hosts por segurança, e.g., HOMEPAGE_ALLOWED_HOSTS: "example.com,*.example.com"
       HOMEPAGE_ALLOWED_HOSTS: "*"
       PUID: $PUID
       PGID: $PGID
@@ -15,17 +14,12 @@ services:
     restart: unless-stopped # Garante que o serviço reinicie automaticamente
     healthcheck: # Opcional, mas recomendado
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/healthcheck"]
-      interval: 30s
+      interval: 1m
       timeout: 10s
       retries: 3
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.homepage.rule=Host(`${URL_HOMEPAGE}`)
-      - traefik.http.routers.homepage.entrypoints=websecure
-      - traefik.http.routers.homepage.tls.certresolver=letsencrypt
-      - traefik.http.services.homepage.loadbalancer.server.port=3000
       - homepage.group=System
       - homepage.name=Homepage
       - homepage.icon=homepage
-      - homepage.href=https://${URL_HOMEPAGE}
-      - homepage.description=Dashboard
+      - homepage.href=http://homepage.local:3000
+      - homepage.description=Tools

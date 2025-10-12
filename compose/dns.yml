@@ -1,15 +1,25 @@
 ---
 services:
   dns:
-    image: dockurr/dnsmasq
-    environment:
-    - DNS1=127.0.0.11
-    - DNS2=10.0.0.20
+    image: dockurr/dnsmasq:latest # Mantida a versão 'latest' conforme solicitado
     container_name: dns
-    command: -k -S /local/127.0.0.11 --dhcp-option=option:dns-server,127.0.0.1
-    #ports:      - "53:53/udp"
+    environment:
+      - DNS1=127.0.0.11 # DNS interno do Docker
+      - DNS2=10.0.0.20   # Seu outro servidor DNS
+    # O comando foi simplificado para remover opções de DHCP desnecessárias
+    # e adicionar logs para facilitar a depuração.
+    command: --log-queries --log-facility=-
     networks:
       local:
         ipv4_address: 192.168.180.254
-
-    restart: always
+    restart: unless-stopped # Política de reinício mais segura
+    healthcheck:
+      test: ["CMD", "nslookup", "-timeout=2", "google.com"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    labels:
+      - homepage.group=Network
+      - homepage.name=DNS Server
+      - homepage.icon=dns
+      - homepage.description=dnsmasq (dns)
