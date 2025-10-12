@@ -1,6 +1,6 @@
 services:
   keycloak_web:
-    image: quay.io/keycloak/keycloak
+    image: quay.io/keycloak/keycloak:26.4.0
     container_name: keycloak_web
     environment:
       KC_DB: postgres 
@@ -15,11 +15,11 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
       KC_PROXY: edge
       KC_PROXY_ADDRESS_FORWARDING: "true"
-      KC_PROXY_HEADERS: forwarded 
+      KC_PROXY_HEADERS: forwarded
+      KC_HTTP_ENABLED: "true" 
+      KC_HOSTNAME_STRICT_HTTPS: "false"
 
-
-
-    command: start-dev
+    command: start
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
@@ -33,10 +33,21 @@ services:
       - homepage.group=System
       - homepage.name=keycloak
       - homepage.icon=keycloak
-      - homepage.href=http://keycloak:8080
+      - homepage.href=https://${NOIP_URL2}
       - homepage.description=Auth 
     networks: 
       - local
       - proxy_default
       - db
+    volumes:
+      - keycloak_data:/opt/keycloak/data/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  keycloak_data:
 
