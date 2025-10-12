@@ -6,9 +6,9 @@ services:
     environment:
       - DNS1=127.0.0.11 # DNS interno do Docker
       - DNS2=10.0.0.20   # Seu outro servidor DNS
-    # O comando foi simplificado para remover opções de DHCP desnecessárias
-    # e adicionar logs para facilitar a depuração.
-    command: --log-queries --log-facility=-
+    # O comando foi ajustado para restaurar a resolução de domínio local
+    # e manter os logs para facilitar a depuração.
+    command: --server=/local/127.0.0.11 --log-queries --log-facility=-
     networks:
       local:
         ipv4_address: 192.168.180.254
