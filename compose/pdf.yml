@@ -17,4 +17,3 @@ services:
       - NODE_ENV='production'
     networks: 
       - local
-        #volumes:      - $VOL_PROXY/unblocker:/app/config 

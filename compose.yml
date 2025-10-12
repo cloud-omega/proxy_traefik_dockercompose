@@ -37,7 +37,7 @@ include:
   - compose/unblocker.yml
   - compose/pdf.yml
   - compose/dockerproxy.yml
-  #- compose/vaultwarden.yml
+  - compose/vaultwarden.yml
   - compose/noip.yml
   - compose/wg.yml
   - compose/dns.yml
