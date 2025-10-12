@@ -6,22 +6,30 @@ services:
     restart: unless-stopped
     environment:
       - TZ
-      - NODE_ENV='production'
+      - NODE_ENV=production
+    security_opt:
+      - no-new-privileges:true # Aumenta a segurança
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
     labels:
       - traefik.enable=true
-      #- traefik.http.services.unblocker.loadbalancer.server.port=3000
-      - traefik.http.routers.unblocker.tls.certresolver=letsencrypt
-      - traefik.frontend.entryPoints=web,websecure
+      - traefik.docker.network=proxy_default
+      # A regra foi ajustada para usar uma variável de ambiente específica.
+      # Crie a variável NOIP_URL1 no seu .env (ex: NOIP_URL1=proxy.seu.dominio)
+      - traefik.http.routers.unblocker.rule=Host(`${NOIP_URL1}`)
+      - traefik.http.routers.unblocker.entrypoints=websecure
       - traefik.http.routers.unblocker.tls=true
       - traefik.http.routers.unblocker.tls.certresolver=letsencrypt
-      - traefik.docker.network=proxy_default
-      - traefik.http.routers.unblocker.rule=Host(`${DOMAIN_NAME}`) # && ( PathPrefix(`/proxy`) )
-      - homepage.group=System
-      - homepage.name=home
-      - homepage.icon=proxy
-      - homepage.href=https://cloudomega.sytes.net
-      - homepage.description=HOME
-    networks: 
+      - traefik.http.services.unblocker.loadbalancer.server.port=3000
+      # Labels do Homepage ajustados
+      - homepage.group=Network
+      - homepage.name=Unblocker
+      - homepage.icon=shield-lock
+      - homepage.href=https://${NOIP_URL1}
+      - homepage.description=Web Proxy
+    networks:
       - proxy_default
-      - local
-        #volumes:      - $VOL_PROXY/unblocker:/app/config 
+      - local 
