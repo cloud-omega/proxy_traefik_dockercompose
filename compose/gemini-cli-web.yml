@@ -1,0 +1,32 @@
+services:
+  gemini-cli-web:
+    image: civicactions/docker-gemini
+    container_name: gemini-cli-web
+    restart: unless-stopped
+    command: gemini-gui --hostname=0.0.0.0
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - gemini_data:/home/node/app
+    networks:
+      - proxy_default
+      - local
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy_default"
+      - "traefik.http.routers.gemini-web.rule=Host(`gemini.${ROOT_DOMAIN}`)"
+      - "traefik.http.routers.gemini-web.entrypoints=websecure"
+      - "traefik.http.routers.gemini-web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.gemini-web.loadbalancer.server.port=8000"
+      - "homepage.group=AI"
+      - "homepage.name=Gemini Web"
+      - "homepage.icon=gemini"
+      - "homepage.href=https://gemini.${ROOT_DOMAIN}"
+      - "homepage.description=Gemini CLI Web Interface"
+
+volumes:
+  gemini_data:
+    driver_opts:
+      type: none
+      device: "${VOL_GEMINI}"
+      o: bind
