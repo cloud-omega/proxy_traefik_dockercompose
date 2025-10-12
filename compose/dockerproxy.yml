@@ -1,22 +1,38 @@
 services:
     dockerproxy:
-      image: ghcr.io/tecnativa/docker-socket-proxy:latest
+      image: ghcr.io/tecnativa/docker-socket-proxy:0.2.0 # 1. Pinned version for security and stability
       container_name: dockerproxy
+      read_only: true # 3. Make root filesystem read-only
+      cap_drop: # 4. Drop all linux capabilities
+        - ALL
       environment:
-        - CONTAINERS=1 # Allow access to viewing containers
-        - SERVICES=1 # Allow access to viewing services (necessary when using Docker Swarm)
-        - TASKS=1 # Allow access to viewing tasks (necessary when using Docker Swarm)
-        - POST=0 # Disallow any POST operations (effectively read-only)
+        # 2. Grant access only to what Traefik needs.
+        # More info: https://github.com/Tecnativa/docker-socket-proxy#access-control
+        - CONTAINERS=1
         - NETWORKS=1
+        - EVENTS=1 # Traefik needs this to detect changes
+        # Deny all other access
+        - SERVICES=0
+        - TASKS=0
+        - VOLUMES=0
+        - SECRETS=0
         - SWARM=0
         - NODES=0
-        - SECRETS=0
+        - POST=0 # Disallow any POST operations (effectively read-only)
       #ports:        - 127.0.0.1:2375:2375
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
       restart: unless-stopped
       networks: 
         - sec
+      deploy: # 5. Add resource limits
+        resources:
+          limits:
+            cpus: '0.50'
+            memory: 128M
+          reservations:
+            cpus: '0.25'
+            memory: 64M
       labels:
         - homepage.group=Infra
         - homepage.name=Docker Proxy
