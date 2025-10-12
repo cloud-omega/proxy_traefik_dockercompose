@@ -11,8 +11,8 @@ services:
     networks:
       - local
       - sec
-    restart: unless-stopped # Garante que o serviço reinicie automaticamente
-    healthcheck: # Opcional, mas recomendado
+    restart: unless-stopped 
+    healthcheck: 
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/healthcheck"]
       interval: 1m
       timeout: 10s
