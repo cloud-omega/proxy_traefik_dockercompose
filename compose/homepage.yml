@@ -1,14 +1,31 @@
 services:
   homepage:
-    image: ghcr.io/gethomepage/homepage:latest
+    image: ghcr.io/gethomepage/homepage:v0.8.12 # Versão fixada para estabilidade
     container_name: homepage
-    #ports:    - 3000:3000
     volumes:
-      - $VOL_HOMEPAGE:/app/config 
+      - $VOL_HOMEPAGE:/app/config
     environment:
+      # Considere restringir os hosts por segurança, e.g., HOMEPAGE_ALLOWED_HOSTS: "example.com,*.example.com"
       HOMEPAGE_ALLOWED_HOSTS: "*"
       PUID: $PUID
       PGID: $PGID
-    networks: 
+    networks:
       - local
       - sec
+    restart: unless-stopped # Garante que o serviço reinicie automaticamente
+    healthcheck: # Opcional, mas recomendado
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.homepage.rule=Host(`${URL_HOMEPAGE}`)
+      - traefik.http.routers.homepage.entrypoints=websecure
+      - traefik.http.routers.homepage.tls.certresolver=letsencrypt
+      - traefik.http.services.homepage.loadbalancer.server.port=3000
+      - homepage.group=System
+      - homepage.name=Homepage
+      - homepage.icon=homepage
+      - homepage.href=https://${URL_HOMEPAGE}
+      - homepage.description=Dashboard
