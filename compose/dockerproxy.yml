@@ -1,16 +1,14 @@
 services:
     dockerproxy:
-      image: ghcr.io/tecnativa/docker-socket-proxy:0.2.0 # 1. Pinned version for security and stability
+      image: ghcr.io/tecnativa/docker-socket-proxy/usr/local/etc/haproxy/haproxy.cfg:
       container_name: dockerproxy
-      read_only: true # 3. Make root filesystem read-only
-      cap_drop: # 4. Drop all linux capabilities
+      read_only: true 
+      cap_drop: 
         - ALL
       environment:
-        # 2. Grant access only to what Traefik needs.
-        # More info: https://github.com/Tecnativa/docker-socket-proxy#access-control
         - CONTAINERS=1
         - NETWORKS=1
-        - EVENTS=1 # Traefik needs this to detect changes
+        - EVENTS=1 
         # Deny all other access
         - SERVICES=0
         - TASKS=0
@@ -18,14 +16,15 @@ services:
         - SECRETS=0
         - SWARM=0
         - NODES=0
-        - POST=0 # Disallow any POST operations (effectively read-only)
+        - POST=0 # read-only
       #ports:        - 127.0.0.1:2375:2375
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
+        - /tmp/haproxy:/usr/local/etc/haproxy/
       restart: unless-stopped
       networks: 
         - sec
-      deploy: # 5. Add resource limits
+      deploy:
         resources:
           limits:
             cpus: '0.50'

@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
 
   proxy:
-    image: 'traefik:v3'
+    image: traefik:v3
     container_name: proxy
     restart: unless-stopped
     environment:
