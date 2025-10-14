@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  rclone:
+    image: rclone/rclone:latest
+    container_name: calibre-rclone
+    restart: unless-stopped
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    devices:
+      - /dev/fuse:/dev/fuse
+    volumes:
+      - ./rclone/config:/config/rclone
+      - ./rclone/mount:/mnt/gdrive:shared
+    command: mount "gdrive:Calibre" /mnt/gdrive --allow-other --vfs-cache-mode writes
+    # Healthcheck to ensure the mount is active before calibre-web starts
+    healthcheck:
+      test: ["CMD", "ls", "/mnt/gdrive"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    restart: unless-stopped
+    depends_on:
+      rclone:
+        condition: service_healthy
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - DOCKER_MODS=linuxserver/mods:calibre-web-gdrive
+      - OAUTHLIB_RELAX_TOKEN_SCOPE=1
+    volumes:
+      - ./rclone/mount/config:/config
+      - ./rclone/mount/books:/books
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.calibre-web.rule=Host(`calibre.yourdomain.com`)" # Change to your domain
+      - "traefik.http.routers.calibre-web.entrypoints=websecure"
+      - "traefik.http.services.calibre-web.loadbalancer.server.port=8083"
+      - "homepage.group=Media"
+      - "homepage.name=Calibre-Web"
+      - "homepage.icon=bookshelf"
+      - "homepage.href=https://calibre.yourdomain.com" # Change to your domain
+      - "homepage.description=Ebook library"
+
+networks:
+  default:
+    name: sec
+    external: true
