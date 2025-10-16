@@ -31,6 +31,7 @@ jobs:
       VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
       VOL_OHANDS: ${{ secrets.VOL_PROXY }}/openhands
       VOL_HOMEPAGE: ${{ secrets.VOL_PROXY }}/homepage
+      VOL_GEMINI: ${{ secrets.VOL_PROXY }}/gemini
       VOL_POSTGRES: ${{ secrets.VOL_POSTGRES }}
 
       # === Traefik & CrowdSec ===

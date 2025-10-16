@@ -1,24 +1,17 @@
 services:
   gemini-cli-web:
-    image: cruzyjapan/gemini-cli-ui:latest
+    image: marcoslkz/gemini-cli-ui
     container_name: gemini-cli-web
     restart: unless-stopped
-    command: gemini-gui --hostname=0.0.0.0
     environment:
       - TZ=${TZ}
       - GEMINI_API_KEY=${GEMINI_API_KEY} # Add your API key to the .env file
     volumes:
-      - gemini_data:/app
+      - gemini_data:/app/data
     networks:
       - proxy_default
       - local
     labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=proxy_default"
-      - "traefik.http.routers.gemini-web.rule=Host(`gemini.${ROOT_DOMAIN}`)"
-      - "traefik.http.routers.gemini-web.entrypoints=websecure"
-      - "traefik.http.routers.gemini-web.tls.certresolver=letsencrypt"
-      - "traefik.http.services.gemini-web.loadbalancer.server.port=8000"
       - "homepage.group=AI"
       - "homepage.name=Gemini Web"
       - "homepage.icon=gemini"
