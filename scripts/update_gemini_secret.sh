@@ -13,7 +13,7 @@ fi
 : "${VW_CLIENT_ID:?VW_CLIENT_ID is not set.}"
 : "${VW_CLIENT_SECRET:?VW_CLIENT_SECRET is not set.}"
 
-# The script now expects a space-separated string of names.
+# The script expects a space-separated string of names.
 # Example: "gemini_env_file wger_env_file"
 SECRET_NAMES="$1"
 if [ -z "${SECRET_NAMES}" ]; then
@@ -41,10 +41,9 @@ echo "✅ Authentication successful."
 for name in ${SECRET_NAMES}; do
   echo "-----------------------------------------------------"
   
-  # Use the same name for all three variables
+  # Use the same name for the Docker secret and the Vaultwarden item
   DOCKER_SECRET_NAME="$name"
   VW_ITEM_NAME="$name"
-  VW_ATTACHMENT_NAME="$name"
   
   echo "▶️  Processing Secret: '${name}'"
 
@@ -60,36 +59,26 @@ for name in ${SECRET_NAMES}; do
   fi
   echo "   ✅ Found item with ID: ${CIPHER_ID}."
 
-  # 2. Find the Attachment ID
-  echo "   🔎 Searching for attachment named '${VW_ATTACHMENT_NAME}'..."
-  ATTACHMENT_ID=$(curl -s -X GET "${VW_URL}/api/ciphers/${CIPHER_ID}" \
+  # 2. Get the content from the 'notes' field of the item
+  echo "   📥 Retrieving content from the 'Notes' field..."
+  SECRET_CONTENT=$(curl -s -X GET "${VW_URL}/api/ciphers/${CIPHER_ID}" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" | \
-    jq -r --arg ATTACHMENT_NAME "${VW_ATTACHMENT_NAME}" '.attachments[] | select(.fileName == $ATTACHMENT_NAME) | .id')
+    jq -r '.notes')
 
-  if [ -z "${ATTACHMENT_ID}" ]; then
-    echo "   ❌ Could not find an attachment named '${VW_ATTACHMENT_NAME}' in item '${VW_ITEM_NAME}'. Skipping."
-    continue
-  fi
-  echo "   ✅ Found attachment with ID: ${ATTACHMENT_ID}."
-
-  # 3. Download the attachment content
-  echo "   📥 Downloading attachment content..."
-  ATTACHMENT_CONTENT=$(curl -s -L -X GET "${VW_URL}/api/ciphers/${CIPHER_ID}/attachments/${ATTACHMENT_ID}/download" \
-    -H "Authorization: Bearer ${ACCESS_TOKEN}")
-
-  if [ -z "${ATTACHMENT_CONTENT}" ]; then
-      echo "   ❌ Attachment content is empty. Cannot create secret. Skipping."
+  # Check if the notes field is empty or null
+  if [ "${SECRET_CONTENT}" == "null" ] || [ -z "${SECRET_CONTENT}" ]; then
+      echo "   ❌ The 'Notes' field for item '${VW_ITEM_NAME}' is empty or null. Skipping."
       continue
   fi
 
-  # 4. Manage Docker secret
+  # 3. Manage Docker secret
   echo "   🐳 Managing Docker secret..."
   if docker secret inspect "${DOCKER_SECRET_NAME}" > /dev/null 2>&1; then
     echo "      - Secret exists. Removing old version..."
     docker secret rm "${DOCKER_SECRET_NAME}"
   fi
 
-  echo "${ATTACHMENT_CONTENT}" | docker secret create "${DOCKER_SECRET_NAME}" -
+  echo "${SECRET_CONTENT}" | docker secret create "${DOCKER_SECRET_NAME}" -
   echo "   🎉 Successfully created/updated Docker secret '${DOCKER_SECRET_NAME}'."
 done
 
