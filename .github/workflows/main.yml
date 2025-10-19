@@ -21,6 +21,7 @@ jobs:
       PROJECTS_GIT: /opt/git
 
       # === Volumes ===
+      BASEDIR: /opt/files
       VOL_PROXY: ${{ secrets.VOL_PROXY }}
       VOL_PORTAINER: ${{ secrets.VOL_PORTAINER }}
       VOL_CROWDSECDB: ${{ secrets.VOL_PROXY }}/crowdsec_data

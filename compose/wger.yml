@@ -46,10 +46,10 @@ volumes:
   wger_static:
     driver_opts:
       type: none
-      device: ${VOL_PROXY}/wger/static
+      device: ${BASEDIR}/wger/static
       o: bind
   wger_media:
     driver_opts:
       type: none
-      device: ${VOL_PROXY}/wger/media
+      device: ${BASEDIR}/wger/media
       o: bind
