@@ -1,13 +1,29 @@
 
 services:
   noip-duc:
-    image: ghcr.io/noipcom/noip-duc:latest
+    image: ghcr.io/noipcom/noip-duc:v5.2.0 # 1. Pinned version for stability
     container_name: noip-duc
     restart: unless-stopped
+    read_only: true # 4. Make root filesystem read-only
+    cap_drop: # 4. Drop all linux capabilities
+      - ALL
+    healthcheck: # 2. Check if the DUC process is running
+      test: ["CMD-SHELL", "pgrep noip-duc || exit 1"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
     environment:
       - NOIP_USERNAME
       - NOIP_PASSWORD
       - NOIP_HOSTNAMES=${NOIP_URL1},${NOIP_URL2},${NOIP_URL3}
+    deploy: # 3. Add resource limits
+      resources:
+        limits:
+          cpus: '0.10'
+          memory: 64M
+        reservations:
+          cpus: '0.05'
+          memory: 32M
     labels:
       # Labels para integração com o Homepage
       homepage.group: System
