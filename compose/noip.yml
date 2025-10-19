@@ -7,11 +7,6 @@ services:
     read_only: true 
     cap_drop: 
       - ALL
-    healthcheck: 
-      test: ["CMD-SHELL", "pgrep noip-duc || exit 1"]
-      interval: 5m
-      timeout: 10s
-      retries: 3
     environment:
       - NOIP_USERNAME
       - NOIP_PASSWORD
