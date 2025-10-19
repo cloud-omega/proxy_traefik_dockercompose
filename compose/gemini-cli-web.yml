@@ -1,11 +1,11 @@
 services:
-  gemini-cli-web:
+  gemini:
     image: marcoslkz/gemini-cli-ui
-    container_name: gemini-cli-web
+    container_name: gemini
     restart: unless-stopped
     environment:
       - TZ=${TZ}
-      - GEMINI_API_KEY=${GEMINI_API_KEY} # Add your API key to the .env file
+      - GEMINI_API_KEY
     volumes:
       - gemini_data:/app/data
     networks:
@@ -15,12 +15,12 @@ services:
       - "homepage.group=AI"
       - "homepage.name=Gemini Web"
       - "homepage.icon=gemini"
-      - "homepage.href=https://gemini.${ROOT_DOMAIN}"
+      - "homepage.href=http://gemini.local:4008"
       - "homepage.description=Gemini CLI Web Interface"
 
 volumes:
   gemini_data:
     driver_opts:
       type: none
-      device: "${VOL_GEMINI}"
+      device: /opt/files/gemini
       o: bind

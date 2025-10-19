@@ -22,6 +22,7 @@ include:
   - compose/watchtower.yml
   - compose/homepage.yml
   #- compose/gemini-cli-web.yml
+  - compose/wger.yml
   #- compose/ollama.yml
   #- compose/boltdiy.yml
   #- compose/openhands.yml
@@ -35,7 +36,7 @@ include:
   #- compose/filebrowser.yml
   - compose/landing.yml
   #- compose/keycloak.yml
-  - compose/unblocker.yml
+  #- compose/unblocker.yml
   - compose/pdf.yml
   - compose/dockerproxy.yml
   - compose/vaultwarden.yml
