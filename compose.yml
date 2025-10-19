@@ -36,7 +36,7 @@ include:
   #- compose/filebrowser.yml
   - compose/landing.yml
   #- compose/keycloak.yml
-  #- compose/unblocker.yml
+  - compose/unblocker.yml
   - compose/pdf.yml
   - compose/dockerproxy.yml
   - compose/vaultwarden.yml

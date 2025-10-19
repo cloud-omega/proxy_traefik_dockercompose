@@ -1,25 +1,23 @@
 ---
 services:
   dns:
-    image: dockurr/dnsmasq:latest # Mantida a versão 'latest' conforme solicitado
+    image: dockurr/dnsmasq:latest 
     container_name: dns
     environment:
       - DNS1=127.0.0.11 # DNS interno do Docker
       - DNS2=10.0.0.20   # Seu outro servidor DNS
-    # O comando foi ajustado para restaurar a resolução de domínio local
-    # e manter os logs para facilitar a depuração.
     command: --server=/local/127.0.0.11 --log-queries --log-facility=-
     networks:
       local:
         ipv4_address: 192.168.180.254
-    restart: unless-stopped # Política de reinício mais segura
+    restart: unless-stopped 
     healthcheck:
       test: ["CMD", "nslookup", "-timeout=2", "google.com"]
-      interval: 1m
+      interval: 5m
       timeout: 10s
       retries: 3
     labels:
       - homepage.group=Network
       - homepage.name=DNS Server
       - homepage.icon=dns
-      - homepage.description=dnsmasq (dns)
+      - homepage.description=dnsmasq
