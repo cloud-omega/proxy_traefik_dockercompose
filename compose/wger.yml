@@ -3,15 +3,12 @@ services:
     image: wger/server
     container_name: wger-server
     restart: unless-stopped
-    depends_on:
-      - postgres
-      - redis
     environment:
       - TZ=${TZ}
-      - WGER_URL_PREFIX=/pilates
+      - WGER_URL_PREFIX=/studio
       - DJANGO_SECRET_KEY=${WGER_SECRET_KEY}
       - DJANGO_ALLOWED_HOSTS=${DOMAIN_NAME}
-      - CSRF_TRUSTED_ORIGINS=https://${DOMAIN_NAME}
+      - CSRF_TRUSTED_ORIGINS=https://${ROOT_DOMAIN}
       - DJANGO_DB_ENGINE=django.db.backends.postgresql
       - DJANGO_DB_HOST=postgres
       - DJANGO_DB_PORT=5432
@@ -33,16 +30,16 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
-      - traefik.http.routers.wger.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`/pilates`)
+      - traefik.http.routers.wger.rule=Host(`${ROOT_DOMAIN}`) && PathPrefix(`/studio`)
       - traefik.http.routers.wger.middlewares=wger-stripprefix@docker
-      - traefik.http.middlewares.wger-stripprefix.stripprefix.prefixes=/pilates
+      - traefik.http.middlewares.wger-stripprefix.stripprefix.prefixes=/studio
       - traefik.http.routers.wger.entrypoints=websecure
       - traefik.http.routers.wger.tls.certresolver=letsencrypt
       - traefik.http.services.wger.loadbalancer.server.port=8000
       - homepage.group=Health
       - homepage.name=Wger (Pilates)
       - homepage.icon=dumbbell
-      - homepage.href=https://${DOMAIN_NAME}/pilates
+      - homepage.href=http://wger.local:8000/studio
       - homepage.description=Workout Manager
 
 volumes:
