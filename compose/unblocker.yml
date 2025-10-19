@@ -4,11 +4,14 @@ services:
     image: marcoslkz/holy-unblocker:master
     container_name: unblocker
     restart: unless-stopped
+    user: "1000"
     environment:
       - TZ
       - NODE_ENV=production
     security_opt:
       - no-new-privileges:true
+    cap_drop:
+      - ALL
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
@@ -16,12 +19,17 @@ services:
       - traefik.http.routers.unblocker.entrypoints=websecure
       - traefik.http.routers.unblocker.tls=true
       - traefik.http.routers.unblocker.tls.certresolver=letsencrypt
-      #- traefik.http.services.unblocker.loadbalancer.server.port=8080
+      - traefik.http.services.unblocker.loadbalancer.server.port=8080
       - homepage.group=Network
       - homepage.name=Unblocker
       - homepage.icon=shield
       - homepage.href=https://${NOIP_URL1}
       - homepage.description=Web Proxy
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
     networks:
       - proxy_default
       - local 
