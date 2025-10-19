@@ -1,13 +1,13 @@
 
 services:
   noip-duc:
-    image: ghcr.io/noipcom/noip-duc:v5.2.0 # 1. Pinned version for stability
+    image: ghcr.io/noipcom/noip-duc
     container_name: noip-duc
     restart: unless-stopped
-    read_only: true # 4. Make root filesystem read-only
-    cap_drop: # 4. Drop all linux capabilities
+    read_only: true 
+    cap_drop: 
       - ALL
-    healthcheck: # 2. Check if the DUC process is running
+    healthcheck: 
       test: ["CMD-SHELL", "pgrep noip-duc || exit 1"]
       interval: 5m
       timeout: 10s
@@ -16,7 +16,7 @@ services:
       - NOIP_USERNAME
       - NOIP_PASSWORD
       - NOIP_HOSTNAMES=${NOIP_URL1},${NOIP_URL2},${NOIP_URL3}
-    deploy: # 3. Add resource limits
+    deploy:
       resources:
         limits:
           cpus: '0.10'
@@ -25,12 +25,11 @@ services:
           cpus: '0.05'
           memory: 32M
     labels:
-      # Labels para integração com o Homepage
       homepage.group: System
       homepage.name: "No-IP DUC"
       homepage.icon: "mdi-dns"
       homepage.href: "https://www.noip.com/"
-      homepage.description: "Atualizador de DNS dinâmico No-IP"
+      homepage.description: "DDNS No-IP"
 
 
 
