@@ -1,4 +1,3 @@
-
 services:
   unblocker:
     image: marcoslkz/holy-unblocker:master
@@ -32,4 +31,4 @@ services:
           memory: 256M
     networks:
       - proxy_default
-      - local 
+      - local
