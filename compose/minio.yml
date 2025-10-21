@@ -1,0 +1,33 @@
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    restart: unless-stopped
+    env_file:
+      - ./compose/minio-env
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    networks:
+      - local
+    labels:
+      - homepage.group=Storage
+      - homepage.name=Minio
+      - homepage.icon=minio
+      - homepage.href=http://minio.local:9001
+      - homepage.description=S3 Object Storage
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  minio_data:
+    driver_opts:
+      type: none
+      device: ${VOL_MINIO:-/opt/files/minio} # Default path, can be overridden by .env
+      o: bind
