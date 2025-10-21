@@ -56,6 +56,10 @@ jobs:
       # === Vaultwarden (Bitwarden) ===
       VAULTWARDEN_ADMIN_TOKEN: ${{secrets.VAULTWARDEN_ADMIN_TOKEN}}
 
+      # === Minio ===
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minio-secret-key-change-me
+
       # === DDNS (No-IP, Dynu, etc) ===
       NOIP_USERNAME: ${{secrets.NOIP_USER}}
       NOIP_PASSWORD: ${{secrets.NOIP_PASS}}
@@ -181,6 +185,18 @@ jobs:
       - name: Deploy Docker Stack
         run: |
           docker compose up -d --remove-orphans --wait
+
+      - name: Create Minio Buckets
+        run: |
+          echo "Waiting for Minio to start..."
+          sleep 10
+          docker exec minio /bin/sh -c "
+          mc alias set local http://localhost:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD;
+          mc mb local/wger-media || true;
+          mc policy set public local/wger-media;
+          mc mb local/wger-static || true;
+          mc policy set public local/wger-static;
+          "
         
       - name: View logs
         run: docker compose logs --tail 30

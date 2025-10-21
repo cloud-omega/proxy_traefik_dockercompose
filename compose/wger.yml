@@ -3,6 +3,8 @@ services:
     image: wger/server
     container_name: wger-server
     restart: unless-stopped
+    depends_on:
+      - minio
     environment:
       - TZ=${TZ}
       - WGER_URL_PREFIX=/studio
@@ -20,13 +22,24 @@ services:
       - SITE_OWNER_EMAIL=${MAILMANAGER}
       - SITE_OWNER_PASSWORD=${WGER_ADMIN_PASSWORD}
       - SITE_OWNER_USERNAME=wger-admin
-    volumes:
-      - wger_static:/home/wger/static
-      - wger_media:/home/wger/media
+
+      # S3 Storage (Minio) Configuration
+      - DJANGO_DEFAULT_FILE_STORAGE=storages.backends.s3boto3.S3Boto3Storage
+      - DJANGO_STATICFILES_STORAGE=storages.backends.s3boto3.S3Boto3Storage
+      - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
+      - AWS_STORAGE_BUCKET_NAME=wger-media
+      - AWS_S3_ENDPOINT_URL=http://minio:9000
+      - AWS_S3_OBJECT_PARAMETERS={"CacheControl":"max-age=86400"}
+      - AWS_LOCATION=
+      - STATIC_URL=http://minio:9000/wger-static/
+      - AWS_STATIC_BUCKET_NAME=wger-static
+
     networks:
       - proxy_default
       - db
       - cache
+      - local
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
@@ -41,15 +54,3 @@ services:
       - homepage.icon=dumbbell
       - homepage.href=http://wger.local:8000/studio
       - homepage.description=Workout Manager
-
-volumes:
-  wger_static:
-    driver_opts:
-      type: none
-      device: ${BASEDIR}/wger/static
-      o: bind
-  wger_media:
-    driver_opts:
-      type: none
-      device: ${BASEDIR}/wger/media
-      o: bind
