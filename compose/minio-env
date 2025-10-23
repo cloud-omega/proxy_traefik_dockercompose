@@ -1,4 +1,0 @@
-# Minio Access Credentials
-# Please change the default password for production environments
-MINIO_ROOT_USER=minioadmin
-MINIO_ROOT_PASSWORD=minio-secret-key-change-me

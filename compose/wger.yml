@@ -1,6 +1,7 @@
 services:
   wger-server:
     image: wger/server
+    command: gunicorn wger.wsgi:application --bind 0.0.0.0:8000 --workers 4
     container_name: wger-server
     restart: unless-stopped
     depends_on:
@@ -16,7 +17,7 @@ services:
       - DJANGO_DB_PORT=5432
       - DJANGO_DB_USER=${POSTGRES_USER}
       - DJANGO_DB_PASSWORD=${POSTGRES_PASSWORD}
-      - DJANGO_DB_NAME=wger
+      - DJANGO_DB_DATABASE=wger
       - DJANGO_REDIS_HOST=redis
       - DJANGO_REDIS_PORT=6379
       - SITE_OWNER_EMAIL=${MAILMANAGER}
