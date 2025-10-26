@@ -23,8 +23,6 @@ services:
       - SITE_OWNER_EMAIL=${MAILMANAGER}
       - SITE_OWNER_PASSWORD=${WGER_ADMIN_PASSWORD}
       - SITE_OWNER_USERNAME=wger-admin
-
-      # S3 Storage (Minio) Configuration
       - DJANGO_DEFAULT_FILE_STORAGE=storages.backends.s3boto3.S3Boto3Storage
       - DJANGO_STATICFILES_STORAGE=storages.backends.s3boto3.S3Boto3Storage
       - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER}
@@ -33,8 +31,10 @@ services:
       - AWS_S3_ENDPOINT_URL=http://minio:9000
       - AWS_S3_OBJECT_PARAMETERS={"CacheControl":"max-age=86400"}
       - AWS_LOCATION=
-      - STATIC_URL=http://minio:9000/wger-static/
-      - AWS_STATIC_BUCKET_NAME=wger-static
+      - STATIC_URL=https://${ROOT_DOMAIN}/studio/static/
+      - MEDIA_URL=https://${ROOT_DOMAIN}/studio/media/
+      - AWS_STATIC_BUCKET_NAME=${AWS_STATIC_BUCKET_NAME:-wger-static}
+      - AWS_MEDIA_BUCKET_NAME=${AWS_MEDIA_BUCKET_NAME:-wger-media}
 
     networks:
       - proxy_default

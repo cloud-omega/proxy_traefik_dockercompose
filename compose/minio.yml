@@ -8,21 +8,26 @@ services:
       MINIO_ROOT_PASSWORD: minio-secret-key-change-me
     volumes:
       - minio_data:/data
-    ports:
-      - "9000:9000"
-      - "9001:9001"
     command: server /data --console-address ":9001"
     networks:
       - local
+      - proxy_default
     labels:
       - homepage.group=Storage
       - homepage.name=Minio
       - homepage.icon=minio
       - homepage.href=http://minio.local:9001
       - homepage.description=S3 Object Storage
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.frontend.entryPoints=web,websecure
+      - traefik.http.routers.studio-static.rule=Host(`$ROOT_DOMAIN`) && (PathPrefix(`/studio/static`) || PathPrefix(`/studio/media`))
+      - traefik.http.services.studio-static.loadbalancer.server.port=9000
+      - traefik.http.routers.studio-static.tls=true
+      - traefik.http.routers.studio-static.tls.certresolver=letsencrypt
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 1m
       timeout: 20s
       retries: 3
 
@@ -37,11 +42,11 @@ services:
       MINIO_ROOT_PASSWORD: minio-secret-key-change-me
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc alias set local http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD;
-      /usr/bin/mc mb local/wger-media || true;
-      /usr/bin/mc policy set public local/wger-media;
-      /usr/bin/mc mb local/wger-static || true;
-      /usr/bin/mc policy set public local/wger-static;
+      /usr/bin/mc alias set local http://minio:9000 $$MINIO_USER $$MINIO_PASS;
+      /usr/bin/mc mb local/wger-media --ignore-existing;
+      /usr/bin/mc anonymous set download local/wger-media;
+      /usr/bin/mc mb local/wger-static --ignore-existing;
+      /usr/bin/mc anonymous set download local/wger-static;
       exit 0;
       "
     networks:
@@ -51,5 +56,5 @@ volumes:
   minio_data:
     driver_opts:
       type: none
-      device: ${VOL_MINIO:-/opt/files/minio} # Default path, can be overridden by .env
+      device: ${VOL_MINIO:-/opt/files/minio}
       o: bind
