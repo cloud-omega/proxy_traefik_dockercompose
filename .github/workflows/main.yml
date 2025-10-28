@@ -84,7 +84,7 @@ jobs:
       TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
       
       WGER_SECRET_KEY: ${{ secrets.SECRET_STUDIO }}xX2
-      WGER_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
+      WGER_ADMIN_PASSWORD: ${{ secrets.WGER_ADMIN_PASSWORD}}
 
 
       # === Watchtower ===

@@ -40,6 +40,8 @@ services:
       #- MEDIA_URL=https://${ROOT_DOMAIN}/studio/media/
       #STATICFILES_DIRS = [BASE_DIR / "static"]
       #STATIC_ROOT = BASE_DIR / "assets" # For collectstatic
+    volumes:
+      - /opt/files/static/static:/home/wger/static
     networks:
       - proxy_default
       - db
