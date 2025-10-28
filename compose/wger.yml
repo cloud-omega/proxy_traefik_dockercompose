@@ -31,8 +31,8 @@ services:
       - AWS_LOCATION=
       - STATIC_URL=https://${ROOT_DOMAIN}/studio/static/
       - MEDIA_URL=https://${ROOT_DOMAIN}/studio/media/
-      - AWS_STATIC_BUCKET_NAME=${AWS_STATIC_BUCKET_NAME:-wger-static}
-      - AWS_MEDIA_BUCKET_NAME=${AWS_MEDIA_BUCKET_NAME:-wger-media}
+      - AWS_STATIC_BUCKET_NAME=${AWS_STATIC_BUCKET_NAME:-local/wger-static}
+      - AWS_MEDIA_BUCKET_NAME=${AWS_MEDIA_BUCKET_NAME:-local/wger-media}
     networks:
       - proxy_default
       - db
@@ -42,8 +42,8 @@ services:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
       - traefik.http.routers.wger.rule=Host(`${ROOT_DOMAIN}`) && PathPrefix(`/studio`)
-      #- traefik.http.routers.wger.middlewares=wger-stripprefix@docker
-      #- traefik.http.middlewares.wger-stripprefix.stripprefix.prefixes=/studio
+      - traefik.http.routers.wger.middlewares=wger-stripprefix@docker
+      - traefik.http.middlewares.wger-stripprefix.stripprefix.prefixes=/studio
       - traefik.http.routers.wger.entrypoints=websecure
       - traefik.http.routers.wger.tls.certresolver=letsencrypt
       - traefik.http.services.wger.loadbalancer.server.port=8000
