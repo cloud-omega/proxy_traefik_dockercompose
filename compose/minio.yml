@@ -42,7 +42,7 @@ services:
       MINIO_ROOT_PASSWORD: minio-secret-key-change-me
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc alias set local http://minio:9000 $$MINIO_USER $$MINIO_PASS;
+      /usr/bin/mc alias set local http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD;
       /usr/bin/mc mb local/wger-media --ignore-existing;
       /usr/bin/mc anonymous set download local/wger-media;
       /usr/bin/mc mb local/wger-static --ignore-existing;
