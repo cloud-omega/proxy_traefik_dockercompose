@@ -1,0 +1,15 @@
+
+  nginx:
+    image: nginx:stable-alpine
+    volumes:
+      - /opt/files/static::/usr/share/nginx/html:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wger-static.rule=Host(`app.${ROOT_DOMAIN}`) && (PathPrefix(`/static`) || PathPrefix(`/media`))"
+      - "traefik.http.routers.wger-static.entrypoints=websecure"
+      - "traefik.http.routers.wger-static.tls.certresolver=letsencrypt"
+      - "traefik.http.services.wger-static.loadbalancer.server.port=80"
+      - "traefik.docker.network=web"
+    networks:
+      - proxy_default
+    restart: unless-stopped
