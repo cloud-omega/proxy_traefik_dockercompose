@@ -47,7 +47,6 @@ services:
       /usr/bin/mc anonymous set download local/wger-media;
       /usr/bin/mc mb local/wger-static --ignore-existing;
       /usr/bin/mc anonymous set download local/wger-static;
-      exit 0;
       "
     networks:
       - local

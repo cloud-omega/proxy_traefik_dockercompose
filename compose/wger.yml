@@ -2,10 +2,8 @@ services:
   wger-server:
     image: wger/server
     command: gunicorn wger.wsgi:application --bind 0.0.0.0:8000 --workers 4
-    container_name: wger-server
+    container_name: wger
     restart: unless-stopped
-    depends_on:
-      - minio
     environment:
       - TZ=${TZ}
       - WGER_URL_PREFIX=/studio
@@ -35,7 +33,6 @@ services:
       - MEDIA_URL=https://${ROOT_DOMAIN}/studio/media/
       - AWS_STATIC_BUCKET_NAME=${AWS_STATIC_BUCKET_NAME:-wger-static}
       - AWS_MEDIA_BUCKET_NAME=${AWS_MEDIA_BUCKET_NAME:-wger-media}
-
     networks:
       - proxy_default
       - db
@@ -45,8 +42,8 @@ services:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
       - traefik.http.routers.wger.rule=Host(`${ROOT_DOMAIN}`) && PathPrefix(`/studio`)
-      - traefik.http.routers.wger.middlewares=wger-stripprefix@docker
-      - traefik.http.middlewares.wger-stripprefix.stripprefix.prefixes=/studio
+      #- traefik.http.routers.wger.middlewares=wger-stripprefix@docker
+      #- traefik.http.middlewares.wger-stripprefix.stripprefix.prefixes=/studio
       - traefik.http.routers.wger.entrypoints=websecure
       - traefik.http.routers.wger.tls.certresolver=letsencrypt
       - traefik.http.services.wger.loadbalancer.server.port=8000
