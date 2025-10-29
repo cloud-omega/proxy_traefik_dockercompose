@@ -42,6 +42,7 @@ services:
       #STATIC_ROOT = BASE_DIR / "assets" # For collectstatic
     volumes:
       - /opt/files/static/static:/home/wger/static
+      - /opt/files/static/media:/home/wger/media
     networks:
       - proxy_default
       - db
