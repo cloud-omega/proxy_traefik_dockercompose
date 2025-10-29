@@ -84,6 +84,7 @@ jobs:
       TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
       
       WGER_SECRET_KEY: ${{ secrets.SECRET_STUDIO }}xX2
+      WGER_SIGNING_KEY: ${{ secrets.WGER_SIGNING_KEY }}
       WGER_ADMIN_PASSWORD: ${{ secrets.WGER_ADMIN_PASSWORD }}
 
 
