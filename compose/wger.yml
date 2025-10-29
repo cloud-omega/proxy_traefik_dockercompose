@@ -1,9 +1,56 @@
 services:
   wger-server:
     image: wger/server
-    #command: gunicorn wger.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    command: gunicorn wger.wsgi:application --bind 0.0.0.0:8000 --workers 4
     container_name: wger
     restart: unless-stopped
+    environment:
+    - TZ=${TZ}
+    - DJANGO_DEBUG=True
+    #- DJANGO_ALLOWED_HOSTS=app.${ROOT_DOMAIN},wger.local
+    #- CSRF_TRUSTED_ORIGINS=https://app.${ROOT_DOMAIN},http://wger.local
+    - DJANGO_DB_ENGINE=django.db.backends.postgresql
+    - DJANGO_DB_HOST=postgres
+    - DJANGO_DB_PORT=5432
+    - DJANGO_DB_USER=${POSTGRES_USER}
+    - DJANGO_DB_PASSWORD=${POSTGRES_PASSWORD}
+    - DJANGO_DB_DATABASE=wger
+    - DJANGO_REDIS_HOST=redis
+    - DJANGO_REDIS_PORT=6379
+    - SITE_OWNER_EMAIL=${MAILMANAGER}
+    - SITE_OWNER_PASSWORD=${WGER_ADMIN_PASSWORD}
+    - SITE_OWNER_USERNAME=super
+    - SECRET_KEY=${WGER_SECRET_KEY}s6sd
+    - SIGNING_KEY=${WGER_SIGNING_KEY}
+    - TIME_ZONE=${TZ}
+    - ALLOW_REGISTRATION=True
+    - ALLOW_GUEST_USERS=False
+    - ALLOW_UPLOAD_VIDEOS=False
+    - MIN_ACCOUNT_AGE_TO_TRUST=5
+    volumes:
+    - /opt/files/static/static:/home/wger/static
+    #- /opt/files/static/media:/home/wger/media
+    networks:
+    - proxy_default
+    - db
+    - cache
+    - local
+    labels:
+    - traefik.enable=true
+    - traefik.docker.network=proxy_default
+    - traefik.http.routers.wger.rule=Host(`app.${ROOT_DOMAIN}`) # && PathPrefix(`/studio`)
+    - traefik.http.routers.wger.entrypoints=websecure
+    - traefik.http.routers.wger.tls.certresolver=letsencrypt
+    - traefik.http.services.wger.loadbalancer.server.port=8000
+    - homepage.group=Health
+    - homepage.name=Wger (Pilates)
+    - homepage.icon=dumbbell
+    - homepage.href=http://wger.local:8000
+    - homepage.description=Workout Manager
+
+  wger-server2:
+    image: wger/server
+    #command: gunicorn wger.wsgi:application --bind 0.0.0.0:8000 --workers 4
     environment:
     - TZ=${TZ}
     #- DJANGO_ALLOWED_HOSTS=app.${ROOT_DOMAIN},wger.local
@@ -26,12 +73,12 @@ services:
     - ALLOW_GUEST_USERS=False
     - ALLOW_UPLOAD_VIDEOS=False
     - MIN_ACCOUNT_AGE_TO_TRUST=5
-    - SYNC_EXERCISES_CELERY=True
+    - SYNC_EXERCISES_CELERY=False
     - SYNC_EXERCISE_IMAGES_CELERY=False
     - SYNC_EXERCISE_VIDEOS_CELERY=False
     - SYNC_INGREDIENTS_CELERY=False
     - DOWNLOAD_INGREDIENTS_FROM=WGER
-    - CACHE_API_EXERCISES_CELERY=True
+    - CACHE_API_EXERCISES_CELERY=False
     - CACHE_API_EXERCISES_CELERY_FORCE_UPDATE=False
     - USE_CELERY=False
     - CELERY_BROKER=redis://redis:6379/2
@@ -52,7 +99,7 @@ services:
     - DJANGO_DEBUG=True
     - WGER_USE_GUNICORN=True
     - EXERCISE_CACHE_TTL=18000
-    - SITE_URL=https://app.${ROOT_DOMAIN}
+    #- SITE_URL=https://app.${ROOT_DOMAIN}
     - ACCESS_TOKEN_LIFETIME=10
     - REFRESH_TOKEN_LIFETIME=24
     - AUTH_PROXY_HEADER=''
@@ -77,7 +124,7 @@ services:
     # EMAIL_USE_SSL=False
     - FROM_EMAIL='Pilates Mageleides <${DOMAIN_EMAIL}>'
     - NUMBER_OF_PROXIES=1
-    - GUNICORN_CMD_ARGS="--workers 3 --threads 2 --worker-class gthread --proxy-protocol True --timeout 240"
+    - GUNICORN_CMD_ARGS="--workers 4 --threads 2 --worker-class gthread --proxy-protocol True --timeout 240"
     - EXPOSE_PROMETHEUS_METRICS=False
     #- DJANGO_DEFAULT_FILE_STORAGE=storages.backends.s3boto3.S3Boto3Storage
     #- DJANGO_STATICFILES_STORAGE=storages.backends.s3boto3.S3Boto3Storage
@@ -101,20 +148,3 @@ services:
     volumes:
     - /opt/files/static/static:/home/wger/static
     - /opt/files/static/media:/home/wger/media
-    networks:
-    - proxy_default
-    - db
-    - cache
-    - local
-    labels:
-    - traefik.enable=true
-    - traefik.docker.network=proxy_default
-    - traefik.http.routers.wger.rule=Host(`app.${ROOT_DOMAIN}`) # && PathPrefix(`/studio`)
-    - traefik.http.routers.wger.entrypoints=websecure
-    - traefik.http.routers.wger.tls.certresolver=letsencrypt
-    - traefik.http.services.wger.loadbalancer.server.port=8000
-    - homepage.group=Health
-    - homepage.name=Wger (Pilates)
-    - homepage.icon=dumbbell
-    - homepage.href=http://wger.local:8000
-    - homepage.description=Workout Manager
