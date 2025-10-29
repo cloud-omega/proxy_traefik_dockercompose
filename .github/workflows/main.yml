@@ -84,7 +84,7 @@ jobs:
       TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
       
       WGER_SECRET_KEY: ${{ secrets.SECRET_STUDIO }}xX2
-      WGER_ADMIN_PASSWORD: ${{ secrets.WGER_ADMIN_PASSWORD}}
+      WGER_ADMIN_PASSWORD: ${{ secrets.WGER_ADMIN_PASSWORD }}
 
 
       # === Watchtower ===
@@ -123,65 +123,11 @@ jobs:
 
       - name: Create explicit .env file
         run: |
-          cat << EOF > $VOL_PROXY/.env
-          TZ=${TZ}
-          DOMAIN_NAME=${DOMAIN_NAME}
-          SITE_PATH=${SITE_PATH}
-          PUID=${PUID}
-          PGID=${PGID}
-          ADMIN_USER=${ADMIN_USER}
-          PROJECTS_GIT=${PROJECTS_GIT}
-          VOL_PROXY=${VOL_PROXY}
-          VOL_PORTAINER=${VOL_PORTAINER}
-          VOL_CROWDSECDB=${VOL_CROWDSECDB}
-          VOL_CROWDSECETC=${VOL_CROWDSECETC}
-          VOL_OLLAMA=${VOL_OLLAMA}
-          VOL_FILEBROWSER=${VOL_FILEBROWSER}
-          VOL_HA=${VOL_HA}
-          VOL_N8N=${VOL_N8N}
-          VOL_OHANDS=${VOL_OHANDS}
-          VOL_HOMEPAGE=${VOL_HOMEPAGE}
-          VOL_POSTGRES=${VOL_POSTGRES}
-          MAILMANAGER=${MAILMANAGER}
-          CROWDSEC_TRAEFIK=${CROWDSEC_TRAEFIK}
-          POSTGRES_USER=${POSTGRES_USER}
-          POSTGRES_DB=${POSTGRES_DB}
-          POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-          KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
-          FILE_PPTP=${FILE_PPTP}
-          TAILSCALE_KEY=${TAILSCALE_KEY}
-          VAULTWARDEN_ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
-          NOIP_USERNAME=${NOIP_USERNAME}
-          NOIP_PASSWORD=${NOIP_PASSWORD}
-          NOIP_URL1=${NOIP_URL1}
-          NOIP_URL2=${NOIP_URL2}
-          NOIP_URL3=${NOIP_URL3}
-          DYNU_SITE1=${DYNU_SITE1}
-          DYNV6_SITE1=${DYNV6_SITE1}
-          DYNV6_SITE2=${DYNV6_SITE2}
-          OLLAMA_APIKEY=${OLLAMA_APIKEY}
-          OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
-          OLLAMA_MODEL=${OLLAMA_MODEL}
-          PORTAINER_TOKEN=${PORTAINER_TOKEN}
-          ROOT_DOMAIN=${ROOT_DOMAIN}
-          PROVIDERS_GOOGLE_CLIENT_ID=${PROVIDERS_GOOGLE_CLIENT_ID}
-          PROVIDERS_GOOGLE_CLIENT_SECRET=${PROVIDERS_GOOGLE_CLIENT_SECRET}
-          SECRET=${SECRET}
-          WHITELIST=${WHITELIST}
-          ZONE_ID=${ZONE_ID}
-          TUNNEL_TOKEN=${TUNNEL_TOKEN}
-          WATCHTOWER_HTTP_API_TOKEN=${WATCHTOWER_HTTP_API_TOKEN}
-          HTTP_TIMEOUT=${HTTP_TIMEOUT}
-          POLLING_INTERVAL=${POLLING_INTERVAL}
-          PROPAGATION_TIMEOUT=${PROPAGATION_TIMEOUT}
-          TTL=${TTL}
-          LOG_LEVEL=${LOG_LEVEL}
-          EOF
+          printenv > ${BASEDIR}/.env
           
       - name: Deploy Docker Stack
         run: |
-          docker compose up -d --remove-orphans --wait
-        
+          docker compose up -d --remove-orphans --wait --scale portal=3 
       - name: View logs
         run: docker compose logs --tail 30
 
@@ -189,4 +135,3 @@ jobs:
         run: |
           docker compose exec crowdsec cscli hub update
           docker compose exec crowdsec cscli hub upgrade
-          docker compose up -d
