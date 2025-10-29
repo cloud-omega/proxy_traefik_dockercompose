@@ -3,6 +3,7 @@ services:
     image: redis:7-alpine
     container_name: redis
     restart: unless-stopped
+    mem_limit: 5gb
     networks:
     - cache
     healthcheck:

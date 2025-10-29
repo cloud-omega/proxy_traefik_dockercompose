@@ -123,7 +123,7 @@ jobs:
 
       - name: Create explicit .env file
         run: |
-          printenv > ${BASEDIR}/.env
+          printenv | grep -v argo > ${BASEDIR}/.env
           
       - name: Deploy Docker Stack
         run: |
