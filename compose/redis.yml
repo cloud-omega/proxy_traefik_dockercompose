@@ -4,12 +4,15 @@ services:
     container_name: redis
     restart: unless-stopped
     networks:
-      - cache
+    - cache
+    healthcheck:
+      test: redis-cli ping
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     labels:
-      - homepage.group=Database
-      - homepage.name=Redis
-      - homepage.icon=redis
-      - homepage.description=In-memory data store
-
-networks:
-  cache:
+    - homepage.group=Database
+    - homepage.name=Redis
+    - homepage.icon=redis
+    - homepage.description=In-memory data store

@@ -1,64 +1,120 @@
 services:
   wger-server:
     image: wger/server
-    command: gunicorn wger.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    #command: gunicorn wger.wsgi:application --bind 0.0.0.0:8000 --workers 4
     container_name: wger
     restart: unless-stopped
     environment:
-      - TZ=${TZ}
-      - WGER_URL_PREFIX=/studio
-      - DJANGO_SECRET_KEY=${WGER_SECRET_KEY}
-      - DJANGO_ALLOWED_HOSTS=app.${ROOT_DOMAIN},wger.local
-      - CSRF_TRUSTED_ORIGINS=https://app.${ROOT_DOMAIN},wger.local
-      - DJANGO_DB_ENGINE=django.db.backends.postgresql
-      - DJANGO_DB_HOST=postgres
-      - DJANGO_DB_PORT=5432
-      - DJANGO_DB_USER=${POSTGRES_USER}
-      - DJANGO_DB_PASSWORD=${POSTGRES_PASSWORD}
-      - DJANGO_DB_DATABASE=wger
-      - DJANGO_REDIS_HOST=redis
-      - DJANGO_REDIS_PORT=6379
-      - SITE_OWNER_EMAIL=${MAILMANAGER}
-      - SITE_OWNER_PASSWORD=${WGER_ADMIN_PASSWORD}
-      - SITE_OWNER_USERNAME=wger-admin
-      #- DJANGO_DEFAULT_FILE_STORAGE=storages.backends.s3boto3.S3Boto3Storage
-      #- DJANGO_STATICFILES_STORAGE=storages.backends.s3boto3.S3Boto3Storage
-      #- AWS_S3_ACCESS_KEY_ID=${MINIO_ROOT_USER}
-      #- AWS_S3_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
-      #- AWS_STORAGE_BUCKET_NAME=AWS_STATIC_BUCKET_NAME:-local/wger-static
-      #- AWS_S3_ENDPOINT_URL=http://minio:9000
-      #- AWS_S3_OBJECT_PARAMETERS={"CacheControl":"max-age=86400"}
-      #- AWS_LOCATION=local
-      #- AWS_STATIC_BUCKET_NAME=${AWS_STATIC_BUCKET_NAME:-local/wger-static}
-      ##- AWS_MEDIA_BUCKET_NAME=${AWS_MEDIA_BUCKET_NAME:-local/wger-media}
-      #- AWS_S3_SECURE_URLS = False # Use False if not using HTTPS with MinIO 
-      #- STATIC_URL = "/static/" # Default Django static URL 
-      #- STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-      #- MEDIA_URL = "/media/" 
-      #- DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-      #- STATIC_URL=https://${ROOT_DOMAIN}/studio/static/
-      #- MEDIA_URL=https://${ROOT_DOMAIN}/studio/media/
-      #STATICFILES_DIRS = [BASE_DIR / "static"]
-      #STATIC_ROOT = BASE_DIR / "assets" # For collectstatic
+    - TZ=${TZ}
+    #- DJANGO_ALLOWED_HOSTS=app.${ROOT_DOMAIN},wger.local
+    #- CSRF_TRUSTED_ORIGINS=https://app.${ROOT_DOMAIN},http://wger.local
+    - DJANGO_DB_ENGINE=django.db.backends.postgresql
+    - DJANGO_DB_HOST=postgres
+    - DJANGO_DB_PORT=5432
+    - DJANGO_DB_USER=${POSTGRES_USER}
+    - DJANGO_DB_PASSWORD=${POSTGRES_PASSWORD}
+    - DJANGO_DB_DATABASE=wger
+    - DJANGO_REDIS_HOST=redis
+    - DJANGO_REDIS_PORT=6379
+    - SITE_OWNER_EMAIL=${MAILMANAGER}
+    - SITE_OWNER_PASSWORD=${WGER_ADMIN_PASSWORD}
+    - SITE_OWNER_USERNAME=super
+    - SECRET_KEY=${WGER_SECRET_KEY}kjl872f
+    - SIGNING_KEY=${WGER_SIGNING_KEY}AsB72h
+    - TIME_ZONE=${TZ}
+    - ALLOW_REGISTRATION=True
+    - ALLOW_GUEST_USERS=False
+    - ALLOW_UPLOAD_VIDEOS=False
+    - MIN_ACCOUNT_AGE_TO_TRUST=5
+    - SYNC_EXERCISES_CELERY=True
+    - SYNC_EXERCISE_IMAGES_CELERY=False
+    - SYNC_EXERCISE_VIDEOS_CELERY=False
+    - SYNC_INGREDIENTS_CELERY=False
+    - DOWNLOAD_INGREDIENTS_FROM=WGER
+    - CACHE_API_EXERCISES_CELERY=True
+    - CACHE_API_EXERCISES_CELERY_FORCE_UPDATE=False
+    - USE_CELERY=False
+    - CELERY_BROKER=redis://redis:6379/2
+    - CELERY_BACKEND=redis://redis:6379/2
+    - CELERY_FLOWER_PASSWORD=adminadmin
+    - DJANGO_PERFORM_MIGRATIONS=True
+    - DJANGO_CACHE_BACKEND=django_redis.cache.RedisCache
+    - DJANGO_CACHE_LOCATION=redis://redis:6379/1
+    - DJANGO_CACHE_TIMEOUT=1296000
+    - DJANGO_CACHE_CLIENT_CLASS=django_redis.client.DefaultClient
+    - AXES_ENABLED=True
+    - AXES_FAILURE_LIMIT=10
+    - AXES_COOLOFF_TIME=30
+    - AXES_HANDLER=axes.handlers.cache.AxesCacheHandler
+    - AXES_LOCKOUT_PARAMETERS=ip_address
+    - AXES_IPWARE_PROXY_COUNT=1
+    - AXES_IPWARE_META_PRECEDENCE_ORDER=HTTP_X_FORWARDED_FOR,REMOTE_ADDR
+    - DJANGO_DEBUG=False
+    - WGER_USE_GUNICORN=True
+    - EXERCISE_CACHE_TTL=18000
+    - SITE_URL=https://app.${ROOT_DOMAIN}
+    - ACCESS_TOKEN_LIFETIME=10
+    - REFRESH_TOKEN_LIFETIME=24
+    - AUTH_PROXY_HEADER=''
+    - AUTH_PROXY_TRUSTED_IPS=''
+    - AUTH_PROXY_CREATE_UNKNOWN_USER=False
+    - AUTH_PROXY_USER_EMAIL_HEADER=''
+    - AUTH_PROXY_USER_NAME_HEADER=''
+    - LOG_LEVEL_PYTHON=INFO
+    # Recaptcha keys. You will need to create an account and register your domain
+    # https://www.google.com/recaptcha/
+    # RECAPTCHA_PUBLIC_KEY=abcde...
+    # RECAPTCHA_PRIVATE_KEY=abcde...
+    - USE_RECAPTCHA=False
+    - DJANGO_CLEAR_STATIC_FIRST=False
+    # https://docs.djangoproject.com/en/4.1/topics/email/#smtp-backend
+    # ENABLE_EMAIL=False
+    # EMAIL_HOST=email.example.com
+    # EMAIL_PORT=587
+    # EMAIL_HOST_USER=username
+    # EMAIL_HOST_PASSWORD=password
+    # EMAIL_USE_TLS=True
+    # EMAIL_USE_SSL=False
+    - FROM_EMAIL='Pilates Mageleides <${DOMAIN_EMAIL}>'
+    - NUMBER_OF_PROXIES=1
+    - GUNICORN_CMD_ARGS="--workers 3 --threads 2 --worker-class gthread --proxy-protocol True --timeout 240"
+    - EXPOSE_PROMETHEUS_METRICS=False
+    #- DJANGO_DEFAULT_FILE_STORAGE=storages.backends.s3boto3.S3Boto3Storage
+    #- DJANGO_STATICFILES_STORAGE=storages.backends.s3boto3.S3Boto3Storage
+    #- AWS_S3_ACCESS_KEY_ID=${MINIO_ROOT_USER}
+    #- AWS_S3_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
+    #- AWS_STORAGE_BUCKET_NAME=AWS_STATIC_BUCKET_NAME:-local/wger-static
+    #- AWS_S3_ENDPOINT_URL=http://minio:9000
+    #- AWS_S3_OBJECT_PARAMETERS={"CacheControl":"max-age=86400"}
+    #- AWS_LOCATION=local
+    #- AWS_STATIC_BUCKET_NAME=${AWS_STATIC_BUCKET_NAME:-local/wger-static}
+    ##- AWS_MEDIA_BUCKET_NAME=${AWS_MEDIA_BUCKET_NAME:-local/wger-media}
+    #- AWS_S3_SECURE_URLS = False # Use False if not using HTTPS with MinIO 
+    #- STATIC_URL = "/static/" # Default Django static URL 
+    #- STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    #- MEDIA_URL = "/media/" 
+    #- DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    #- STATIC_URL=https://${ROOT_DOMAIN}/studio/static/
+    #- MEDIA_URL=https://${ROOT_DOMAIN}/studio/media/
+    #STATICFILES_DIRS = [BASE_DIR / "static"]
+    #STATIC_ROOT = BASE_DIR / "assets" # For collectstatic
     volumes:
-      - /opt/files/static/static:/home/wger/static
-      - /opt/files/static/media:/home/wger/media
+    - /opt/files/static/static:/home/wger/static
+    - /opt/files/static/media:/home/wger/media
     networks:
-      - proxy_default
-      - db
-      - cache
-      - local
+    - proxy_default
+    - db
+    - cache
+    - local
     labels:
-      - traefik.enable=true
-      - traefik.docker.network=proxy_default
-      - traefik.http.routers.wger.rule=Host(`app.${ROOT_DOMAIN}`) # && PathPrefix(`/studio`)
-      - traefik.http.routers.wger.middlewares=wger-stripprefix@docker
-      - traefik.http.middlewares.wger-stripprefix.stripprefix.prefixes=/studio
-      - traefik.http.routers.wger.entrypoints=websecure
-      - traefik.http.routers.wger.tls.certresolver=letsencrypt
-      - traefik.http.services.wger.loadbalancer.server.port=8000
-      - homepage.group=Health
-      - homepage.name=Wger (Pilates)
-      - homepage.icon=dumbbell
-      - homepage.href=http://wger.local:8000/studio
-      - homepage.description=Workout Manager
+    - traefik.enable=true
+    - traefik.docker.network=proxy_default
+    - traefik.http.routers.wger.rule=Host(`app.${ROOT_DOMAIN}`) # && PathPrefix(`/studio`)
+    - traefik.http.routers.wger.entrypoints=websecure
+    - traefik.http.routers.wger.tls.certresolver=letsencrypt
+    - traefik.http.services.wger.loadbalancer.server.port=8000
+    - homepage.group=Health
+    - homepage.name=Wger (Pilates)
+    - homepage.icon=dumbbell
+    - homepage.href=http://wger.local:8000
+    - homepage.description=Workout Manager
