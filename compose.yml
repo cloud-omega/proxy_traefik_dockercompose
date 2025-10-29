@@ -23,7 +23,7 @@ include:
   - compose/homepage.yml
   #- compose/gemini-cli-web.yml
   - compose/static.yml
-  - compose/wger.yml
+    #- compose/wger.yml
   #- compose/ollama.yml
   #- compose/boltdiy.yml
   #- compose/openhands.yml
