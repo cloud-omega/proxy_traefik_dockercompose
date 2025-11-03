@@ -22,8 +22,8 @@ include:
   - compose/watchtower.yml
   - compose/homepage.yml
   #- compose/gemini-cli-web.yml
-  - compose/static.yml
-  - compose/wger.yml
+  #- compose/static.yml
+  #- compose/wger.yml
   - compose/redis.yml
   #- compose/ollama.yml
   #- compose/boltdiy.yml

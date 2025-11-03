@@ -1,35 +1,13 @@
 services:
   wger-server:
-    image: wger/server
-    command: gunicorn wger.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    image: wger/server:2.4-dev
+    #image: docker.io/wger/server:latest
+    #command: gunicorn wger.wsgi:application --bind 0.0.0.0:8000 --workers 4
     container_name: wger
     restart: unless-stopped
-    environment:
-    - TZ=${TZ}
-    - DJANGO_DEBUG=True
-    #- DJANGO_ALLOWED_HOSTS=app.${ROOT_DOMAIN},wger.local
-    #- CSRF_TRUSTED_ORIGINS=https://app.${ROOT_DOMAIN},http://wger.local
-    - DJANGO_DB_ENGINE=django.db.backends.postgresql
-    - DJANGO_DB_HOST=postgres
-    - DJANGO_DB_PORT=5432
-    - DJANGO_DB_USER=${POSTGRES_USER}
-    - DJANGO_DB_PASSWORD=${POSTGRES_PASSWORD}
-    - DJANGO_DB_DATABASE=wger
-    - DJANGO_REDIS_HOST=redis
-    - DJANGO_REDIS_PORT=6379
-    - SITE_OWNER_EMAIL=${MAILMANAGER}
-    - SITE_OWNER_PASSWORD=${WGER_ADMIN_PASSWORD}
-    - SITE_OWNER_USERNAME=super
-    - SECRET_KEY=${WGER_SECRET_KEY}s6sd
-    - SIGNING_KEY=${WGER_SIGNING_KEY}
-    - TIME_ZONE=${TZ}
-    - ALLOW_REGISTRATION=True
-    - ALLOW_GUEST_USERS=False
-    - ALLOW_UPLOAD_VIDEOS=False
-    - MIN_ACCOUNT_AGE_TO_TRUST=5
     volumes:
     - /opt/files/static/static:/home/wger/static
-    #- /opt/files/static/media:/home/wger/media
+    - /opt/files/static/media:/home/wger/media
     networks:
     - proxy_default
     - db
@@ -48,13 +26,10 @@ services:
     - homepage.href=http://wger.local:8000
     - homepage.description=Workout Manager
 
-  wger-server2:
-    image: wger/server
-    #command: gunicorn wger.wsgi:application --bind 0.0.0.0:8000 --workers 4
     environment:
     - TZ=${TZ}
     #- DJANGO_ALLOWED_HOSTS=app.${ROOT_DOMAIN},wger.local
-    #- CSRF_TRUSTED_ORIGINS=https://app.${ROOT_DOMAIN},http://wger.local
+    - CSRF_TRUSTED_ORIGINS=https://app.${ROOT_DOMAIN},http://wger.local
     - DJANGO_DB_ENGINE=django.db.backends.postgresql
     - DJANGO_DB_HOST=postgres
     - DJANGO_DB_PORT=5432
@@ -145,6 +120,3 @@ services:
     #- MEDIA_URL=https://${ROOT_DOMAIN}/studio/media/
     #STATICFILES_DIRS = [BASE_DIR / "static"]
     #STATIC_ROOT = BASE_DIR / "assets" # For collectstatic
-    volumes:
-    - /opt/files/static/static:/home/wger/static
-    - /opt/files/static/media:/home/wger/media
