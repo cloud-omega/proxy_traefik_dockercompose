@@ -1,0 +1,36 @@
+services:
+  magento:
+    image: bitnami/magento:latest
+    container_name: magento
+    restart: unless-stopped
+    volumes:
+      - /opt/files/magento/data:/bitnami/magento
+    networks:
+      - proxy_default
+      - db
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.http.routers.magento.rule=Host(`magento.${ROOT_DOMAIN}`)
+      - traefik.http.routers.magento.entrypoints=websecure
+      - traefik.http.routers.magento.tls.certresolver=letsencrypt
+      - traefik.http.services.magento.loadbalancer.server.port=80
+      - homepage.group=E-commerce
+      - homepage.name=Magento
+      - homepage.icon=magento
+      - homepage.href=https://magento.${ROOT_DOMAIN}
+      - homepage.description=E-commerce platform
+
+    environment:
+      - TZ=${TZ}
+      - MARIADB_HOST=postgres
+      - MARIADB_PORT=5432
+      - MARIADB_DATABASE=magento
+      - MARIADB_USER=${POSTGRES_USER}
+      - MARIADB_PASSWORD=${POSTGRES_PASSWORD}
+      - MAGENTO_HOST=magento.${ROOT_DOMAIN}
+      - MAGENTO_USERNAME=admin
+      - MAGENTO_PASSWORD=${MAGENTO_ADMIN_PASSWORD}
+      - MAGENTO_EMAIL=${MAILMANAGER}
+      - MAGENTO_ENABLE_HTTPS=true
+      - BITNAMI_DEBUG=false
