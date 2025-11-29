@@ -32,6 +32,27 @@ http:
           queryParamName: token
           removeHeadersOnSuccess: "true"
 
+    security-headers:
+      headers:
+        stsSeconds: 63072000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        forceSTSHeader: true
+
+        browserXssFilter: true
+        contentTypeNosniff: true
+
+        frameDeny: true
+        customFrameOptionsValue: "SAMEORIGIN"
+
+        referrerPolicy: "no-referrer-when-downgrade"
+
+        # Ajuste a CSP ao seu ambiente (exemplo bem restritivo)
+        contentSecurityPolicy: "default-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self';"
+
+        # Opcional: proteger contra mixed content
+        isDevelopment: false
+
 tls:
   options:
     default:
