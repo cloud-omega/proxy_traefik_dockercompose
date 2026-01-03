@@ -33,6 +33,7 @@ include:
   - compose/postgres.yml
   - compose/adminer.yml
   - compose/n8n.yml
+  - compose/firefly.yml
   #- compose/homeassistant.yml
   #- compose/anythingllm.yml
   - compose/portainer.yml
@@ -50,13 +51,3 @@ include:
   - compose/dozzle.yml
   - compose/code.yml
   #- compose/tailscale.yml
-POSTGRES_PASSWORD
-POSTGRES_USER
-POSTGRES_DB
-MAILMANAGER
-ROOT_DOMAIN
-ADMIN_USER
-ADMIN_PASS
-SITE_PATH
-MOODLEDATA=$BASESIR/moodledata 
-MOODLESRC=$BASESIR/moodlesrc

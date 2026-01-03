@@ -1,0 +1,76 @@
+#   OJS_VERSION : 3_3_0-13
+version: "3"
+
+services:
+  ojs:
+    image: pkpofficial/ojs:${OJS_VERSION}
+    container_name: "ojs"
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.ojs.rule=Host(`app.${DOMAIN_NAME}`)
+    - traefik.http.services.ojs.loadbalancer.server.port=443
+    - traefik.http.services.ojs.loadbalancer.server.scheme=https
+    - traefik.http.services.ojs.loadbalancer.serverstransport=selfsigned@file
+    - traefik.http.routers.ojs.tls.certresolver=letsencrypt
+    - traefik.http.routers.ojs.tls=true
+    - traefik.frontend.entryPoints=http,https
+    - traefik.http.routers.moodle.middlewares=security-headers@file
+    - homepage.group=Work
+    - homepage.name=OJS
+    - homepage.icon=dumbbell
+    - homepage.href=http://ojs.local:80
+    - homepage.description=OJS
+    extra_hosts:
+    - "${SERVER_URL}:${SERVERIPADDR}" # for new install only
+    environment:
+      TZ: ${TZ}
+      SERVER_URL: app.${DOMAIN_NAME}
+      SERVERNAME: app.${DOMAIN_NAME}
+      OJS_DB_HOST: "postgres"
+      OJS_DB_NAME: "ojs"
+      OJS_DB_USER: "${POSTGRES_USER}"
+      OJS_DB_PASSWORD: "${POSTGRES_PASSWORD}"
+      OJS_DB_DRIVER: "postgres"
+      OJS_CLI_INSTALL: "1"
+      PHP_MEMORY_LIMIT: "512M"
+      PHP_UPLOAD_MAX_FILESIZE: "64M"
+      PHP_POST_MAX_SIZE: "64M"
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    #- ./favicon.ico:/var/www/html/favicon.ico:ro
+    - ojs-files:/var/www/files
+    - ojs_public:/var/www/html/public
+    - ojs_plugins:/var/www/html/plugins
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-k", "--fail", "https://localhost:443" ]
+      interval: 1m
+      timeout: 10s
+      retries: 5
+    networks:
+    - db
+    - cache
+    - local
+
+volumes:
+  ojs-files:
+    driver_opts:
+      type: none
+      device: ${OJS_DATAFILES}
+      o: bind
+
+  ojs-public:
+    driver_opts:
+      type: none
+      device: ${OJS_DATAFILES}
+      o: bind
+
+  ojs-plugins:
+    driver_opts:
+      type: none
+      device: ${OJS_DATAFILES}
+      o: bind
+
+networks:
+  proxy_default:
+    external: true

@@ -2,6 +2,8 @@ http:
   serversTransports:
     mytransport:
       insecureSkipVerify: true
+    selfsigned:
+      insecureSkipVerify: true
 
   middlewares:
     compress:
@@ -16,7 +18,6 @@ http:
           crowdsecappsecenabled: "true"
           crowdsecappsechost: "crowdsec:7422"
           crowdsecmode: "stream"
-
 
     my-traefik-api-key-auth:
       plugin:
