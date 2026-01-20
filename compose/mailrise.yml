@@ -1,0 +1,28 @@
+services:
+  mailrise:
+    image: yoryan/mailrise:latest
+    container_name: mailrise
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+      - DISCORD_WEBHOOK_ID=${DISCORD_WEBHOOK_ID}
+      - DISCORD_KEY=${DISCORD_KEY}
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy_default
+      - traefik.http.services.mailrise.loadbalancer.server.port=8080
+      - traefik.http.services.mailrise.loadbalancer.server.scheme=http
+      - traefik.http.routers.mailrise.tls.certresolver=letsencrypt
+      - traefik.http.routers.mailrise.tls=true
+      - traefik.http.routers.mailrise.entrypoints=http,https
+      - traefik.http.routers.mailrise.rule=Host(\`mail.${ROOT_DOMAIN}\`)
+      - traefik.http.routers.mailrise.middlewares=security-headers@file
+      - homepage.group=Notifications
+      - homepage.name=Mailrise
+      - homepage.icon=mailrise.png
+      - homepage.href=http://mailrise.local
+      - homepage.description=SMTP
+    ports:
+      - "8025:8025"
+    networks:
+      - mail
