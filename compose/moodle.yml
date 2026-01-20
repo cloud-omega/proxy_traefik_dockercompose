@@ -1,30 +1,63 @@
 services:
-  webserver:
-    image: gitlab.cecierj.edu.br:5050/depr/dockerfile/moodle:php8.3
-    container_name: "moodle"
+  moodle:
+    image: erseco/alpine-moodle
+    container_name: moodle
     restart: unless-stopped
     environment:
       - TZ
       - SITE_PATH
       - ADMIN_USER
       - ADMIN_PASS
+      - LANG=pt_BR.UTF-8
+      - LANGUAGE=pt_BR
+      - MOODLE_SSLPROXY=true
+      - MOODLE_USERNAME=${ADMIN_USER}
+      - MOODLE_PASSWORD=${ADMIN_PASS}
+      - MOODLE_EMAIL=${MAILMANAGER}
+      - MOODLE_LANG=pt_br
+      - SITE_URL=https://app.$DOMAIN_NAME
+      - REVERSEPROXY=false
+      - SSLPROXY=true
+      - REDIS_HOST=cache
+      - DB_TYPE=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASS=${POSTGRES_PASSWORD}
+      #- DB_FETCHBUFFERSIZE=
+      #- DB_DBHANDLEOPTIONS=false
+      #- DB_HOST_REPLICA=
+      #- DB_PORT_REPLICA=
+      #- DB_USER_REPLICA=
+      #- DB_PASS_REPLICA=
       - MOODLE_DATABASE_TYPE=pgsql
       - MOODLE_DATABASE_HOST=postgres
       - MOODLE_DATABASE_PORT_NUMBER=5432
       - MOODLE_DATABASE_NAME=${POSTGRES_DB}
       - MOODLE_DATABASE_USER=${POSTGRES_USER}
       - MOODLE_DATABASE_PASSWORD=${POSTGRES_PASSWORD}
-      - DOMAIN_URL=${SITE_PATH}.${ROOT_DOMAIN}
-      - MOODLE_HOST=${SITE_PATH}.${ROOT_DOMAIN}
-      - MOODLEDATA=/var/www/moodledata
-      - MOODLE_SKIP_BOOTSTRAP=yes
-      - MOODLE_SSLPROXY=true
-      - MOODLE_USERNAME=${ADMIN_USER}
-      - MOODLE_PASSWORD=${ADMIN_PASS}
-      - MOODLE_EMAIL=${MAILMANAGER}
-      - MOODLE_LANG=pt_br
-      - BITNAMI_DEBUG=true
-      - DEBUG=true
+      - DB_PREFIX=app_
+      #- MY_CERTIFICATES=none
+      - MOODLE_LANGUAGE=br
+      - MOODLE_SITENAME=Studio Magleides
+      - SMTP_HOST=mailrise.local
+      - SMTP_PORT=8025
+      #- SMTP_USER
+      #- SMTP_PASSWORD
+      #- SMTP_PROTOCOL
+      - MOODLE_MAIL_NOREPLY_ADDRESS=noreply@${ROOT_DOMAIN}
+      - MOODLE_MAIL_PREFIX=[PILATES]
+      - AUTO_UPDATE_MOODLE=true
+      - DEBUG=false
+      - client_max_body_size=50M
+      - post_max_size=50M
+      - upload_max_filesize=50M
+      - max_input_vars=5000
+      #- PRE_CONFIGURE_COMMANDS=
+      #- POST_CONFIGURE_COMMANDS=
+      - RUN_CRON_TASKS=true
+
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
@@ -41,4 +74,6 @@ services:
       - ${MOODLESRC}:/var/www/html
     networks:
       - proxy_default
-
+    networks:
+      - cache
+      - proxy_default
