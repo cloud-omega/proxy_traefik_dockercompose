@@ -44,6 +44,7 @@ include:
   #- compose/keycloak.yml
   #- compose/unblocker.yml
   #- compose/minio.yml
+  - compose/mail.yml
   - compose/pdf.yml
   - compose/dockerproxy.yml
   - compose/vaultwarden.yml
