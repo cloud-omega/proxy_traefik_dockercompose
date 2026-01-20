@@ -82,8 +82,9 @@ jobs:
       WHITELIST: ${{ secrets.GMAIL }}
       ZONE_ID: ${{ secrets.ZONE_ID_STUDIO }}
       TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
-      
-      FIREFLY_APP_KEY: ${{ secrets.SECRET_STUDIO }}xX2
+
+      DISCORD_KEY: ${{ secrets.DISCORD_KEY }}
+      DISCORD_WEBHOOK_ID:  ${{ secrets.DISCORD_WEBHOOK_ID }}
       WGER_ADMIN_PASSWORD: ${{ secrets.WGER_ADMIN_PASSWORD }}
       VW_CLIENT_ID: ${{ secrets.VW_CLIENT_ID }}
       VW_CLIENT_SECRET: ${{ secrets.VW_CLIENT_SECRET }}
