@@ -57,7 +57,6 @@ services:
       #- PRE_CONFIGURE_COMMANDS=
       #- POST_CONFIGURE_COMMANDS=
       - RUN_CRON_TASKS=true
-
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy_default
@@ -72,8 +71,6 @@ services:
     volumes:
       - ${MOODLEDATA}:/var/www/moodledata
       - ${MOODLESRC}:/var/www/html
-    networks:
-      - proxy_default
     networks:
       - cache
       - proxy_default
