@@ -7,14 +7,14 @@ services:
       - TZ=${TZ}
       - DISCORD_WEBHOOK_ID=${DISCORD_WEBHOOK_ID}
       - DISCORD_KEY=${DISCORD_KEY}
-    entrypoint: >
+    entrypoint: >-
       sh -c "
       cat <<EOF >/etc/mailrise.conf
 \"discord@local\":
   urls:
     - \"discord://\${DISCORD_WEBHOOK_ID}/\${DISCORD_KEY}\"
 EOF
-      exec mailrise
+      exec /usr/local/bin/mailrise
       "
     ports:
       - "8025:8025"
