@@ -17,7 +17,8 @@ jobs:
       SITE_PATH: ${{ secrets.PORTAINER_PATH }}
       PUID: 1001
       PGID: 1001
-      ADMIN_USER: "" # ADMIN_USER
+      ADMIN_USER: "super" # ADMIN_USER
+      ADMIN_PASS: ${{ secrets.WGER_ADMIN_PASSWORD }}
       PROJECTS_GIT: /opt/git
 
       # === Volumes ===

@@ -6,6 +6,7 @@ services:
     environment:
     - TZ
     - SITE_PATH
+    - SITE_URL=${SITE_PATH}
     - ADMIN_USER
     - ADMIN_PASS
     - LANG=pt_BR.UTF-8
