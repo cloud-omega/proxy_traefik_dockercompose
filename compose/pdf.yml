@@ -5,15 +5,21 @@ services:
     container_name: pdf
     restart: unless-stopped
     volumes:
-      - $VOL_PROXY/StirlingPDF/trainingData:/usr/share/tessdata # Required for extra OCR languages
-      - $VOL_PROXY/StirlingPDF/extraConfigs:/configs
-      - $VOL_PROXY/StirlingPDF/customFiles:/customFiles/
-      - $VOL_PROXY/StirlingPDF/logs:/logs/
-      - $VOL_PROXY/StirlingPDF/pipeline:/pipeline/
+    - $VOL_PROXY/StirlingPDF/trainingData:/usr/share/tessdata # Required for extra OCR languages
+    - $VOL_PROXY/StirlingPDF/extraConfigs:/configs
+    - $VOL_PROXY/StirlingPDF/customFiles:/customFiles/
+    - $VOL_PROXY/StirlingPDF/logs:/logs/
+    - $VOL_PROXY/StirlingPDF/pipeline:/pipeline/
     environment:
-      - DISABLE_ADDITIONAL_FEATURES=false
-      - LANGS=pt_BR
-      - TZ
-      - NODE_ENV='production'
-    networks: 
-      - local
+    - DISABLE_ADDITIONAL_FEATURES=false
+    - LANGS=pt_BR
+    - TZ
+    - NODE_ENV='production'
+    labels:
+    - homepage.group=Tools
+    - homepage.name=PDF
+    - homepage.icon=pdf.png
+    - homepage.href=http://pdf.local
+    - homepage.description=PDF Converter
+    networks:
+    - local

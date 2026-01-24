@@ -69,9 +69,16 @@ services:
     - traefik.http.routers.moodle.rule=Host(`app.${ROOT_DOMAIN}`)
     - traefik.http.routers.moodle.middlewares=security-headers@file
     volumes:
-    - ${BASEDIR}/moodledata:/var/www/moodledata
+    - moodledata:/var/www/moodledata
     #- ${BASEDIR}/moodlesrc:/var/www/html
     networks:
     - cache
     - proxy_default
     - db
+
+volumes:
+  moodledata:
+    driver_opts:
+      type: none
+      device: "${BASEDIR}/moodledata"
+      o: bind
