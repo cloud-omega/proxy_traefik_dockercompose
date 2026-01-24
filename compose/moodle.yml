@@ -19,7 +19,7 @@ services:
     - SITE_URL=https://app.$DOMAIN_NAME
     - REVERSEPROXY=false
     - SSLPROXY=true
-    - REDIS_HOST=cache
+    - REDIS_HOST=redis
     - DB_TYPE=pgsql
     - DB_HOST=postgres
     - DB_PORT=5432
@@ -61,9 +61,9 @@ services:
     labels:
     - traefik.enable=true
     - traefik.docker.network=proxy_default
-    - traefik.http.services.moodle.loadbalancer.server.port=443
-    - traefik.http.services.moodle.loadbalancer.server.scheme=https
-    - traefik.http.services.moodle.loadbalancer.serverstransport=selfsigned@file
+    - traefik.http.services.moodle.loadbalancer.server.port=8080
+    - traefik.http.services.moodle.loadbalancer.server.scheme=http
+    #- traefik.http.services.moodle.loadbalancer.serverstransport=selfsigned@file
     - traefik.http.routers.moodle.tls.certresolver=letsencrypt
     - traefik.http.routers.moodle.tls=true
     - traefik.frontend.entryPoints=http,https
