@@ -40,7 +40,7 @@ services:
     - DB_PREFIX=app_
     #- MY_CERTIFICATES=none
     - MOODLE_LANGUAGE=br
-    - MOODLE_SITENAME="Studio Magleides"
+    - MOODLE_SITENAME=Studio
     - SMTP_HOST=mailrise.local
     - SMTP_PORT=8025
     #- SMTP_USER
