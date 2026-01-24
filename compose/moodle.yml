@@ -74,3 +74,4 @@ services:
     networks:
     - cache
     - proxy_default
+    - db
