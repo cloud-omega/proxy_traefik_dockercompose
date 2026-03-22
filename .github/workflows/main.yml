@@ -131,7 +131,7 @@ jobs:
       - name: Deploy Docker Stack
         run: |
           docker compose down  -v --remove-orphans
-          docker compose up -d --remove-orphans --wait --scale portal=3 -y
+          docker compose up -d --remove-orphans --scale portal=3 -y
       - name: View logs
         run: docker compose logs --tail 30
 
