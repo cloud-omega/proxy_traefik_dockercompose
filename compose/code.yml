@@ -7,7 +7,7 @@ services:
     #ports:      - "8080:8080"
     volumes:
       #- ./code-server/config:/home/coder/.config/code-server
-      - $PROJECTS_GIT:/home/coder/projects
+      - $PROJECTS_GIT/code:/home/coder/
     environment:
       - PUID=1000
       - PGID=1000
