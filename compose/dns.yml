@@ -17,7 +17,7 @@ services:
       timeout: 10s
       retries: 3
     labels:
-      - homepage.group=Network
+      - homepage.group=System
       - homepage.name=DNS Server
       - homepage.icon=dns
       - homepage.description=dnsmasq

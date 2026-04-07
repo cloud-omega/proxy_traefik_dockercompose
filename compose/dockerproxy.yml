@@ -31,7 +31,7 @@ services:
             cpus: '0.25'
             memory: 64M
       labels:
-        - homepage.group=Infra
+        - homepage.group=System
         - homepage.name=Docker Proxy
         - homepage.icon=docker
         - homepage.href=http://dockerproxy.local:2375

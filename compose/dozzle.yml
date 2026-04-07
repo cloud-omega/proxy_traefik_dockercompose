@@ -8,7 +8,7 @@ services:
     networks: 
       - local
     labels:
-      homepage.group: system
+      homepage.group: System
       homepage.name: "Dozzle"
       homepage.icon: "docker.png"
       homepage.href: "http://dozzle.local:8080"

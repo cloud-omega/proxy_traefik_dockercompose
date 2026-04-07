@@ -13,7 +13,7 @@ services:
       - local
       - proxy_default
     labels:
-      - homepage.group=Storage
+      - homepage.group=System
       - homepage.name=Minio
       - homepage.icon=minio
       - homepage.href=http://minio.local:9001

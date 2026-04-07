@@ -19,7 +19,7 @@ services:
       - traefik.http.routers.unblocker.tls=true
       - traefik.http.routers.unblocker.tls.certresolver=letsencrypt
       - traefik.http.services.unblocker.loadbalancer.server.port=8080
-      - homepage.group=Network
+      - homepage.group=System
       - homepage.name=Unblocker
       - homepage.icon=shield
       - homepage.href=https://${NOIP_URL1}

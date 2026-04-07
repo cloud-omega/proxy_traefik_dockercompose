@@ -17,7 +17,7 @@ services:
     networks: 
       - local
     labels:
-      homepage.group: dev 
+      homepage.group: Tools 
       homepage.name: "Code-Server"
       homepage.icon: "vscode.png"
       homepage.href: "http://code.local:8080"

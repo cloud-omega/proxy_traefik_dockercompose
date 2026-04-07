@@ -82,7 +82,7 @@ services:
       #- traefik.frontend.headers.customResponseHeaders.X-Robots-Tag="none,noarchive,nosnippet,notranslate,noimageindex"
       #- traefik.frontend.headers.customResponseHeaders.X-Forwarded-Proto="https"
       #- traefik.frontend.headers.customResponseHeaders.Content-Security-Policy="default-src 'none'; script-src 'unsafe-inline' https:; frame-ancestors 'none';"
-      - homepage.group=Infra
+      - homepage.group=System
       - homepage.name=Traefik
       - homepage.icon=traefik
       - homepage.href=http://proxy.local:8080
@@ -123,10 +123,6 @@ volumes:
            device: ${VOL_CROWDSECDB}
            o: bind
   crowdsec_etc:
-     driver_opts:
-           type: none
-           device: ${VOL_CROWDSECETC}
-           o: bind
   proxydata:
      driver_opts:
            type: none
