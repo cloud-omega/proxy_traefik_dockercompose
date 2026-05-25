@@ -1,141 +1,388 @@
-name: Docker Compose Up for Production
+name: Docker Compose Deploy Production
 
 on:
   push:
     branches:
       - main
+
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+env:
+  TZ: ${{ secrets.TZ }}
+  DOMAIN_NAME: ${{ secrets.NOIP_URL1 }}
+  SITE_PATH: ${{ secrets.PORTAINER_PATH }}
+
+  PUID: "1001"
+  PGID: "1001"
+
+  ADMIN_USER: "super"
+  ADMIN_PASS: ${{ secrets.WGER_ADMIN_PASSWORD }}
+  PROJECTS_GIT: /opt/git
+
+  BASEDIR: /opt/files
+  VOL_PROXY: ${{ secrets.VOL_PROXY }}
+  VOL_PORTAINER: ${{ secrets.VOL_PORTAINER }}
+  VOL_CROWDSECDB: ${{ secrets.VOL_PROXY }}/crowdsec_data
+  VOL_CROWDSECETC: ${{ secrets.VOL_PROXY }}/crowdsec_etc
+  VOL_OLLAMA: ${{ secrets.VOL_OLLAMA }}
+  VOL_FILEBROWSER: /opt/files/filebrowser
+  VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
+  VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
+  VOL_OHANDS: ${{ secrets.VOL_PROXY }}/openhands
+  VOL_HOMEPAGE: ${{ secrets.VOL_PROXY }}/homepage
+  VOL_GEMINI: ${{ secrets.VOL_PROXY }}/gemini
+  VOL_POSTGRES: ${{ secrets.VOL_POSTGRES }}
+
+  MAILMANAGER: ${{ secrets.MAILMANAGER }}
+  CROWDSEC_TRAEFIK: ${{ secrets.CROWDSEC_TRAEFIK }}
+
+  POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+  POSTGRES_DB: ${{ secrets.POSTGRES_USER }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
+  KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
+
+  FILE_PPTP: ${{ secrets.VOL_PROXY }}/pptp_user
+
+  TAILSCALE_KEY: ${{ secrets.TAILSCALE_KEY }}
+  VAULTWARDEN_ADMIN_TOKEN: ${{ secrets.VAULTWARDEN_ADMIN_TOKEN }}
+
+  NOIP_USERNAME: ${{ secrets.NOIP_USER }}
+  NOIP_PASSWORD: ${{ secrets.NOIP_PASS }}
+  NOIP_URL1: ${{ secrets.NOIP_URL1 }}
+  NOIP_URL2: ${{ secrets.NOIP_URL2 }}
+  NOIP_URL3: ${{ secrets.NOIP_URL3 }}
+  DYNU_SITE1: ${{ secrets.DYNU_SITE1 }}
+  DYNV6_SITE1: ${{ secrets.DYNV6_SITE1 }}
+  DYNV6_SITE2: ${{ secrets.DYNV6_SITE2 }}
+
+  OLLAMA_APIKEY: ${{ secrets.OLLAMA_APIKEY }}
+  OLLAMA_BASE_URL: http://ollama:11434
+  OLLAMA_MODEL: qwen2.5-coder:7b
+
+  PORTAINER_TOKEN: ${{ secrets.PORTAINER_TOKEN }}
+
+  ROOT_DOMAIN: ${{ secrets.DOMAIN_STUDIO }}
+  PROVIDERS_GOOGLE_CLIENT_ID: ${{ secrets.PROVIDERS_GOOGLE_CLIENT_ID }}
+  PROVIDERS_GOOGLE_CLIENT_SECRET: ${{ secrets.PROVIDERS_GOOGLE_CLIENT_SECRET }}
+  SECRET: ${{ secrets.SECRET_STUDIO }}
+  WHITELIST: ${{ secrets.GMAIL }}
+  ZONE_ID: ${{ secrets.ZONE_ID_STUDIO }}
+  TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
+
+  DISCORD_KEY: ${{ secrets.DISCORD_KEY }}
+  DISCORD_WEBHOOK_ID: ${{ secrets.DISCORD_WEBHOOK_ID }}
+  WGER_ADMIN_PASSWORD: ${{ secrets.WGER_ADMIN_PASSWORD }}
+  VW_CLIENT_ID: ${{ secrets.VW_CLIENT_ID }}
+  VW_CLIENT_SECRET: ${{ secrets.VW_CLIENT_SECRET }}
+
+  WATCHTOWER_HTTP_API_TOKEN: ${{ secrets.WATCHTOWER_HTTP_API_TOKEN }}
+
+  HTTP_TIMEOUT: "60"
+  POLLING_INTERVAL: "10"
+  PROPAGATION_TIMEOUT: "3600"
+  TTL: "300"
+  LOG_LEVEL: INFO
+
+  COMPOSE_PROJECT_NAME: production
 
 jobs:
-  run:
-    runs-on: self-hosted    
-    env:
-      # === Configurações Globais ===
-      TZ: ${{ secrets.TZ }}
-      DOMAIN_NAME: ${{ secrets.NOIP_URL1 }}
-      SITE_PATH: ${{ secrets.PORTAINER_PATH }}
-      PUID: 1001
-      PGID: 1001
-      ADMIN_USER: "super" # ADMIN_USER
-      ADMIN_PASS: ${{ secrets.WGER_ADMIN_PASSWORD }}
-      PROJECTS_GIT: /opt/git
+  validate:
+    name: Validate compose
+    runs-on:
+      - self-hosted
+      - production
 
-      # === Volumes ===
-      BASEDIR: /opt/files
-      VOL_PROXY: ${{ secrets.VOL_PROXY }}
-      VOL_PORTAINER: ${{ secrets.VOL_PORTAINER }}
-      VOL_CROWDSECDB: ${{ secrets.VOL_PROXY }}/crowdsec_data
-      VOL_CROWDSECETC: ${{ secrets.VOL_PROXY }}/crowdsec_etc
-      VOL_OLLAMA: ${{ secrets.VOL_OLLAMA }}
-      VOL_FILEBROWSER: /opt/files/filebrowser
-      VOL_HA: ${{ secrets.VOL_PROXY }}/homeassistant-cfg
-      VOL_N8N: ${{ secrets.VOL_PROXY }}/n8n-cfg
-      VOL_OHANDS: ${{ secrets.VOL_PROXY }}/openhands
-      VOL_HOMEPAGE: ${{ secrets.VOL_PROXY }}/homepage
-      VOL_GEMINI: ${{ secrets.VOL_PROXY }}/gemini
-      VOL_POSTGRES: ${{ secrets.VOL_POSTGRES }}
-
-      # === Traefik & CrowdSec ===
-      MAILMANAGER: ${{ secrets.MAILMANAGER }}
-      CROWDSEC_TRAEFIK: ${{ secrets.CROWDSEC_TRAEFIK }}
-
-      # === Banco de Dados (Postgres) ===
-      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_DB: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-
-      # === Keycloak ===
-      KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
-
-      # === Wireguard / VPN ===
-      FILE_PPTP: ${{ secrets.VOL_PROXY }}/pptp_user
-
-      # === Tailscale ===
-      TAILSCALE_KEY: ${{secrets.TAILSCALE_KEY}}
-
-      # === Vaultwarden (Bitwarden) ===
-      VAULTWARDEN_ADMIN_TOKEN: ${{secrets.VAULTWARDEN_ADMIN_TOKEN}}
-
-      # === DDNS (No-IP, Dynu, etc) ===
-      NOIP_USERNAME: ${{secrets.NOIP_USER}}
-      NOIP_PASSWORD: ${{secrets.NOIP_PASS}}
-      NOIP_URL1: ${{secrets.NOIP_URL1}}
-      NOIP_URL2: ${{secrets.NOIP_URL2}}
-      NOIP_URL3: ${{secrets.NOIP_URL3}}
-      DYNU_SITE1: ${{secrets.DYNU_SITE1}}
-      DYNV6_SITE1: ${{secrets.DYNV6_SITE1}}
-      DYNV6_SITE2: ${{secrets.DYNV6_SITE2}}
-
-      # === Ollama ===
-      OLLAMA_APIKEY: ${{ secrets.OLLAMA_APIKEY }}
-      OLLAMA_BASE_URL: "http://ollama:11434"
-      OLLAMA_MODEL: "qwen2.5-coder:7b"
-
-      # === Portainer ===
-      PORTAINER_TOKEN: ${{ secrets.PORTAINER_TOKEN }}
-
-      # === Cloudflare Tunnels ===
-      ROOT_DOMAIN: ${{ secrets.DOMAIN_STUDIO }}
-      PROVIDERS_GOOGLE_CLIENT_ID: ${{ secrets.PROVIDERS_GOOGLE_CLIENT_ID }}
-      PROVIDERS_GOOGLE_CLIENT_SECRET: ${{ secrets.PROVIDERS_GOOGLE_CLIENT_SECRET }}
-      SECRET: ${{ secrets.SECRET_STUDIO }}
-      WHITELIST: ${{ secrets.GMAIL }}
-      ZONE_ID: ${{ secrets.ZONE_ID_STUDIO }}
-      TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
-
-      DISCORD_KEY: ${{ secrets.DISCORD_KEY }}
-      DISCORD_WEBHOOK_ID:  ${{ secrets.DISCORD_WEBHOOK_ID }}
-      WGER_ADMIN_PASSWORD: ${{ secrets.WGER_ADMIN_PASSWORD }}
-      VW_CLIENT_ID: ${{ secrets.VW_CLIENT_ID }}
-      VW_CLIENT_SECRET: ${{ secrets.VW_CLIENT_SECRET }}
-
-      # === Watchtower ===
-      WATCHTOWER_HTTP_API_TOKEN: ${{ secrets.TUNNEL_TOKEN }}wWw1
-
-      # === DNS Challenge Settings ===
-      HTTP_TIMEOUT: 60
-      POLLING_INTERVAL: 10
-      PROPAGATION_TIMEOUT: 3600
-      TTL: 300
-      LOG_LEVEL: INFO
+    defaults:
+      run:
+        shell: bash
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           sparse-checkout: |
-            .
             compose
             conf
 
-      - name: Prepare env
+      - name: Prepare temporary files
         run: |
-          mkdir -pv $VOL_OHANDS $VOL_PROXY $VOL_PORTAINER $VOL_CROWDSECDB $VOL_CROWDSECETC $VOL_N8N $VOL_HA $VOL_POSTGRES
-          cat conf/ha-conf.yaml > $VOL_HA/configuration.yaml
-          sed -i "s,XXXXXXX,${OLLAMA_APIKEY},g" conf/traefik.yml
-          sed -i "s,replace-me,${CROWDSEC_TRAEFIK},g" conf/traefik.yml
-          sed -i "s,REPLACE_DOMAIN,${DOMAIN_NAME},g" conf/traefik.yml         
-          cat conf/traefik.yml > $VOL_PROXY/traefik.yml
-          cat conf/acquis.yaml > $VOL_CROWDSECETC/acquis.yaml
-          docker network create proxy_network --subnet "192.168.177.0/24" || true
-          docker network create db --subnet "192.168.179.0/24" || true
-          docker network create local --subnet "192.168.180.0/24" || true
+          set -Eeuo pipefail
+          umask 077
 
-      - name: Update Docker Images
-        run: docker compose pull
+          cp conf/traefik.yml "$RUNNER_TEMP/traefik.yml"
 
-      - name: Create explicit .env file
-        run: |
-          printenv | grep -v argo > ${BASEDIR}/.env
-          
-      - name: Deploy Docker Stack
-        run: |
-          docker compose down  -v --remove-orphans
-          docker compose up -d --remove-orphans --scale portal=3 -y
-      - name: View logs
-        run: docker compose logs --tail 30
+          sed -i "s|XXXXXXX|${OLLAMA_APIKEY}|g" "$RUNNER_TEMP/traefik.yml"
+          sed -i "s|replace-me|${CROWDSEC_TRAEFIK}|g" "$RUNNER_TEMP/traefik.yml"
+          sed -i "s|REPLACE_DOMAIN|${DOMAIN_NAME}|g" "$RUNNER_TEMP/traefik.yml"
 
-      - name: CrowdSec Hub Update
+          cat > "$RUNNER_TEMP/compose.env" <<EOF
+          TZ=${TZ}
+          DOMAIN_NAME=${DOMAIN_NAME}
+          SITE_PATH=${SITE_PATH}
+          PUID=${PUID}
+          PGID=${PGID}
+          ADMIN_USER=${ADMIN_USER}
+          ADMIN_PASS=${ADMIN_PASS}
+          PROJECTS_GIT=${PROJECTS_GIT}
+          BASEDIR=${BASEDIR}
+          VOL_PROXY=${VOL_PROXY}
+          VOL_PORTAINER=${VOL_PORTAINER}
+          VOL_CROWDSECDB=${VOL_CROWDSECDB}
+          VOL_CROWDSECETC=${VOL_CROWDSECETC}
+          VOL_OLLAMA=${VOL_OLLAMA}
+          VOL_FILEBROWSER=${VOL_FILEBROWSER}
+          VOL_HA=${VOL_HA}
+          VOL_N8N=${VOL_N8N}
+          VOL_OHANDS=${VOL_OHANDS}
+          VOL_HOMEPAGE=${VOL_HOMEPAGE}
+          VOL_GEMINI=${VOL_GEMINI}
+          VOL_POSTGRES=${VOL_POSTGRES}
+          MAILMANAGER=${MAILMANAGER}
+          CROWDSEC_TRAEFIK=${CROWDSEC_TRAEFIK}
+          POSTGRES_USER=${POSTGRES_USER}
+          POSTGRES_DB=${POSTGRES_DB}
+          POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+          KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+          FILE_PPTP=${FILE_PPTP}
+          TAILSCALE_KEY=${TAILSCALE_KEY}
+          VAULTWARDEN_ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
+          NOIP_USERNAME=${NOIP_USERNAME}
+          NOIP_PASSWORD=${NOIP_PASSWORD}
+          NOIP_URL1=${NOIP_URL1}
+          NOIP_URL2=${NOIP_URL2}
+          NOIP_URL3=${NOIP_URL3}
+          DYNU_SITE1=${DYNU_SITE1}
+          DYNV6_SITE1=${DYNV6_SITE1}
+          DYNV6_SITE2=${DYNV6_SITE2}
+          OLLAMA_APIKEY=${OLLAMA_APIKEY}
+          OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
+          OLLAMA_MODEL=${OLLAMA_MODEL}
+          PORTAINER_TOKEN=${PORTAINER_TOKEN}
+          ROOT_DOMAIN=${ROOT_DOMAIN}
+          PROVIDERS_GOOGLE_CLIENT_ID=${PROVIDERS_GOOGLE_CLIENT_ID}
+          PROVIDERS_GOOGLE_CLIENT_SECRET=${PROVIDERS_GOOGLE_CLIENT_SECRET}
+          SECRET=${SECRET}
+          WHITELIST=${WHITELIST}
+          ZONE_ID=${ZONE_ID}
+          TUNNEL_TOKEN=${TUNNEL_TOKEN}
+          DISCORD_KEY=${DISCORD_KEY}
+          DISCORD_WEBHOOK_ID=${DISCORD_WEBHOOK_ID}
+          WGER_ADMIN_PASSWORD=${WGER_ADMIN_PASSWORD}
+          VW_CLIENT_ID=${VW_CLIENT_ID}
+          VW_CLIENT_SECRET=${VW_CLIENT_SECRET}
+          WATCHTOWER_HTTP_API_TOKEN=${WATCHTOWER_HTTP_API_TOKEN}
+          HTTP_TIMEOUT=${HTTP_TIMEOUT}
+          POLLING_INTERVAL=${POLLING_INTERVAL}
+          PROPAGATION_TIMEOUT=${PROPAGATION_TIMEOUT}
+          TTL=${TTL}
+          LOG_LEVEL=${LOG_LEVEL}
+          COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
+          EOF
+
+      - name: Validate compose configuration
         run: |
-          docker compose exec crowdsec cscli hub update
-          docker compose exec crowdsec cscli hub upgrade
+          set -Eeuo pipefail
+          docker compose --env-file "$RUNNER_TEMP/compose.env" config -q
+          docker compose --dry-run --env-file "$RUNNER_TEMP/compose.env" up -d --remove-orphans
+
+      - name: Cleanup validate temp files
+        if: always()
+        run: |
+          set -Eeuo pipefail
+          shred -u "$RUNNER_TEMP/compose.env" 2>/dev/null || rm -f "$RUNNER_TEMP/compose.env"
+          rm -f "$RUNNER_TEMP/traefik.yml"
+
+  deploy:
+    name: Deploy stack
+    needs:
+      - validate
+    runs-on:
+      - self-hosted
+      - production
+    environment:
+      name: production
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        with:
+          sparse-checkout: |
+            compose
+            conf
+
+      - name: Prepare directories, config and networks
+        run: |
+          set -Eeuo pipefail
+
+          install -d -m 0750 \
+            "$VOL_OHANDS" \
+            "$VOL_PROXY" \
+            "$VOL_PORTAINER" \
+            "$VOL_CROWDSECDB" \
+            "$VOL_CROWDSECETC" \
+            "$VOL_N8N" \
+            "$VOL_HA" \
+            "$VOL_POSTGRES"
+
+          install -m 0640 conf/ha-conf.yaml "$VOL_HA/configuration.yaml"
+          install -m 0640 conf/acquis.yaml "$VOL_CROWDSECETC/acquis.yaml"
+
+          cp conf/traefik.yml "$RUNNER_TEMP/traefik.yml"
+
+          sed -i "s|XXXXXXX|${OLLAMA_APIKEY}|g" "$RUNNER_TEMP/traefik.yml"
+          sed -i "s|replace-me|${CROWDSEC_TRAEFIK}|g" "$RUNNER_TEMP/traefik.yml"
+          sed -i "s|REPLACE_DOMAIN|${DOMAIN_NAME}|g" "$RUNNER_TEMP/traefik.yml"
+
+          install -m 0640 "$RUNNER_TEMP/traefik.yml" "$VOL_PROXY/traefik.yml"
+
+          docker network inspect proxy_network >/dev/null 2>&1 || \
+            docker network create --subnet 192.168.177.0/24 proxy_network
+
+          docker network inspect db >/dev/null 2>&1 || \
+            docker network create --subnet 192.168.179.0/24 db
+
+          docker network inspect local >/dev/null 2>&1 || \
+            docker network create --subnet 192.168.180.0/24 local
+
+      - name: Create runtime env file
+        run: |
+          set -Eeuo pipefail
+          umask 077
+
+          cat > "$RUNNER_TEMP/compose.env" <<EOF
+          TZ=${TZ}
+          DOMAIN_NAME=${DOMAIN_NAME}
+          SITE_PATH=${SITE_PATH}
+          PUID=${PUID}
+          PGID=${PGID}
+          ADMIN_USER=${ADMIN_USER}
+          ADMIN_PASS=${ADMIN_PASS}
+          PROJECTS_GIT=${PROJECTS_GIT}
+          BASEDIR=${BASEDIR}
+          VOL_PROXY=${VOL_PROXY}
+          VOL_PORTAINER=${VOL_PORTAINER}
+          VOL_CROWDSECDB=${VOL_CROWDSECDB}
+          VOL_CROWDSECETC=${VOL_CROWDSECETC}
+          VOL_OLLAMA=${VOL_OLLAMA}
+          VOL_FILEBROWSER=${VOL_FILEBROWSER}
+          VOL_HA=${VOL_HA}
+          VOL_N8N=${VOL_N8N}
+          VOL_OHANDS=${VOL_OHANDS}
+          VOL_HOMEPAGE=${VOL_HOMEPAGE}
+          VOL_GEMINI=${VOL_GEMINI}
+          VOL_POSTGRES=${VOL_POSTGRES}
+          MAILMANAGER=${MAILMANAGER}
+          CROWDSEC_TRAEFIK=${CROWDSEC_TRAEFIK}
+          POSTGRES_USER=${POSTGRES_USER}
+          POSTGRES_DB=${POSTGRES_DB}
+          POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+          KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+          FILE_PPTP=${FILE_PPTP}
+          TAILSCALE_KEY=${TAILSCALE_KEY}
+          VAULTWARDEN_ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
+          NOIP_USERNAME=${NOIP_USERNAME}
+          NOIP_PASSWORD=${NOIP_PASSWORD}
+          NOIP_URL1=${NOIP_URL1}
+          NOIP_URL2=${NOIP_URL2}
+          NOIP_URL3=${NOIP_URL3}
+          DYNU_SITE1=${DYNU_SITE1}
+          DYNV6_SITE1=${DYNV6_SITE1}
+          DYNV6_SITE2=${DYNV6_SITE2}
+          OLLAMA_APIKEY=${OLLAMA_APIKEY}
+          OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
+          OLLAMA_MODEL=${OLLAMA_MODEL}
+          PORTAINER_TOKEN=${PORTAINER_TOKEN}
+          ROOT_DOMAIN=${ROOT_DOMAIN}
+          PROVIDERS_GOOGLE_CLIENT_ID=${PROVIDERS_GOOGLE_CLIENT_ID}
+          PROVIDERS_GOOGLE_CLIENT_SECRET=${PROVIDERS_GOOGLE_CLIENT_SECRET}
+          SECRET=${SECRET}
+          WHITELIST=${WHITELIST}
+          ZONE_ID=${ZONE_ID}
+          TUNNEL_TOKEN=${TUNNEL_TOKEN}
+          DISCORD_KEY=${DISCORD_KEY}
+          DISCORD_WEBHOOK_ID=${DISCORD_WEBHOOK_ID}
+          WGER_ADMIN_PASSWORD=${WGER_ADMIN_PASSWORD}
+          VW_CLIENT_ID=${VW_CLIENT_ID}
+          VW_CLIENT_SECRET=${VW_CLIENT_SECRET}
+          WATCHTOWER_HTTP_API_TOKEN=${WATCHTOWER_HTTP_API_TOKEN}
+          HTTP_TIMEOUT=${HTTP_TIMEOUT}
+          POLLING_INTERVAL=${POLLING_INTERVAL}
+          PROPAGATION_TIMEOUT=${PROPAGATION_TIMEOUT}
+          TTL=${TTL}
+          LOG_LEVEL=${LOG_LEVEL}
+          COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
+          EOF
+
+      - name: Pull images
+        run: |
+          set -Eeuo pipefail
+          docker compose --env-file "$RUNNER_TEMP/compose.env" pull
+
+      - name: Deploy stack
+        run: |
+          set -Eeuo pipefail
+          docker compose --env-file "$RUNNER_TEMP/compose.env" up -d --remove-orphans --scale portal=3
+
+      - name: Show status
+        run: |
+          set -Eeuo pipefail
+          docker compose --env-file "$RUNNER_TEMP/compose.env" ps
+          docker compose --env-file "$RUNNER_TEMP/compose.env" logs --tail 50 --no-color
+
+      - name: CrowdSec Hub update
+        run: |
+          set -Eeuo pipefail
+          docker compose --env-file "$RUNNER_TEMP/compose.env" exec -T crowdsec cscli hub update
+          docker compose --env-file "$RUNNER_TEMP/compose.env" exec -T crowdsec cscli hub upgrade
+
+      - name: Cleanup deploy temp files
+        if: always()
+        run: |
+          set -Eeuo pipefail
+          shred -u "$RUNNER_TEMP/compose.env" 2>/dev/null || rm -f "$RUNNER_TEMP/compose.env"
+          rm -f "$RUNNER_TEMP/traefik.yml"
+
+  notify-failure:
+    name: Notify failure via ntfy
+    needs:
+      - validate
+      - deploy
+    if: failure()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Send ntfy failure notification
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          WORKFLOW_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          MESSAGE=$(cat <<EOF
+          Falha no deploy Docker Compose.
+          Repositório: ${{ github.repository }}
+          Workflow: ${{ github.workflow }}
+          Branch: ${{ github.ref_name }}
+          Commit: ${{ github.sha }}
+          Autor: ${{ github.actor }}
+          Execução: ${WORKFLOW_URL}
+          EOF
+          )
+
+          curl --fail --silent --show-error \
+            -H "Title: GitHub Actions - falha no deploy" \
+            -H "Priority: high" \
+            -H "Tags: warning,rotating_light,github,docker" \
+            -d "$MESSAGE" \
+            "https://nt.cecierj.edu.br/mlima_pessoal"
