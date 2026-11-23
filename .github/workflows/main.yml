@@ -245,8 +245,8 @@ jobs:
 
           install -m 0640 "$RUNNER_TEMP/traefik.yml" "$VOL_PROXY/traefik.yml"
 
-          docker network inspect proxy_network >/dev/null 2>&1 || \
-            docker network create --subnet 192.168.177.0/24 proxy_network
+          docker network inspect proxy_default >/dev/null 2>&1 || \
+            docker network create --subnet 192.168.100.0/24 proxy_default
 
           docker network inspect db >/dev/null 2>&1 || \
             docker network create --subnet 192.168.179.0/24 db
